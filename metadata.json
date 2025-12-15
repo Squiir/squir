@@ -1,0 +1,7 @@
+{
+  "name": "SQUIR",
+  "description": "Application de fidélité pour la vie nocturne. Gagnez des récompenses dans vos bars et clubs préférés.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
