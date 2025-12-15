@@ -1,0 +1,10 @@
+node_modules
+coverage
+build
+dist
+.expo
+.DS_Store
+npm-debug.log*
+apps/*/build
+apps/*/dist
+apps/*/coverage

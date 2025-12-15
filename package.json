@@ -1,0 +1,35 @@
+{
+  "name": "squir",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "prepare": "husky install",
+    "format": "prettier --write .",
+    "lint": "npm run lint:web && npm run lint:api && npm run lint:mobile",
+    "lint:web": "npm run lint --workspace apps/web",
+    "lint:api": "npm run lint --workspace apps/api",
+    "lint:mobile": "npm run lint --workspace apps/mobile",
+    "test": "npm run test:web && npm run test:api && npm run test:mobile",
+    "test:web": "npm run test --workspace apps/web",
+    "test:api": "npm run test --workspace apps/api",
+    "test:mobile": "npm run test --workspace apps/mobile"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "eslint-config-expo": "~10.0.0",
+    "eslint": "^9.25.0",
+    "eslint-plugin-jsonc": "^2.16.0",
+    "husky": "^9.1.6",
+    "jsonc-eslint-parser": "^2.4.0",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json}": [
+      "eslint --max-warnings=0",
+      "prettier --check"
+    ]
+  }
+}
