@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Image } from "expo-image";
 import { ThemedText } from "@components/ThemedText";
 import { ThemedView } from "@components/ThemedView";
-import { useThemeColor } from "@hooks/UseThemeColor";
+import { useThemeColor } from "@hooks/use-theme-color";
 
 type Props = {
   name: string;

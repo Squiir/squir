@@ -4,7 +4,7 @@ import React from 'react';
 import { HapticTab } from '@components/HapticTab';
 import { IconSymbol } from '@components/ui/IconSymbol';
 import { Colors } from '@constants/Theme';
-import { useColorScheme } from '@hooks/UseColorScheme';
+import { useColorScheme } from '@hooks/use-color-scheme';
 import { BounceIcon } from '@components/ui/AnimatedIconSymbol';
 
 export default function TabLayout() {

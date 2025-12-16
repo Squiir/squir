@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, ViewStyle } from "react-native";
 import { ThemedView } from "@components/ThemedView";
-import { useThemeColor } from "@hooks/UseThemeColor";
+import { useThemeColor } from "@hooks/use-theme-color";
 
 type Props = {
   children: React.ReactNode;
