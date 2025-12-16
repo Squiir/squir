@@ -9,14 +9,26 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "expo": {
+        "ios": {
+          "infoPlist": {
+            "NSLocationWhenInUseUsageDescription": "On a besoin de ta localisation pour afficher ta position sur la carte."
+          }
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "monochromeImage": "./assets/images/android-icon-monochrome.png",
+        "expo": {
+        "android": {
+          "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
+          }
+        }
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false

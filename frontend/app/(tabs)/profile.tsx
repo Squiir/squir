@@ -9,6 +9,8 @@ import { ProfileHeader } from "@/components/profile/profile-header";
 import { Card } from "@/components/profile/card";
 import { RowItem } from "@/components/ui/row-item";
 import { SectionHeader } from "@/components/ui/section-header";
+import { router } from "expo-router";
+
 
 export default function ProfileScreen() {
   const user = {
@@ -73,6 +75,11 @@ export default function ProfileScreen() {
 
         <SectionHeader title="Préférences" />
         <Card>
+          <RowItem
+            label="Ma localisation"
+            iconLeft="map"
+            onPress={() => router.push("/(tabs)/location")}
+          />
           <RowItem
             label="Thème"
             iconLeft="moon.stars"

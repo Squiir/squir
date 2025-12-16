@@ -44,6 +44,13 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="location"
+        options={{
+          title: "Localisation",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name='map' color={color}/>,
+        }}
+      />
     </Tabs>
   );
 }
