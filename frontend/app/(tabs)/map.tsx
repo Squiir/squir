@@ -66,7 +66,7 @@ export default function MapScreen() {
           provide files for different screen densities
         </ThemedText>
         <Image
-          source={require("@/assets/images/react-logo.png")}
+          source={require("@assets/images/react-logo.png")}
           className="w-25 h-25 self-center"
         />
         <ExternalLink href="https://reactnative.dev/docs/images">

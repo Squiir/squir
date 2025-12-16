@@ -26,7 +26,7 @@ export function ProfileHeader({ name, username, email, avatarUri }: Props) {
           source={
             avatarUri
               ? { uri: avatarUri }
-              : require("@/assets/images/react-logo.png")
+              : require("@assets/images/react-logo.png")
           }
           className="w-full h-full rounded-[46px]"
           contentFit="cover"
