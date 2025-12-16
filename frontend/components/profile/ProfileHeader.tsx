@@ -1,6 +1,7 @@
 import { View, Image, Pressable } from "react-native";
 import { ThemedText } from "@components/ThemedText";
 import { useTheme } from "@hooks/use-theme-color";
+import { IconSymbol } from "@components/ui/IconSymbol";
 
 export function ProfileHeader() {
   const colors = useTheme();
@@ -19,7 +20,7 @@ export function ProfileHeader() {
 
       <ThemedText type="title">dylan_chpr</ThemedText>
       <ThemedText style={{ color: colors.textSecondary }}>
-        Toujours partant 🍻
+        Toujours partant pour boire un verre !
       </ThemedText>
 
       <View
@@ -31,11 +32,19 @@ export function ProfileHeader() {
           gap: 12,
         }}
       >
-        <Pressable onPress={() => alert("Edit profile")}>
-          <ThemedText type="link">Éditer</ThemedText>
+        <Pressable onPress={() => alert("Share profile")}>
+          <ThemedText type="link">
+            <IconSymbol
+              name="square.and.arrow.up"
+              size={24}
+              color={colors.icon}
+            />
+          </ThemedText>
         </Pressable>
         <Pressable onPress={() => alert("Settings")}>
-          <ThemedText type="link">⚙️</ThemedText>
+          <ThemedText type="link">
+            <IconSymbol name="gear" size={24} color={colors.icon} />
+          </ThemedText>
         </Pressable>
       </View>
     </View>

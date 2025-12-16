@@ -6,10 +6,7 @@ import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { ComponentProps } from 'react';
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
 
-type IconMapping = Record<
-  SymbolViewProps["name"],
-  string
->;
+type IconMapping = Partial<Record<SymbolViewProps["name"], string>>;
 export type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -24,6 +21,8 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'person.circle': 'ion:person-circle-outline',
   'bubble.left.and.bubble.right.fill': 'chat',
+  'gear': 'settings',
+  'square.and.arrow.up': 'share',
 } as IconMapping;
 
 /**
