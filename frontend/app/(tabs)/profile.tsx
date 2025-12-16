@@ -6,9 +6,14 @@ import { ThemedView } from "@components/ThemedView";
 import { Image } from "expo-image";
 
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { Card } from "@components/profile/Card";
+import { Card } from "@components/ui/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
+
+import { Screen } from "@components/layout/Screen";
+import { Section } from "@components/ui/Section";
+import { QrCard } from "@components/profile/QrCard";
+import { ThemedText } from "@components/ThemedText";
 
 export default function ProfileScreen() {
   const user = {
@@ -41,20 +46,13 @@ export default function ProfileScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/background-image.png")}
-          style={{ width: "100%", height: 300 }}
-          contentFit="cover"
-        />
-      }
     >
       <ThemedView style={styles.page}>
         <ProfileHeader
-          name={user.name}
-          username={user.username}
-          email={user.email}
-          avatarUri={user.avatarUri}
+          // name={user.name}
+          // username={user.username}
+          // email={user.email}
+          // avatarUri={user.avatarUri}
         />
 
         <SectionHeader title="Compte" />
@@ -153,3 +151,24 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
 });
+
+{/* <Screen>
+  <ScrollView showsVerticalScrollIndicator={false}>
+    <ProfileHeader />
+
+    <Section title="Mes QR codes">
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <QrCard label="Entrée" />
+        <QrCard label="Boisson" />
+        <QrCard label="VIP" />
+      </ScrollView>
+    </Section>
+
+    <Section title="Préférences">
+      <ThemedText>👤 Compte</ThemedText>
+      <ThemedText>🎨 Thème</ThemedText>
+      <ThemedText>🔔 Notifications</ThemedText>
+      <ThemedText>🔒 Sécurité</ThemedText>
+    </Section>
+  </ScrollView>
+</Screen>; */}

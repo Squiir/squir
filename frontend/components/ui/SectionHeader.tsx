@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { ThemedText } from "@/components/themed-text";
+import { ThemedText } from "@components/ThemedText";
 
 export function SectionHeader({ title }: { title: string }) {
   return <ThemedText style={styles.title}>{title}</ThemedText>;

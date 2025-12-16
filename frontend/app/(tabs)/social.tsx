@@ -6,7 +6,7 @@ import { ThemedView } from "@components/ThemedView";
 import { Image } from "expo-image";
 
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { Card } from "@components/profile/Card";
+import { Card } from "@components/ui/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
 
@@ -43,7 +43,7 @@ export default function SocialScreen() {
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
         <Image
-          source={require("@/assets/images/background-image.png")}
+          source={require("@assets/images/background-image.png")}
           style={{ width: "100%", height: 300 }}
           contentFit="cover"
         />
@@ -51,10 +51,10 @@ export default function SocialScreen() {
     >
       <ThemedView style={styles.page}>
         <ProfileHeader
-          name={user.name}
-          username={user.username}
-          email={user.email}
-          avatarUri={user.avatarUri}
+          // name={user.name}
+          // username={user.username}
+          // email={user.email}
+          // avatarUri={user.avatarUri}
         />
 
         <SectionHeader title="Compte" />
