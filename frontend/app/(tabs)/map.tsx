@@ -7,7 +7,7 @@ import ParallaxScrollView from '@components/ParallaxScrollView';
 import { ThemedText } from '@components/ThemedText';
 import { ThemedView } from '@components/ThemedView';
 import { IconSymbol } from '@components/ui/IconSymbol';
-import { Fonts } from '@constants/Theme';
+import { Fonts } from '@constants/theme';
 
 export default function MapScreen() {
   return (
