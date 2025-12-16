@@ -10,7 +10,7 @@ type IconMapping = Record<
   SymbolViewProps["name"],
   string
 >;
-type IconSymbolName = keyof typeof MAPPING;
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -23,6 +23,7 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'person.circle': 'ion:person-circle-outline',
+  'bubble.left.and.bubble.right.fill': 'chat',
 } as IconMapping;
 
 /**

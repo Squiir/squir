@@ -1,8 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { ThemedText } from "@/components/themed-text";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
+import { ThemedText } from "@components/ThemedText";
+import { IconSymbol } from "@components/ui/IconSymbol";
+import { useThemeColor } from "@hooks/use-theme-color";
 
 type Props = {
   label: string;

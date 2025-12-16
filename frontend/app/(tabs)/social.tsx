@@ -10,7 +10,7 @@ import { Card } from "@components/profile/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
 
-export default function ProfileScreen() {
+export default function SocialScreen() {
   const user = {
     isLoggedIn: true,
     name: "Dylan",
