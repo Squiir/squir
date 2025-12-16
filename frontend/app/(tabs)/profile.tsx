@@ -6,7 +6,7 @@ import { ThemedView } from "@components/ThemedView";
 import { Image } from "expo-image";
 
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { Card } from "@components/profile/Card";
+import { Card } from "@components/profile/Cards";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
 
