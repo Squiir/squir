@@ -3,8 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
-import type { ParisBar } from "../constants/parisBars";
-import "leaflet/dist/leaflet.css";
+import type { ParisBar } from "@constants/paris-bar";
 
 // Fix icône marker
 const DefaultIcon = L.icon({

@@ -13,10 +13,10 @@ import {
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
 
-import FranceMap from "../../components/FranceMap";
-import { PARIS_BARS, type ParisBar } from "../../constants/parisBars";
+import FranceMap from "@components/map/FranceMap";
+import { PARIS_BARS, type ParisBar } from "@constants/paris-bar";
 
-export default function LocationScreen() {
+export default function MapScreen() {
   const [coords, setCoords] = useState<{
     latitude: number;
     longitude: number;

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import type { ParisBar } from "../constants/parisBars";
+import type { ParisBar } from "@constants/paris-bar";
 
 type Props = {
   latitude?: number;

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { ActivityIndicator, View, StyleSheet, Text } from "react-native";
-import type { ParisBar } from "../constants/parisBars";
+import type { ParisBar } from "@constants/paris-bar";
 
 type Props = {
   latitude?: number;
