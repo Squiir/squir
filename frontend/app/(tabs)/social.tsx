@@ -43,7 +43,7 @@ export default function SocialScreen() {
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
         <Image
-          source={require("@/assets/images/background-image.png")}
+          source={require("@assets/images/background-image.png")}
           style={{ width: "100%", height: 300 }}
           contentFit="cover"
         />
