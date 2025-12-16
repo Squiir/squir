@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 import ParallaxScrollView from "@components/ParallaxScrollView";
 import { ThemedView } from "@components/ThemedView";
@@ -10,7 +10,7 @@ import { Card } from "@components/profile/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
 
-export default function ProfileScreen() {
+export default function SocialScreen() {
   const user = {
     isLoggedIn: true,
     name: "Dylan",
@@ -44,12 +44,12 @@ export default function ProfileScreen() {
       headerImage={
         <Image
           source={require("@/assets/images/background-image.png")}
-          className="w-full h-[300px]"
+          style={{ width: "100%", height: 300 }}
           contentFit="cover"
         />
       }
     >
-      <ThemedView className="px-4 pb-6">
+      <ThemedView style={styles.page}>
         <ProfileHeader
           name={user.name}
           username={user.username}
@@ -141,8 +141,15 @@ export default function ProfileScreen() {
           />
         </Card>
 
-        <View className="h-2.5" />
+        <View style={{ height: 10 }} />
       </ThemedView>
     </ParallaxScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  page: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+});

@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useThemeColor } from "@/hooks/use-theme-color";
+import { ThemedText } from "@components/ThemedText";
+import { ThemedView } from "@components/ThemedView";
+import { useThemeColor } from "@hooks/use-theme-color";
 
 type Props = {
   name: string;

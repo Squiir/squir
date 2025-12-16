@@ -1,10 +1,11 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from '@components/HapticTab';
+import { IconSymbol } from '@components/ui/IconSymbol';
+import { Colors } from '@constants/theme';
+import { useColorScheme } from '@hooks/use-color-scheme';
+import { BounceIcon } from '@components/ui/AnimatedIconSymbol';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,7 +19,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -27,11 +28,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="map"
         options={{
-          title: "Explore",
+          title: "Map",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="paperplane.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="social"
+        options={{
+          title: "Social",
+          tabBarIcon: ({ color }) => (
+            <BounceIcon
+              name="bubble.left.and.bubble.right.fill"
+              size={26}
+              color={color}
+            />
           ),
         }}
       />
