@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, View } from "react-native";
 
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedView } from "@/components/themed-view";
@@ -44,12 +44,12 @@ export default function ProfileScreen() {
       headerImage={
         <Image
           source={require("@/assets/images/background-image.png")}
-          style={{ width: "100%", height: 300 }}
+          className="w-full h-[300px]"
           contentFit="cover"
         />
       }
     >
-      <ThemedView style={styles.page}>
+      <ThemedView className="px-4 pb-6">
         <ProfileHeader
           name={user.name}
           username={user.username}
@@ -141,15 +141,8 @@ export default function ProfileScreen() {
           />
         </Card>
 
-        <View style={{ height: 10 }} />
+        <View className="h-2.5" />
       </ThemedView>
     </ParallaxScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-  },
-});
