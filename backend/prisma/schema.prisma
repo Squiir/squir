@@ -13,3 +13,65 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  password      String
+  avatarUrl     String?
+  status        String?
+  loyaltyPoints Int      @default(0)
+
+  qrCodes       QRCode[]
+  friends       Friend[] @relation("UserFriends")
+  groups        GroupMember[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model QRCode {
+  id        String   @id @default(uuid())
+  label     String
+  used      Boolean  @default(false)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Friend {
+  id        String   @id @default(uuid())
+
+  userId    String
+  friendId  String
+
+  user      User @relation("UserFriends", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, friendId])
+}
+
+model Group {
+  id        String   @id @default(uuid())
+  name      String
+
+  members   GroupMember[]
+
+  createdAt DateTime @default(now())
+}
+
+model GroupMember {
+  id        String   @id @default(uuid())
+
+  userId    String
+  groupId   String
+
+  user      User  @relation(fields: [userId], references: [id])
+  group     Group @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
