@@ -5,12 +5,17 @@ import ParallaxScrollView from "@components/ParallaxScrollView";
 import { ThemedView } from "@components/ThemedView";
 import { Image } from "expo-image";
 
+import { useMe } from "@hooks/use-me";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { Card } from "@components/profile/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
 
 export default function ProfileScreen() {
+  const { data, isLoading } = useMe();
+
+  if (isLoading) return <ThemedText>Loading...</ThemedText>;
+  
   const user = {
     isLoggedIn: true,
     name: "Dylan",
@@ -52,10 +57,12 @@ export default function ProfileScreen() {
       <ThemedView className="px-4 pb-6">
         <ProfileHeader
           name={user.name}
-          username={user.username}
-          email={user.email}
+          username={data.username}
+          email={data.email}
           avatarUri={user.avatarUri}
         />
+
+        <ThemedText>{data.loyaltyPoints} points</ThemedText>
 
         <SectionHeader title="Compte" />
         <Card>
