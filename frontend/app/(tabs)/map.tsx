@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
 import FranceMap from "@components/map/FranceMap";
@@ -35,24 +35,16 @@ export default function MapScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1">
       <Stack.Screen options={{ title: "Ma localisation" }} />
 
       {loading ? (
-        <View style={styles.loader}>
+        <View className="flex-1 items-center justify-center">
           <ActivityIndicator />
         </View>
       ) : (
-        <FranceMap
-          latitude={coords?.latitude}
-          longitude={coords?.longitude}
-        />
+        <FranceMap latitude={coords?.latitude} longitude={coords?.longitude} />
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
-});
