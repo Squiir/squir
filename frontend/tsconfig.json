@@ -9,6 +9,7 @@
       "@components/*": ["components/*"],
       "@constants/*": ["constants/*"],
       "@hooks/*": ["hooks/*"],
+      "@services/*": ["services/*"],
       "@store/*": ["store/*"],
       "@utils/*": ["utils/*"],
       "@types/*": ["types/*"]

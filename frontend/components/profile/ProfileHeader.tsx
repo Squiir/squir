@@ -1,52 +1,42 @@
-import { View, Image, Pressable } from "react-native";
+import React from "react";
+import { View } from "react-native";
+import { Image } from "expo-image";
 import { ThemedText } from "@components/ThemedText";
 import { useTheme } from "@hooks/use-theme-color";
-import { IconSymbol } from "@components/ui/IconSymbol";
+import { ThemedView } from "@components/ThemedView";
 
 export function ProfileHeader() {
   const colors = useTheme();
 
-  return (
-    <View style={{ alignItems: "center", paddingVertical: 24 }}>
-      <Image
-        source={require("@assets/images/dydou_profile.jpeg")}
-        style={{
-          width: 96,
-          height: 96,
-          borderRadius: 48,
-          marginBottom: 12,
-        }}
-      />
+  const username = "dylan_chpr";
+  const email = "dylan.chpr@example.com";
 
-      <ThemedText type="title">dylan_chpr</ThemedText>
-      <ThemedText style={{ color: colors.textSecondary }}>
-        Toujours partant pour boire un verre !
+  return (
+    <ThemedView className="items-center pt-[18px] pb-2">
+      <View
+        style={{ borderColor: colors.border }}
+        className="w-[92px] h-[92px] rounded-[46px] border-[0.4px] p-[3px]"
+      >
+        <Image
+          source={require("@assets/images/react-logo.png")}
+          className="w-full h-full rounded-[46px]"
+          contentFit="cover"
+        />
+      </View>
+
+      <ThemedText className="mt-1 opacity-[0.8]">@{username}</ThemedText>
+      <ThemedText className="mt-[2px] opacity-[0.7] text-[13px]">
+        {email}
       </ThemedText>
 
       <View
-        style={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-          flexDirection: "row",
-          gap: 12,
-        }}
+        style={{ borderColor: colors.tint }}
+        className="mt-2.5 px-2.5 py-1 rounded-full border-[0.4px]"
       >
-        <Pressable onPress={() => alert("Share profile")}>
-          <ThemedText type="link">
-            <IconSymbol
-              name="square.and.arrow.up"
-              size={24}
-              color={colors.icon}
-            />
-          </ThemedText>
-        </Pressable>
-        <Pressable onPress={() => alert("Settings")}>
-          <ThemedText type="link">
-            <IconSymbol name="gear" size={24} color={colors.icon} />
-          </ThemedText>
-        </Pressable>
+        <ThemedText style={{ color: colors.tint }} className="text-[12px]">
+          Profil
+        </ThemedText>
       </View>
-    </View>
+    </ThemedView>
   );
 }

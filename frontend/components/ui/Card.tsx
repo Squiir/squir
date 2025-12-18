@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { ThemedView } from "@components/ThemedView";
 import { useThemeColor } from "@hooks/use-theme-color";
 
@@ -14,21 +14,10 @@ export function Card({ children, style }: Props) {
 
   return (
     <ThemedView
-      style={[
-        styles.card,
-        { backgroundColor: background, borderColor: border },
-        style,
-      ]}
+      style={[{ backgroundColor: background, borderColor: border }, style]}
+      className="border-[0.4px] rounded-[16px] p-[14px]"
     >
       {children}
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 16,
-    padding: 16,
-  },
-});

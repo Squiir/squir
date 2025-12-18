@@ -1,21 +1,22 @@
 import React from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, View } from "react-native";
 
 import ParallaxScrollView from "@components/ParallaxScrollView";
 import { ThemedView } from "@components/ThemedView";
 import { Image } from "expo-image";
 
+import { useMe } from "@hooks/use-me";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { Card } from "@components/ui/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
-
-import { Screen } from "@components/layout/Screen";
-import { Section } from "@components/ui/Section";
-import { QrCard } from "@components/profile/QrCard";
 import { ThemedText } from "@components/ThemedText";
 
 export default function ProfileScreen() {
+  const { data, isLoading } = useMe();
+
+  if (isLoading) return <ThemedText>Loading...</ThemedText>;
+  
   const user = {
     isLoggedIn: true,
     name: "Dylan",
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
   };
 
   const onLogout = () => Alert.alert("Déconnexion", "Tu es déconnecté (mock).");
+  
   const onDelete = () =>
     Alert.alert(
       "Supprimer le compte",
@@ -46,14 +48,22 @@ export default function ProfileScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-    >
-      <ThemedView style={styles.page}>
-        <ProfileHeader
-          // name={user.name}
-          // username={user.username}
-          // email={user.email}
-          // avatarUri={user.avatarUri}
+      headerImage={
+        <Image
+          source={require("@assets/images/background-image.png")}
+          className="w-full h-[300px]"
+          contentFit="cover"
         />
+      }
+    >
+      <ThemedView className="px-4 pb-6">
+        <ProfileHeader
+          username={data.username}
+          email={user.email}
+          avatarUri={user.avatarUri}
+        />
+
+        <ThemedText>{data.loyaltyPoints} points</ThemedText>
 
         <SectionHeader title="Compte" />
         <Card>
@@ -139,36 +149,8 @@ export default function ProfileScreen() {
           />
         </Card>
 
-        <View style={{ height: 10 }} />
+        <View className="h-2.5" />
       </ThemedView>
     </ParallaxScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-  },
-});
-
-{/* <Screen>
-  <ScrollView showsVerticalScrollIndicator={false}>
-    <ProfileHeader />
-
-    <Section title="Mes QR codes">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <QrCard label="Entrée" />
-        <QrCard label="Boisson" />
-        <QrCard label="VIP" />
-      </ScrollView>
-    </Section>
-
-    <Section title="Préférences">
-      <ThemedText>👤 Compte</ThemedText>
-      <ThemedText>🎨 Thème</ThemedText>
-      <ThemedText>🔔 Notifications</ThemedText>
-      <ThemedText>🔒 Sécurité</ThemedText>
-    </Section>
-  </ScrollView>
-</Screen>; */}
