@@ -29,7 +29,7 @@
       "@friends/*": ["src/friends/*"],
       "@groups/*": ["src/groups/*"],
       "@purchases/*": ["src/purchases/*"],
-      "@qr-codes/*": ["src/qr-codes/*"],
+      "@qrcodes/*": ["src/qrcodes/*"],
       "@users/*": ["src/users/*"],
     },
   }

@@ -8,7 +8,7 @@ import { PrismaModule } from "@prisma/prisma.module";
 import { FriendsModule } from "@friends/friends.module";
 import { GroupsModule } from "@groups/groups.module";
 import { PurchasesModule } from "@purchases/purchases.module";
-import { QrCodesModule } from "@qr-codes/qr-codes.module";
+import { QrCodesModule } from "@qrcodes/qrcodes.module";
 
 @Module({
   imports: [

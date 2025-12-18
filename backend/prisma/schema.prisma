@@ -36,6 +36,8 @@ model QRCode {
   used      Boolean  @default(false)
 
   userId    String
+  barId     String
+  productId String
   user      User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
