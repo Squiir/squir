@@ -16,11 +16,7 @@ import { fromLonLat } from "ol/proj";
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style";
 import Overlay from "ol/Overlay";
 import { PARIS_BARS } from "@constants/bars-paris";
-
-type Props = {
-  latitude?: number;
-  longitude?: number;
-};
+import type { CoordinateProps as Props } from "@components/map/Coordinate";
 
 export default function FranceMapWeb({ latitude, longitude }: Props) {
   const mapEl = useRef<HTMLDivElement | null>(null);
