@@ -7,6 +7,7 @@ export class UsersController {
 
   @Get("me")
   getMe() {
+    console.log("GET /users/me called");
     return this.usersService.findOne();
   }
 }
