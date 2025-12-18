@@ -15,13 +15,22 @@
     "sourceMap": true,
     "strict": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": "./",
+    "paths": {
+      "@prisma/*": ["prisma/*"],
+      "@auth/*": ["src/auth/*"],
+      "@friends/*": ["src/friends/*"],
+      "@groups/*": ["src/groups/*"],
+      "@purchases/*": ["src/purchases/*"],
+      "@qr-codes/*": ["src/qr-codes/*"],
+      "@users/*": ["src/users/*"],
+    },
   }
 }
