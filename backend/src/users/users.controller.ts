@@ -34,13 +34,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Patch("me/avatar")
   updateAvatar(@CurrentUserId() userId: string, @Body() dto: UpdateAvatarDto) {
-    return this.users.updateUser(userId, dto.avatarUrl);
+    return this.users.updateAvatar(userId, dto.avatarUrl);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch("me/status")
   updateStatus(@CurrentUserId() userId: string, @Body() dto: UpdateStatusDto) {
-    return this.users.updateUser(userId, dto.status);
+    return this.users.updateStatus(userId, dto.status);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -49,7 +49,7 @@ export class UsersController {
     @CurrentUserId() userId: string,
     @Body() dto: UpdateUsernameDto,
   ) {
-    return this.users.updateUser(userId, dto.username);
+    return this.users.updateUsername(userId, dto.username);
   }
 
   @UseGuards(JwtAuthGuard)

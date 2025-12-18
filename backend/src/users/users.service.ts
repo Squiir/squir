@@ -13,7 +13,7 @@ export class UsersService {
   async me(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { qrCodes: true },
+      include: { qrCodes: true, friends: true, groups: true },
     });
     if (!user) throw new NotFoundException("User not found");
 
@@ -33,26 +33,43 @@ export class UsersService {
     return { ok: true };
   }
 
-  async updateUser(
-    userId: string,
-    avatarUrl?: string,
-    status?: string,
-    username?: string,
-  ) {
-    const updates = {};
-    if (avatarUrl !== undefined) updates["avatarUrl"] = avatarUrl;
-    if (status !== undefined) updates["status"] = status;
-    if (username !== undefined) {
-      const existing = await this.prisma.user.findUnique({
-        where: { username },
-      });
-      if (existing) throw new ConflictException("Username already used");
-      updates["username"] = username;
-    }
+  async updateAvatar(userId: string, avatarUrl: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        avatarUrl: true,
+        status: true,
+        loyaltyPoints: true,
+      },
+    });
+  }
+
+  async updateStatus(userId: string, status: string) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { status },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        avatarUrl: true,
+        status: true,
+        loyaltyPoints: true,
+      },
+    });
+  }
+
+  async updateUsername(userId: string, username: string) {
+    const existing = await this.prisma.user.findUnique({ where: { username } });
+    if (existing) throw new ConflictException("Username already used");
 
     return this.prisma.user.update({
       where: { id: userId },
-      data: updates,
+      data: { username },
       select: {
         id: true,
         email: true,
