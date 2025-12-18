@@ -16,9 +16,9 @@ import { fromLonLat } from "ol/proj";
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style";
 import Overlay from "ol/Overlay";
 import { PARIS_BARS } from "@constants/bars-paris";
-import type { Coordinate as Props } from "@components/map/Coordinate";
+import type { Coordinate } from "@components/map/Coordinate";
 
-export default function FranceMapWeb({ latitude, longitude }: Props) {
+export default function FranceMapWeb({ latitude, longitude }: Coordinate) {
   const mapEl = useRef<HTMLDivElement | null>(null);
   const popupEl = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<Map | null>(null);
@@ -39,7 +39,6 @@ export default function FranceMapWeb({ latitude, longitude }: Props) {
         color: bar.color,
       });
 
-      // 🎨 Style coloré + numéro d’arrondissement
       f.setStyle(
         new Style({
           image: new CircleStyle({
@@ -60,7 +59,6 @@ export default function FranceMapWeb({ latitude, longitude }: Props) {
       source.addFeature(f);
     });
 
-    // Option : position utilisateur
     if (latitude && longitude) {
       const me = new Feature({
         geometry: new Point(fromLonLat([longitude, latitude])),

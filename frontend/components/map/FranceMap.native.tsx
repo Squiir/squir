@@ -2,10 +2,11 @@ import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import { PARIS_BARS } from "@constants/bars-paris";
-import type { Coordinate as Props } from "@components/map/Coordinate";
+import type { Coordinate } from "@components/map/Coordinate";
+import { CodeFrame } from "react-native/Libraries/Core/Devtools/symbolicateStackTrace";
 
 
-export default function FranceMap({ latitude, longitude }: Props) {
+export default function FranceMap({ latitude, longitude }: Coordinate) {
   const initialRegion = useMemo(
     () => ({
       latitude: latitude ?? 48.8566,
