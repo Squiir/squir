@@ -10,6 +10,7 @@ import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { Card } from "@components/profile/Card";
 import { RowItem } from "@components/ui/RowItem";
 import { SectionHeader } from "@components/ui/SectionHeader";
+import { ThemedText } from "@components/ThemedText";
 
 export default function ProfileScreen() {
   const { data, isLoading } = useMe();
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
   };
 
   const onLogout = () => Alert.alert("Déconnexion", "Tu es déconnecté (mock).");
+  
   const onDelete = () =>
     Alert.alert(
       "Supprimer le compte",
@@ -58,7 +60,7 @@ export default function ProfileScreen() {
         <ProfileHeader
           name={user.name}
           username={data.username}
-          email={data.email}
+          email={user.email}
           avatarUri={user.avatarUri}
         />
 
