@@ -1,42 +1,19 @@
-import React from "react";
-import { View } from "react-native";
-import { Image } from "expo-image";
-import { ThemedText } from "@components/ThemedText";
-import { useTheme } from "@hooks/use-theme-color";
-import { ThemedView } from "@components/ThemedView";
+import { View, Text, Pressable } from "react-native";
+import { Avatar } from "@components/ui/Avatar";
+import { Pencil } from "lucide-react-native";
 
-export function ProfileHeader() {
-  const colors = useTheme();
-
-  const username = "dylan_chpr";
-  const email = "dylan.chpr@example.com";
-
+export function ProfileHeader({ user }: any) {
   return (
-    <ThemedView className="items-center pt-[18px] pb-2">
-      <View
-        style={{ borderColor: colors.border }}
-        className="w-[92px] h-[92px] rounded-[46px] border-[0.4px] p-[3px]"
-      >
-        <Image
-          source={require("@assets/images/react-logo.png")}
-          className="w-full h-full rounded-[46px]"
-          contentFit="cover"
-        />
+    <View className="items-center gap-3">
+      <Avatar uri={user.avatarUrl} username={user.username} />
+      <View className="flex-row items-center gap-2">
+        <Text className="text-xl font-bold text-black dark:text-white">
+          {user.username}
+        </Text>
+        <Pressable>
+          <Pencil size={16} color="#6b7280" />
+        </Pressable>
       </View>
-
-      <ThemedText className="mt-1 opacity-[0.8]">@{username}</ThemedText>
-      <ThemedText className="mt-[2px] opacity-[0.7] text-[13px]">
-        {email}
-      </ThemedText>
-
-      <View
-        style={{ borderColor: colors.tint }}
-        className="mt-2.5 px-2.5 py-1 rounded-full border-[0.4px]"
-      >
-        <ThemedText style={{ color: colors.tint }} className="text-[12px]">
-          Profil
-        </ThemedText>
-      </View>
-    </ThemedView>
+    </View>
   );
 }

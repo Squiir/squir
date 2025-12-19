@@ -1,17 +1,9 @@
-import { View } from "react-native";
-import { ThemedText } from "@components/ThemedText";
+import { Text, View } from "react-native";
 
-type Props = {
-    title: string;
-    children: React.ReactNode;
-};
-
-export function Section({ title, children }: Props) {
+export function Section({ title, children }: any) {
   return (
-    <View style={{ marginBottom: 24 }}>
-      <ThemedText style={{ marginBottom: 8 }}>
-        {title.toUpperCase()}
-      </ThemedText>
+    <View className="gap-3">
+      <Text className="text-sm text-gray-500 uppercase">{title}</Text>
       {children}
     </View>
   );
