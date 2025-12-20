@@ -12,7 +12,7 @@
       "@services/*": ["services/*"],
       "@store/*": ["store/*"],
       "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"]
+      "@app-types/*": ["types/*"]
     },
   },
   "include": [

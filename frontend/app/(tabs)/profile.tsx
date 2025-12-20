@@ -1,157 +1,57 @@
 import React from "react";
-import { Alert, View } from "react-native";
-
-import ParallaxScrollView from "@components/ParallaxScrollView";
-import { ThemedView } from "@components/ThemedView";
-import { Image } from "expo-image";
-
+import { View, ScrollView } from "react-native";
 import { useMe } from "@hooks/use-me";
+import { LoyaltyPoints } from "@components/profile/LoyaltyPoints";
+import { Section } from "@components/ui/Section";
+import { QRCodeCarousel } from "@components/profile/QRcode";
+import { Button } from "@components/ui/Button";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { Card } from "@components/profile/Card";
-import { RowItem } from "@components/ui/RowItem";
-import { SectionHeader } from "@components/ui/SectionHeader";
-import { ThemedText } from "@components/ThemedText";
+import { useAuth } from "@store/auth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ProfileScreen() {
-  const { data, isLoading } = useMe();
+  const queryClient = useQueryClient();
+  const { data: user } = useMe();
+  const { logout } = useAuth();
 
-  if (isLoading) return <ThemedText>Loading...</ThemedText>;
-  
-  const user = {
-    isLoggedIn: true,
-    name: "Dylan",
-    username: "dylan_chpr",
-    email: "dylan@email.com",
-    avatarUri: undefined as string | undefined,
-  };
+  async function handleLogout() {
+    await logout();
+    queryClient.clear();
+  }
 
-  const onNotImplemented = (label: string) => {
-    Alert.alert("Bientôt dispo", label);
-  };
-
-  const onLogout = () => Alert.alert("Déconnexion", "Tu es déconnecté (mock).");
-  
-  const onDelete = () =>
-    Alert.alert(
-      "Supprimer le compte",
-      "Cette action est irréversible. Continuer ?",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: () => Alert.alert("Compte supprimé (mock)"),
-        },
-      ]
-    );
+  if (!user) return null;
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Image
-          source={require("@assets/images/background-image.png")}
-          className="w-full h-[300px]"
-          contentFit="cover"
-        />
-      }
-    >
-      <ThemedView className="px-4 pb-6">
-        <ProfileHeader
-          name={user.name}
-          username={data.username}
-          email={user.email}
-          avatarUri={user.avatarUri}
-        />
+    <ScrollView className="flex-1 px-4 pt-6">
+      <ProfileHeader
+        username={user.username}
+        avatarUrl={user.avatarUrl}
+        status={user.status}
+      />
 
-        <ThemedText>{data.loyaltyPoints} points</ThemedText>
+      <View className="mt-6">
+        <LoyaltyPoints points={user?.loyaltyPoints} />
+      </View>
 
-        <SectionHeader title="Compte" />
-        <Card>
-          <RowItem
-            label="Modifier le profil"
-            iconLeft="person.crop.circle"
-            onPress={() => onNotImplemented("Modifier le profil")}
-          />
-          <RowItem
-            label="Sécurité & mot de passe"
-            iconLeft="lock"
-            onPress={() => onNotImplemented("Sécurité & mot de passe")}
-          />
-        </Card>
+      <View className="mt-8">
+        <Section title="Mes QR codes">
+          <QRCodeCarousel qrCodes={user?.qrCodes} />
+        </Section>
+      </View>
 
-        <SectionHeader title="Préférences" />
-        <Card>
-          <RowItem
-            label="Thème"
-            iconLeft="moon.stars"
-            onPress={() => onNotImplemented("Choix du thème")}
+      <View className="px-6 pt-40 pb-6">
+        <View className="gap-4">
+          <Button
+            title="Se déconnecter"
+            variant="secondary"
+            onPress={handleLogout}
           />
-          <RowItem
-            label="Notifications"
-            iconLeft="bell"
-            onPress={() => onNotImplemented("Préférences notifications")}
-          />
-          <RowItem
-            label="Langue"
-            iconLeft="globe"
-            onPress={() => onNotImplemented("Langue")}
-          />
-        </Card>
 
-        <SectionHeader title="Social" />
-        <Card>
-          <RowItem
-            label="Partager mon profil"
-            iconLeft="square.and.arrow.up"
-            onPress={() => onNotImplemented("Partager")}
-          />
-          <RowItem
-            label="QR Code"
-            iconLeft="qrcode"
-            onPress={() => onNotImplemented("QR Code")}
-          />
-        </Card>
+          <View className="h-2" />
 
-        <SectionHeader title="Aide" />
-        <Card>
-          <RowItem
-            label="Support"
-            iconLeft="questionmark.circle"
-            onPress={() => onNotImplemented("Support")}
-          />
-          <RowItem
-            label="À propos"
-            iconLeft="info.circle"
-            onPress={() => onNotImplemented("À propos")}
-          />
-        </Card>
-
-        <SectionHeader title="Actions" />
-        <Card>
-          {user.isLoggedIn ? (
-            <RowItem
-              label="Se déconnecter"
-              iconLeft="rectangle.portrait.and.arrow.right"
-              onPress={onLogout}
-            />
-          ) : (
-            <RowItem
-              label="Se connecter"
-              iconLeft="rectangle.portrait.and.arrow.right"
-              onPress={() => onNotImplemented("Se connecter")}
-            />
-          )}
-          <RowItem
-            label="Supprimer le compte"
-            iconLeft="trash"
-            danger
-            onPress={onDelete}
-          />
-        </Card>
-
-        <View className="h-2.5" />
-      </ThemedView>
-    </ParallaxScrollView>
+          <Button title="Supprimer le compte" variant="danger" />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
