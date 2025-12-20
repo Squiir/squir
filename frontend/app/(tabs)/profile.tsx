@@ -5,7 +5,6 @@ import { LoyaltyPoints } from "@components/profile/LoyaltyPoints";
 import { Section } from "@components/ui/Section";
 import { QRCodeCarousel } from "@components/profile/QRcode";
 import { Button } from "@components/ui/Button";
-
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { useAuth } from "@store/auth";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function ProfileScreen() {
   const queryClient = useQueryClient();
   const { data: user } = useMe();
-  
   const { logout } = useAuth();
 
   async function handleLogout() {
@@ -48,6 +46,3 @@ export default function ProfileScreen() {
     </ScrollView>
   );
 }
-
-  
-

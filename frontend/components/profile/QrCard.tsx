@@ -1,32 +1,23 @@
 import { View } from "react-native";
 import { ThemedText } from "@components/ThemedText";
-import { useTheme } from "@hooks/use-theme-color";
+import { useThemeColor } from "@hooks/use-theme-color";
 
 export function QrCard({ label }: { label: string }) {
-  const colors = useTheme();
+  const surface = useThemeColor({}, "surface");
+  const background = useThemeColor({}, "background");
+  const text = useThemeColor({}, "textPrimary");
 
   return (
     <View
-      style={{
-        width: 140,
-        height: 180,
-        borderRadius: 16,
-        backgroundColor: colors.surface,
-        padding: 16,
-        marginRight: 12,
-        justifyContent: "space-between",
-      }}
+      className="w-[140px] h-[180px] rounded-[16px] p-4 mr-3 justify-between"
+      style={{ backgroundColor: surface }}
     >
       <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-          borderRadius: 12,
-          marginBottom: 12,
-        }}
+        className="flex-1 rounded-[12px] mb-3"
+        style={{ backgroundColor: background }}
       />
 
-      <ThemedText>{label}</ThemedText>
+      <ThemedText style={{ color: text }}>{label}</ThemedText>
     </View>
   );
 }
