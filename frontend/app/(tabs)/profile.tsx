@@ -32,7 +32,10 @@ export default function ProfileScreen() {
       </View>
 
       <View className="mt-8">
-        <Section title="Mes QR codes">
+        <Section
+          title="Mes QR codes"
+          className="text-xl font-bold text-black dark:text-white"
+        >
           <QRCodeCarousel qrCodes={user?.qrCodes} />
         </Section>
       </View>

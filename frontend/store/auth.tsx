@@ -5,7 +5,6 @@ import {
   useState,
 } from "react";
 import { getToken, setToken, removeToken } from "@services/token";
-import { Text } from "react-native";
 
 type AuthContextType = {
   isAuthenticated: boolean;
