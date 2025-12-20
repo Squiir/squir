@@ -1,11 +1,11 @@
 import type { QRCode } from "./qrcode";
 
-export type User = {
-  id: string;
+export type ProfileHeaderProps = {
   username: string;
-  email: string;
   avatarUrl?: string | null;
   status?: string | null;
-  loyaltyPoints: number;
+};
+
+export type QRCodeCarouselProps = {
   qrCodes: QRCode[];
 };

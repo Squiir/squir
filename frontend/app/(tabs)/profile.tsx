@@ -23,7 +23,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView className="flex-1 px-4 pt-6">
-      <ProfileHeader user={user} />
+      <ProfileHeader username={user.username} avatarUrl={user.avatarUrl} status={user.status} />
 
       <View className="mt-6">
         <LoyaltyPoints points={user?.loyaltyPoints} />
@@ -32,7 +32,6 @@ export default function ProfileScreen() {
       <View className="mt-8">
         <Section
           title="Mes QR codes"
-          className="text-xl font-bold text-black dark:text-white"
         >
           <QRCodeCarousel qrCodes={user?.qrCodes} />
         </Section>

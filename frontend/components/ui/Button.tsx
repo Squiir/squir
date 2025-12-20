@@ -1,6 +1,6 @@
 import { Pressable, Text } from "react-native";
 import clsx from "clsx";
-import { ButtonProps } from "@components/ui/types/Button.types";
+import { ButtonProps } from "@app-types/button";
 
 export function Button({ title, onPress, variant = "primary" }: ButtonProps) {
   const bg =

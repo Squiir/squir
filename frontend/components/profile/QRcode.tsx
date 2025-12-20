@@ -1,6 +1,7 @@
 import { ScrollView, Text, View } from "react-native";
+import type { QRCodeCarouselProps } from "./types";
 
-export function QRCodeCarousel({ qrCodes }: any) {
+export function QRCodeCarousel({ qrCodes }: QRCodeCarouselProps) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View className="flex-row gap-3">

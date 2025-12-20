@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import { ListItemProps } from "@components/ui/types/ListItem.types";
+import { ListItemProps } from "@app-types/list-item";
 
 export function ListItem({ title, subtitle, right, onPress }: ListItemProps) {
   return (

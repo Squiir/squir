@@ -1,5 +1,5 @@
 import { Image, Text, View } from 'react-native'
-import { AvatarProps } from '@components/ui/types/Avatar.types'
+import { AvatarProps } from '@types/avatar'
 
 export function Avatar({ uri, username, size = 80 }: AvatarProps) {
   if (uri) {

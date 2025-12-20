@@ -5,15 +5,9 @@ import {
   useState,
 } from "react";
 import { getToken, setToken, removeToken } from "@services/token";
+import type { AuthContextProps } from "../types/auth-context";
 
-type AuthContextType = {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (token: string) => Promise<void>;
-  logout: () => Promise<void>;
-};
-
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextProps | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
