@@ -23,27 +23,34 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView className="flex-1 px-4 pt-6">
-      <ProfileHeader username={user.username} avatarUrl={user.avatarUrl} status={user.status} />
+      <ProfileHeader
+        username={user.username}
+        avatarUrl={user.avatarUrl}
+        status={user.status}
+      />
 
       <View className="mt-6">
         <LoyaltyPoints points={user?.loyaltyPoints} />
       </View>
 
       <View className="mt-8">
-        <Section
-          title="Mes QR codes"
-        >
+        <Section title="Mes QR codes">
           <QRCodeCarousel qrCodes={user?.qrCodes} />
         </Section>
       </View>
 
-      <View className="gap-3 mt-8">
-        <Button
-          title="Se déconnecter"
-          variant="secondary"
-          onPress={handleLogout}
-        />
-        <Button title="Supprimer le compte" variant="danger" />
+      <View className="px-6 pt-40 pb-6">
+        <View className="gap-4">
+          <Button
+            title="Se déconnecter"
+            variant="secondary"
+            onPress={handleLogout}
+          />
+
+          <View className="h-2" />
+
+          <Button title="Supprimer le compte" variant="danger" />
+        </View>
       </View>
     </ScrollView>
   );
