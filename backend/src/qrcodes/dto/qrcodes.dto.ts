@@ -1,4 +1,4 @@
-import { IsString, MinLength, MaxLength } from "class-validator";
+import { IsString, MaxLength, MinLength } from "class-validator";
 
 export class GenerateQrCodeDto {
   @IsString()
@@ -9,5 +9,10 @@ export class GenerateQrCodeDto {
   @IsString()
   @MinLength(2)
   @MaxLength(80)
-  product!: string;
+  productId!: string;
+
+  @IsString()
+  @MinLength(0)
+  @MaxLength(120)
+  label?: string;
 }

@@ -30,7 +30,7 @@ model User {
   updatedAt     DateTime @updatedAt
 }
 
-model QRCode {
+model QRCode { 
   id        String   @id @default(uuid())
   label     String
   used      Boolean  @default(false)
@@ -41,7 +41,10 @@ model QRCode {
   user      User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
+
+  @@unique([userId, barId, productId])
 }
+
 
 model Friend {
   id        String   @id @default(uuid())
