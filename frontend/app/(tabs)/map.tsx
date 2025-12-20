@@ -39,7 +39,7 @@ export default function MapScreen() {
       <Stack.Screen options={{ title: "Ma localisation" }} />
 
       {loading ? (
-        <View className="flex-1 items-center justify-center">
+        <View className="items-center justify-center flex-1">
           <ActivityIndicator />
         </View>
       ) : (

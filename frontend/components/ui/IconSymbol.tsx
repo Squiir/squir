@@ -6,7 +6,7 @@ import { SymbolWeight, SymbolViewProps } from "expo-symbols";
 import { ComponentProps } from "react";
 import { OpaqueColorValue } from "react-native";
 
-type IconMapping = Record<SymbolViewProps["name"], string>;
+type IconMapping = Partial<Record<SymbolViewProps["name"], string>>;
 export type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -15,12 +15,14 @@ export type IconSymbolName = keyof typeof MAPPING;
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
-  "house.fill": "home",
-  "paperplane.fill": "send",
-  "chevron.left.forwardslash.chevron.right": "code",
-  "chevron.right": "chevron-right",
-  "person.circle": "ion:person-circle-outline",
-  "bubble.left.and.bubble.right.fill": "chat",
+  'house.fill': 'home',
+  'paperplane.fill': 'send',
+  'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.right': 'chevron-right',
+  'person.circle': 'ion:person-circle-outline',
+  'bubble.left.and.bubble.right.fill': 'chat',
+  'gear': 'settings',
+  'square.and.arrow.up': 'share',
 } as IconMapping;
 
 /**
