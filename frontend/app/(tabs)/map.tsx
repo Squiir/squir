@@ -14,7 +14,6 @@ export default function MapScreen() {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           Alert.alert("Permission refusée", "Autorise la localisation pour afficher ta position.");
-          setLoading(false);
           return;
         }
 
@@ -34,6 +33,9 @@ export default function MapScreen() {
     })();
   }, []);
 
+  const latitude = coords?.latitude ?? 48.8566; // fallback Paris
+  const longitude = coords?.longitude ?? 2.3522;
+
   return (
     <View className="flex-1">
       <Stack.Screen options={{ title: "Ma localisation" }} />
@@ -43,7 +45,7 @@ export default function MapScreen() {
           <ActivityIndicator />
         </View>
       ) : (
-        <FranceMap latitude={coords?.latitude} longitude={coords?.longitude} />
+        <FranceMap latitude={latitude} longitude={longitude} />
       )}
     </View>
   );

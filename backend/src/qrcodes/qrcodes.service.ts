@@ -92,7 +92,7 @@ export class QrCodesService {
       productId: qr.productId,
       label: qr.label,
       value: this.qrValue(qr.id),
-      imageUrl: `/qr-codes/${qr.id}.png`,
+      imageUrl: `/qrcodes/${qr.id}.png`,
     }));
   }
 
