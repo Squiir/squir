@@ -2,14 +2,14 @@ import React from "react";
 import { ActivityIndicator, ScrollView, Text, View, Alert } from "react-native";
 
 import { useMe } from "@hooks/use-me";
-import { useQrCodes } from "@hooks/use-qrcodes";
-import { useDeleteQrCode } from "@hooks/use-delete-qrcode";
+import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qrcode";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { useLogout } from "@hooks/auth/use-logout";
 import { Button } from "@components/ui/Button";
 import { QrCard } from "@components/qrcode/QrCard";
 import { QrModal } from "@components/qrcode/QrModal";
-import { QRCode } from "@app-types/qrcode";
+import { useGetMyQrcodes } from "@hooks/qrcode/use-get-qrcodes";
+import { Qrcode } from "@app-types/qrcode";
 
 export default function ProfileScreen() {
   const { data: user } = useMe();
@@ -20,7 +20,7 @@ export default function ProfileScreen() {
     isLoading: qrsLoading,
     isError: qrsError,
     error: qrsErr,
-  } = useQrCodes();
+  } = useGetMyQrcodes();
 
   const { mutateAsync: deleteQrcode, isPending } = useDeleteQrCode();
 
@@ -83,7 +83,7 @@ export default function ProfileScreen() {
         ) : (
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-4 pr-4">
-              {qrcodes.map((qr: QRCode) => (
+              {qrcodes.map((qr: Qrcode) => (
                 <QrCard key={qr.id} qr={qr} onPress={() => setSelectedQr(qr)} />
               ))}
             </View>

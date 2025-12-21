@@ -43,6 +43,7 @@ model QRCode {
   user      User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, barId, productId], name: "userId_barId_productId")
 }
