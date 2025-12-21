@@ -1,6 +1,6 @@
-import { getToken } from "@services/token";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
+import { getToken } from "@services/token";
 
 const host =
   Platform.OS === "web"
@@ -9,7 +9,15 @@ const host =
 
 export const API_URL = `http://${host}:3000`;
 
-export async function apiFetch(path: string, options: RequestInit = {}) {
+/**
+ * API fetch générique
+ * - gère Authorization automatiquement
+ * - JSON par défaut
+ */
+export async function apiFetch<T = any>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
   const token = await getToken();
 
   const headers: HeadersInit = {
@@ -24,7 +32,10 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   });
 
   if (!res.ok) {
-    throw new Error("API error");
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `HTTP ${res.status} ${res.statusText}${text ? ` - ${text}` : ""}`
+    );
   }
 
   return res.json();

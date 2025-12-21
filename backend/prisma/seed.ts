@@ -3,7 +3,7 @@ import { seedUsers } from "./seed/users.seed";
 import { seedFriends } from "./seed/friends.seed";
 import { seedGroups } from "./seed/groups.seed";
 import { seedPurchases } from "./seed/purchases.seed";
-import { seedQrCodes } from "./seed/qr-codes.seed";
+import { seedQrCodes } from "./seed/qrcodes.seed";
 
 const prisma = new PrismaClient();
 
