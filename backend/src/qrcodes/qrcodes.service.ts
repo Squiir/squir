@@ -15,7 +15,7 @@ export class QrCodesService {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
   }
 
-  async generate(params: {
+  async createQrcode(params: {
     userId: string;
     barId: string;
     productId: string;
@@ -63,11 +63,11 @@ export class QrCodesService {
       productId: qr.productId,
       label: qr.label,
       value: this.qrValue(qr.id),
-      imageUrl: `/qr-codes/${qr.id}.png`,
+      url: `/qrcodes/${qr.id}.png`,
     };
   }
 
-  async listMine(userId: string) {
+  async getMyQrcodes(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
     const items = await this.prisma.qRCode.findMany({
@@ -91,11 +91,11 @@ export class QrCodesService {
       productId: qr.productId,
       label: qr.label,
       value: this.qrValue(qr.id),
-      imageUrl: `/qrcodes/${qr.id}.png`,
+      url: `/qrcodes/${qr.id}.png`,
     }));
   }
 
-  async remove(userId: string, id: string) {
+  async removeQrcode(userId: string, id: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
     const qr = await this.prisma.qRCode.findUnique({
@@ -110,20 +110,15 @@ export class QrCodesService {
     return { ok: true };
   }
 
-
-  async renderPng(userId: string, id: string) {
-    if (!userId) throw new BadRequestException("Missing userId");
-
+  async renderPng(id: string) {
     const qr = await this.prisma.qRCode.findUnique({
       where: { id },
       select: { id: true, userId: true },
     });
 
     if (!qr) throw new NotFoundException("QR code not found");
-    if (qr.userId !== userId) throw new ForbiddenException("Not your QR code");
 
     const value = this.qrValue(id);
-
     const png = await QRCode.toBuffer(value, {
       type: "png",
       width: 360,

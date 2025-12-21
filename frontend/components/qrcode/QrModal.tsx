@@ -1,8 +1,8 @@
-import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { Badge } from "@components/ui/Badge";
 import { parseQrLabel } from "@utils/qrcode";
-import { API_URL } from "@services/api";
+import { API_URL } from "@constants/api";
 
 type Props = {
   qr: {
@@ -11,19 +11,12 @@ type Props = {
     used?: boolean;
     barId?: string;
   } | null;
-  token: string | null;
   onClose: () => void;
   onDelete: () => void;
   deleting?: boolean;
 };
 
-export function QrModal({
-  qr,
-  token,
-  onClose,
-  onDelete,
-  deleting,
-}: Props) {
+export function QrModal({ qr, onClose, onDelete, deleting }: Props) {
   if (!qr) return null;
 
   const { barName, offerName, priceText } = parseQrLabel(qr.label);
@@ -62,9 +55,6 @@ export function QrModal({
             <Image
               source={{
                 uri: url,
-                headers: token
-                  ? { Authorization: `Bearer ${token}` }
-                  : undefined,
               }}
               className="w-[300px] h-[300px] rounded-xl"
               contentFit="contain"

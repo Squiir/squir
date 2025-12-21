@@ -1,11 +1,17 @@
-import type { QRCode } from "./qrcode";
+import type { Qrcode } from "./qrcode";
 
-export type User = {
+export interface User {
   id: string;
-  username: string;
   email: string;
-  avatarUrl?: string | null;
-  status?: string | null;
+  username: string;
+  avatarUrl?: string;
+  status?: string;
   loyaltyPoints: number;
-  qrCodes: QRCode[];
-};
+
+  qrCodes: Qrcode[];
+
+  refreshToken?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}

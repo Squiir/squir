@@ -1,5 +1,6 @@
+import { PressableProps } from "react-native";
+
 export type ButtonProps = {
   title: string;
-  onPress?: () => void;
   variant?: "primary" | "secondary" | "danger";
-};
+} & PressableProps;

@@ -1,6 +1,6 @@
 import { View, ViewProps } from "react-native";
-import { useTheme } from "@hooks/use-theme-color";
-import { spacing } from "@constants/spacing";
+import { useTheme } from "@hooks/color/use-theme-color";
+import { Spacing } from "@constants/spacing";
 
 export function Screen({ style, ...props }: ViewProps) {
   const colors = useTheme();
@@ -12,7 +12,7 @@ export function Screen({ style, ...props }: ViewProps) {
         {
           flex: 1,
           backgroundColor: colors.background,
-          padding: spacing.md,
+          padding: Spacing.md,
         },
         style,
       ]}

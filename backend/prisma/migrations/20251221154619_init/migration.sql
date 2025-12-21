@@ -7,6 +7,7 @@ CREATE TABLE "User" (
     "avatarUrl" TEXT,
     "status" TEXT,
     "loyaltyPoints" INTEGER NOT NULL DEFAULT 0,
+    "refreshToken" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -19,6 +20,8 @@ CREATE TABLE "QRCode" (
     "label" TEXT NOT NULL,
     "used" BOOLEAN NOT NULL DEFAULT false,
     "userId" TEXT NOT NULL,
+    "barId" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "QRCode_pkey" PRIMARY KEY ("id")
@@ -57,6 +60,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "QRCode_userId_barId_productId_key" ON "QRCode"("userId", "barId", "productId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Friend_userId_friendId_key" ON "Friend"("userId", "friendId");

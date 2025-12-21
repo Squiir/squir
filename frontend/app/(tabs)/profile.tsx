@@ -1,40 +1,29 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  Text,
-  View,
-  Alert,
-} from "react-native";
+import { ActivityIndicator, ScrollView, Text, View, Alert } from "react-native";
 
 import { useMe } from "@hooks/use-me";
-import { useQrCodes } from "@hooks/use-qrcodes";
-import { useDeleteQrCode } from "@hooks/use-delete-qrcode";
-
+import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qrcode";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
+import { useLogout } from "@hooks/auth/use-logout";
 import { Button } from "@components/ui/Button";
 import { QrCard } from "@components/qrcode/QrCard";
 import { QrModal } from "@components/qrcode/QrModal";
-
-import { useAuth } from "@store/auth";
-import { useQueryClient } from "@tanstack/react-query";
-import { getToken } from "@services/token";
+import { useGetMyQrcodes } from "@hooks/qrcode/use-get-qrcodes";
+import { Qrcode } from "@app-types/qrcode";
 
 export default function ProfileScreen() {
-  const queryClient = useQueryClient();
   const { data: user } = useMe();
-  const { logout } = useAuth();
+  const { mutate: logout } = useLogout();
 
   const {
     data: qrcodes,
     isLoading: qrsLoading,
     isError: qrsError,
     error: qrsErr,
-  } = useQrCodes();
+  } = useGetMyQrcodes();
 
   const { mutateAsync: deleteQrcode, isPending } = useDeleteQrCode();
 
-  const [token, setToken] = React.useState<string | null>(null);
   const [selectedQr, setSelectedQr] = React.useState<null | {
     id: string;
     label?: string;
@@ -43,42 +32,27 @@ export default function ProfileScreen() {
     productId?: string;
   }>(null);
 
-  React.useEffect(() => {
-    (async () => {
-      setToken(await getToken());
-    })();
-  }, []);
-
-  async function handleLogout() {
-    await logout();
-    queryClient.clear();
-  }
-
   function handleDeleteQr() {
     if (!selectedQr?.id) return;
 
-    Alert.alert(
-      "Supprimer ce QR code ?",
-      "Cette action est irréversible.",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteQrcode(selectedQr.id);
-              setSelectedQr(null);
-            } catch (e: any) {
-              Alert.alert(
-                "Erreur",
-                e?.message ?? "Impossible de supprimer le QR code."
-              );
-            }
-          },
+    Alert.alert("Supprimer ce QR code ?", "Cette action est irréversible.", [
+      { text: "Annuler", style: "cancel" },
+      {
+        text: "Supprimer",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteQrcode(selectedQr.id);
+            setSelectedQr(null);
+          } catch (e: any) {
+            Alert.alert(
+              "Erreur",
+              e?.message ?? "Impossible de supprimer le QR code."
+            );
+          }
         },
-      ]
-    );
+      },
+    ]);
   }
 
   if (!user) return null;
@@ -94,9 +68,7 @@ export default function ProfileScreen() {
 
       {/* QR codes */}
       <View className="mt-8">
-        <Text className="text-white text-lg font-bold mb-3">
-          Mes QR codes
-        </Text>
+        <Text className="text-white text-lg font-bold mb-3">Mes QR codes</Text>
 
         {qrsLoading ? (
           <View className="py-6 items-center">
@@ -104,26 +76,15 @@ export default function ProfileScreen() {
           </View>
         ) : qrsError ? (
           <Text className="text-red-400">
-            {qrsErr instanceof Error
-              ? qrsErr.message
-              : "Erreur de chargement"}
+            {qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
           </Text>
         ) : !qrcodes || qrcodes.length === 0 ? (
-          <Text className="text-white/70">
-            Aucun QR code pour l’instant.
-          </Text>
+          <Text className="text-white/70">Aucun QR code pour l’instant.</Text>
         ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-4 pr-4">
-              {qrcodes.map((qr) => (
-                <QrCard
-                  key={qr.id}
-                  qr={qr}
-                  onPress={() => setSelectedQr(qr)}
-                />
+              {qrcodes.map((qr: Qrcode) => (
+                <QrCard key={qr.id} qr={qr} onPress={() => setSelectedQr(qr)} />
               ))}
             </View>
           </ScrollView>
@@ -133,7 +94,6 @@ export default function ProfileScreen() {
       {/* Modal QR */}
       <QrModal
         qr={selectedQr}
-        token={token}
         deleting={isPending}
         onClose={() => setSelectedQr(null)}
         onDelete={handleDeleteQr}
@@ -145,15 +105,12 @@ export default function ProfileScreen() {
           <Button
             title="Se déconnecter"
             variant="secondary"
-            onPress={handleLogout}
+            onPress={() => logout()}
           />
 
           <View className="h-2" />
 
-          <Button
-            title="Supprimer le compte"
-            variant="danger"
-          />
+          <Button title="Supprimer le compte" variant="danger" />
         </View>
       </View>
     </ScrollView>

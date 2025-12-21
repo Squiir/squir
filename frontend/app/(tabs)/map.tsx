@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, View } from "react-native";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
-import FranceMap from "@components/map/FranceMap.native";
+import FranceMap from "@components/map/FranceMap";
 
 export default function MapScreen() {
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
