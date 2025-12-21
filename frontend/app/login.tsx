@@ -1,56 +1,27 @@
 import { useState } from "react";
 import { View, Text, TextInput, Pressable, Alert } from "react-native";
-import { useAuth } from "@store/auth";
-import { API_URL } from "@services/api";
-import { useRouter } from "expo-router";
+import { useLogin } from "@hooks/auth/use-login";
 
 export default function LoginScreen() {
-  const { login } = useAuth();
-  const router = useRouter();
-
-  if (!API_URL) {
-    throw new Error("API_URL is not defined");
-  }
+  const { mutate: login, isPending } = useLogin();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  async function onSubmit() {
+  function onSubmit() {
     if (!username || !password) {
       Alert.alert("Erreur", "Username et mot de passe requis");
       return;
     }
 
-    try {
-      setLoading(true);
-
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    login(
+      { username, password },
+      {
+        onError: () => {
+          Alert.alert("Login failed", "Identifiants incorrects");
         },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Invalid credentials");
       }
-
-      const data = await res.json();
-      await login(data.token);
-
-      router.replace("/")
-
-    } catch (error) {
-      Alert.alert("Login failed", "Identifiants incorrects");
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false);
-    }
+    );
   }
 
   return (
@@ -74,14 +45,14 @@ export default function LoginScreen() {
       />
 
       <Pressable
-        disabled={loading}
+        disabled={isPending}
         onPress={onSubmit}
         className={`w-full items-center py-3 rounded-lg ${
-          loading ? "bg-blue-300" : "bg-blue-600"
+          isPending ? "bg-blue-300" : "bg-blue-600"
         }`}
       >
         <Text className="font-semibold text-white">
-          {loading ? "..." : "Se connecter"}
+          {isPending ? "..." : "Se connecter"}
         </Text>
       </Pressable>
     </View>

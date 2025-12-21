@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { ThemedText } from "@components/ThemedText";
-import { useThemeColor } from "@hooks/use-theme-color";
+import { useThemeColor } from "@hooks/color/use-theme-color";
 
 export function QrCard({ label }: { label: string }) {
   const surface = useThemeColor({}, "surface");

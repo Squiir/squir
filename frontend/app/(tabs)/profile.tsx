@@ -1,23 +1,17 @@
 import React from "react";
 import { View, ScrollView } from "react-native";
+
 import { useMe } from "@hooks/use-me";
 import { LoyaltyPoints } from "@components/profile/LoyaltyPoints";
 import { Section } from "@components/ui/Section";
 import { QRCodeCarousel } from "@components/profile/QRcode";
 import { Button } from "@components/ui/Button";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { useAuth } from "@store/auth";
-import { useQueryClient } from "@tanstack/react-query";
+import { useLogout } from "@hooks/auth/use-logout";
 
 export default function ProfileScreen() {
-  const queryClient = useQueryClient();
   const { data: user } = useMe();
-  const { logout } = useAuth();
-
-  async function handleLogout() {
-    await logout();
-    queryClient.clear();
-  }
+  const { mutate: logout } = useLogout();
 
   if (!user) return null;
 
@@ -44,7 +38,7 @@ export default function ProfileScreen() {
           <Button
             title="Se déconnecter"
             variant="secondary"
-            onPress={handleLogout}
+            onPress={() => logout()}
           />
 
           <View className="h-2" />

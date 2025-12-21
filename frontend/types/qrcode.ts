@@ -1,4 +1,4 @@
-export type QRCode = {
+export interface QRCode {
   id: string;
   label: string;
   used: boolean;

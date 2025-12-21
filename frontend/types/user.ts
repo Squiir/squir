@@ -1,6 +1,6 @@
 import type { QRCode } from "./qrcode";
 
-export type User = {
+export interface User {
   id: string;
   username: string;
   email: string;

@@ -1,4 +1,4 @@
-export const typography = {
+export const Typography = {
   title: {
     fontSize: 20,
     fontWeight: "600" as const,
