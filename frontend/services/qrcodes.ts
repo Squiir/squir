@@ -1,9 +1,9 @@
-import { apiGet, apiPost } from "@services/api";
+import { apiFetch } from "@services/api";
 
 export type QRCodeDto = {
   id: string;
   value: string;
-  imageUrl: string; // ex: "/qrcodes/<id>.png"
+  imageUrl: string;
   barId: string;
   productId: string;
   label: string;
@@ -18,9 +18,18 @@ export type GenerateQrInput = {
 };
 
 export function generateQrCode(input: GenerateQrInput) {
-  return apiPost<QRCodeDto>("/qrcodes/generate", input);
+  return apiFetch<QRCodeDto>("/qrcodes/generate", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export function fetchMyQrCodes() {
-  return apiGet<QRCodeDto[]>("/qrcodes");
+  return apiFetch<QRCodeDto[]>("/qrcodes");
+}
+
+export function deleteQrCode(qrId: string) {
+  return apiFetch<any>(`/qrcodes/${qrId}`, {
+    method: "DELETE",
+  });
 }
