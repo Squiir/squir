@@ -11,7 +11,6 @@ import QRCode from "qrcode";
 export class QrCodesService {
   constructor(private prisma: PrismaService) {}
 
-  // ✅ Ce que le QR encode
   private qrValue(qrId: string) {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
   }
