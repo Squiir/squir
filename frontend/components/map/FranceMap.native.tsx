@@ -4,7 +4,6 @@ import MapView, { Callout, Marker } from "react-native-maps";
 import { Image } from "expo-image";
 
 import { PARIS_BARS } from "@constants/bars-paris";
-import type { Coordinate } from "@components/map/Coordinate";
 
 import { useGenerateQrCode } from "@hooks/use-generate-qrcode";
 import { useQrCodes } from "@hooks/use-qrcodes";
@@ -14,6 +13,12 @@ import { getToken } from "@services/token";
 
 type Offer = { id: string; name: string; price?: number };
 type Bar = (typeof PARIS_BARS)[number] & { offers: Offer[] };
+
+export type Coordinate = {
+  latitude?: number;
+  longitude?: number;
+};
+
 
 export default function FranceMap({ latitude, longitude }: Coordinate) {
   const genQr = useGenerateQrCode();

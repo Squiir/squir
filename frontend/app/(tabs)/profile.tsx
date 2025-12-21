@@ -1,42 +1,24 @@
 import React from "react";
 import {
   ActivityIndicator,
-  Modal,
-  Pressable,
+  ScrollView,
   Text,
   View,
-  ScrollView,
   Alert,
 } from "react-native";
-import { useMe } from "@hooks/use-me";
-import { Button } from "@components/ui/Button";
-import { Badge } from "@components/ui/Badge";
-import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { useAuth } from "@store/auth";
-import { useQueryClient } from "@tanstack/react-query";
-import { Image } from "expo-image";
 
+import { useMe } from "@hooks/use-me";
 import { useQrCodes } from "@hooks/use-qrcodes";
 import { useDeleteQrCode } from "@hooks/use-delete-qrcode";
-import { API_URL } from "@services/api";
+
+import { ProfileHeader } from "@components/profile/ProfileHeader";
+import { Button } from "@components/ui/Button";
+import { QrCard } from "@components/qrcode/QrCard";
+import { QrModal } from "@components/qrcode/QrModal";
+
+import { useAuth } from "@store/auth";
+import { useQueryClient } from "@tanstack/react-query";
 import { getToken } from "@services/token";
-
-function parseLabel(label?: string) {
-  if (!label)
-    return { barName: undefined, offerName: undefined, priceText: undefined };
-
-  const parts = label
-    .split("•")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  const barName = parts[0];
-  const offerName = parts[1];
-  const pricePart = parts.find((p) => /€/.test(p));
-  const priceText = pricePart;
-
-  return { barName, offerName, priceText };
-}
 
 export default function ProfileScreen() {
   const queryClient = useQueryClient();
@@ -50,10 +32,9 @@ export default function ProfileScreen() {
     error: qrsErr,
   } = useQrCodes();
 
-  const delQr = useDeleteQrCode();
+  const { mutateAsync: deleteQrcode, isPending } = useDeleteQrCode();
 
   const [token, setToken] = React.useState<string | null>(null);
-
   const [selectedQr, setSelectedQr] = React.useState<null | {
     id: string;
     label?: string;
@@ -64,8 +45,7 @@ export default function ProfileScreen() {
 
   React.useEffect(() => {
     (async () => {
-      const t = await getToken();
-      setToken(t);
+      setToken(await getToken());
     })();
   }, []);
 
@@ -74,25 +54,49 @@ export default function ProfileScreen() {
     queryClient.clear();
   }
 
+  function handleDeleteQr() {
+    if (!selectedQr?.id) return;
+
+    Alert.alert(
+      "Supprimer ce QR code ?",
+      "Cette action est irréversible.",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteQrcode(selectedQr.id);
+              setSelectedQr(null);
+            } catch (e: any) {
+              Alert.alert(
+                "Erreur",
+                e?.message ?? "Impossible de supprimer le QR code."
+              );
+            }
+          },
+        },
+      ]
+    );
+  }
+
   if (!user) return null;
-
-  const selectedQrUrl = selectedQr
-    ? `${API_URL}/qrcodes/${selectedQr.id}.png`
-    : null;
-
-  const selectedParsed = parseLabel(selectedQr?.label);
 
   return (
     <ScrollView className="flex-1 px-4 pt-6">
+      {/* Header */}
       <ProfileHeader
         username={user.username}
         avatarUrl={user.avatarUrl}
         status={user.status}
       />
 
-      {/* Mes QR codes: horizontal, sans image en petit */}
+      {/* QR codes */}
       <View className="mt-8">
-        <Text className="text-white text-lg font-bold mb-3">Mes QR codes</Text>
+        <Text className="text-white text-lg font-bold mb-3">
+          Mes QR codes
+        </Text>
 
         {qrsLoading ? (
           <View className="py-6 items-center">
@@ -100,203 +104,40 @@ export default function ProfileScreen() {
           </View>
         ) : qrsError ? (
           <Text className="text-red-400">
-            {qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
+            {qrsErr instanceof Error
+              ? qrsErr.message
+              : "Erreur de chargement"}
           </Text>
         ) : !qrcodes || qrcodes.length === 0 ? (
-          <Text className="text-white/70">Aucun QR code pour l’instant.</Text>
+          <Text className="text-white/70">
+            Aucun QR code pour l’instant.
+          </Text>
         ) : (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="flex-row"
           >
             <View className="flex-row gap-4 pr-4">
-              {qrcodes.map((qr) => {
-                const { barName, offerName, priceText } = parseLabel(qr.label);
-
-                return (
-                  <Pressable
-                    key={qr.id}
-                    onPress={() =>
-                      setSelectedQr({
-                        id: qr.id,
-                        label: qr.label,
-                        used: qr.used,
-                        barId: qr.barId,
-                        productId: qr.productId,
-                      })
-                    }
-                    style={{ width: 260 }}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4"
-                  >
-                    {/* Header row */}
-                    <View className="flex-row items-start justify-between">
-                      <View className="flex-1 pr-2">
-                        <Text className="text-white font-extrabold" numberOfLines={1}>
-                          {offerName || qr.label || "Offre"}
-                        </Text>
-
-                        <Text className="text-white/70 text-xs mt-1" numberOfLines={1}>
-                          {barName ? `Chez ${barName}` : `Bar: ${qr.barId}`}
-                        </Text>
-                      </View>
-
-                      <Badge text="QR" variant={qr.used ? "warn" : "ok"} />
-                    </View>
-
-                    {/* Infos */}
-                    <View className="mt-3 gap-1">
-                      <Text className="text-white/60 text-xs" numberOfLines={1}>
-                        {priceText ? `Prix: ${priceText}` : "Prix: —"}
-                      </Text>
-
-                      <Text className="text-white/60 text-xs" numberOfLines={1}>
-                        {qr.used ? "Statut: utilisé" : "Statut: disponible"}
-                      </Text>
-
-                      <Text className="text-white/50 text-[11px]" numberOfLines={1}>
-                        Offre ID: {qr.productId}
-                      </Text>
-                    </View>
-
-                    {/* CTA */}
-                    <View className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 items-center justify-center">
-                      <Text className="text-white/70 text-xs">
-                        Appuie pour afficher le QR
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
+              {qrcodes.map((qr) => (
+                <QrCard
+                  key={qr.id}
+                  qr={qr}
+                  onPress={() => setSelectedQr(qr)}
+                />
+              ))}
             </View>
           </ScrollView>
         )}
       </View>
 
-      {/* Modal: QR en grand + bouton supprimer */}
-      <Modal
-        visible={!!selectedQr}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setSelectedQr(null)}
-      >
-        <Pressable
-          onPress={() => setSelectedQr(null)}
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.70)",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 18,
-          }}
-        >
-          <Pressable
-            onPress={() => {}}
-            style={{
-              width: "100%",
-              maxWidth: 400,
-              borderRadius: 22,
-              padding: 16,
-              backgroundColor: "rgba(0,0,0,0.92)",
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.12)",
-            }}
-          >
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-              <View style={{ flex: 1, paddingRight: 12 }}>
-                <Text style={{ color: "white", fontSize: 16, fontWeight: "900" }}>
-                  {selectedParsed.offerName || selectedQr?.label || "QR code"}
-                </Text>
-                <Text style={{ color: "rgba(255,255,255,0.70)", marginTop: 6 }}>
-                  {selectedParsed.barName ? `Chez ${selectedParsed.barName}` : ""}
-                  {selectedParsed.priceText ? ` • ${selectedParsed.priceText}` : ""}
-                </Text>
-              </View>
-
-              <Badge text="QR" variant={selectedQr?.used ? "warn" : "ok"} />
-            </View>
-
-            <Text style={{ color: "rgba(255,255,255,0.65)", marginTop: 10 }}>
-              {selectedQr?.used ? "Statut : utilisé" : "Statut : disponible"}
-              {selectedQr?.barId ? ` • ${selectedQr.barId}` : ""}
-            </Text>
-
-            <View style={{ alignItems: "center", marginTop: 14 }}>
-              {selectedQrUrl ? (
-                <Image
-                  source={{
-                    uri: selectedQrUrl,
-                    headers: token
-                      ? { Authorization: `Bearer ${token}` }
-                      : undefined,
-                  }}
-                  style={{ width: 300, height: 300, borderRadius: 18 }}
-                  contentFit="contain"
-                />
-              ) : (
-                <ActivityIndicator />
-              )}
-            </View>
-
-            <Pressable
-              onPress={async () => {
-                if (!selectedQr?.id) return;
-
-                Alert.alert(
-                  "Supprimer ce QR code ?",
-                  "Cette action est irréversible.",
-                  [
-                    { text: "Annuler", style: "cancel" },
-                    {
-                      text: "Supprimer",
-                      style: "destructive",
-                      onPress: async () => {
-                        try {
-                          await delQr.mutateAsync(selectedQr.id);
-                          setSelectedQr(null);
-                        } catch (e: any) {
-                          Alert.alert(
-                            "Erreur",
-                            e?.message ?? "Impossible de supprimer le QR code."
-                          );
-                        }
-                      },
-                    },
-                  ]
-                );
-              }}
-              disabled={delQr.isPending}
-              style={{
-                marginTop: 14,
-                paddingVertical: 12,
-                borderRadius: 14,
-                backgroundColor: "rgba(255,80,80,0.16)",
-                borderWidth: 1,
-                borderColor: "rgba(255,80,80,0.30)",
-                alignItems: "center",
-                opacity: delQr.isPending ? 0.6 : 1,
-              }}
-            >
-              <Text style={{ color: "rgba(255,180,180,1)", fontWeight: "900" }}>
-                {delQr.isPending ? "Suppression..." : "Supprimer ce QR"}
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => setSelectedQr(null)}
-              style={{
-                marginTop: 12,
-                paddingVertical: 12,
-                borderRadius: 14,
-                backgroundColor: "rgba(255,255,255,0.10)",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ color: "white", fontWeight: "800" }}>Fermer</Text>
-            </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      {/* Modal QR */}
+      <QrModal
+        qr={selectedQr}
+        token={token}
+        deleting={isPending}
+        onClose={() => setSelectedQr(null)}
+        onDelete={handleDeleteQr}
+      />
 
       {/* Actions */}
       <View className="px-6 pt-16 pb-6">
@@ -309,7 +150,10 @@ export default function ProfileScreen() {
 
           <View className="h-2" />
 
-          <Button title="Supprimer le compte" variant="danger" />
+          <Button
+            title="Supprimer le compte"
+            variant="danger"
+          />
         </View>
       </View>
     </ScrollView>
