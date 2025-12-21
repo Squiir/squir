@@ -1,9 +1,5 @@
-import { IsString } from "class-validator";
+import { User } from "@prisma/client";
 
-export class LoginDto {
-  @IsString()
-  username!: string;
-
-  @IsString()
-  password!: string;
+export interface LoginDto extends Request {
+  user: Pick<User, "id">;
 }
