@@ -10,11 +10,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      await loadTokens();
-      setIsLoading(false);
-    };
-    init();
+    loadTokens().finally(() => setIsLoading(false));
   }, [loadTokens]);
 
   const value = {

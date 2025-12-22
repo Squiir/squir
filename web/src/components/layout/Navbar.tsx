@@ -51,7 +51,9 @@ export function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
         )}
-        <div className="flex">{!isProfilePage && <UserMenu />}</div>
+        <div className="flex justify-end w-12">
+          {!isProfilePage && <UserMenu />}
+        </div>
       </div>
     </header>
   );

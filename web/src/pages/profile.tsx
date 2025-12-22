@@ -14,13 +14,10 @@ export default function ProfilePage() {
         <div className="max-w-4xl px-6 py-10 mx-auto space-y-10">
           
           <ProfileHeader user={user} isLoading={isLoading} />
-
           
           <ProfileLoyaltyPoints user={user} isLoading={isLoading} />
-
         
           <ProfileQrCodes user={user} isLoading={isLoading} />
-
           
           <ProfileActions />
         </div>
