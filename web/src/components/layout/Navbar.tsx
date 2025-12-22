@@ -1,10 +1,12 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 
 export function Navbar() {
   const { isLoggedIn } = useAuth();
+  const location = useLocation();
+  const isProfilePage = location.pathname === "/profile";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -21,7 +23,7 @@ export function Navbar() {
                   asChild
                   className={navigationMenuTriggerStyle()}
                 >
-                  <NavLink to="/">
+                  <NavLink to="/home">
                     <span className="font-bold text-md">Home</span>
                   </NavLink>
                 </NavigationMenuLink>
@@ -49,7 +51,7 @@ export function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
         )}
-        <UserMenu />
+        <div className="flex">{!isProfilePage && <UserMenu />}</div>
       </div>
     </header>
   );

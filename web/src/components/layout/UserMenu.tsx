@@ -1,5 +1,5 @@
 import { LogOut, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,11 @@ export function UserMenu() {
   const { mutate: logout } = useLogout();
   const { data: user } = useMe();
 
-  if (!user) return <Button>Se connecter</Button>;
+  if (!user) return (
+    <Button>
+      <Link to="/login">Se connecter</Link>
+    </Button>
+  );
 
   return (
     <DropdownMenu>

@@ -36,7 +36,7 @@ export default function LoginPage() {
     });
   }
 
-  if (isLoggedIn) return <Navigate to="/" replace />;
+  if (isLoggedIn) return <Navigate to="/home" replace />;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted">
