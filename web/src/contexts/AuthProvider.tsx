@@ -1,21 +1,7 @@
-import React, {
-  useEffect,
-  createContext,
-  useContext,
-  useState,
-  PropsWithChildren,
-} from "react";
-import { useAuthStore } from "@store/auth.store";
-
-interface AuthContextType {
-  isLoading: boolean;
-  isLoggedIn: boolean;
-}
-
-const AuthContext = createContext<AuthContextType>({
-  isLoading: true,
-  isLoggedIn: false,
-});
+import { useEffect, useState } from "react";
+import type { PropsWithChildren } from "react"
+import { useAuthStore } from "@/store/auth.store";
+import { AuthContext } from "@/contexts/auth-context"
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const loadTokens = useAuthStore((state) => state.loadTokens);
@@ -38,5 +24,3 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-export const useAuth = () => useContext(AuthContext);
