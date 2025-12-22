@@ -9,6 +9,7 @@ import { FriendsModule } from "@friends/friends.module";
 import { GroupsModule } from "@groups/groups.module";
 import { PurchasesModule } from "@purchases/purchases.module";
 import { QrCodesModule } from "@qrcodes/qrcodes.module";
+import { BarsModule } from "@bars/bars.module";
 
 @Module({
   imports: [
@@ -19,8 +20,10 @@ import { QrCodesModule } from "@qrcodes/qrcodes.module";
     GroupsModule,
     PurchasesModule,
     QrCodesModule,
+    BarsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
+

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -24,13 +26,30 @@
     "noFallthroughCasesInSwitch": false,
     "baseUrl": "./",
     "paths": {
-      "@prisma/*": ["prisma/*"],
-      "@auth/*": ["src/auth/*"],
-      "@friends/*": ["src/friends/*"],
-      "@groups/*": ["src/groups/*"],
-      "@purchases/*": ["src/purchases/*"],
-      "@qrcodes/*": ["src/qrcodes/*"],
-      "@users/*": ["src/users/*"],
+      "@prisma/*": [
+        "prisma/*"
+      ],
+      "@auth/*": [
+        "src/auth/*"
+      ],
+      "@bars/*": [
+        "src/bars/*"
+      ],
+      "@friends/*": [
+        "src/friends/*"
+      ],
+      "@groups/*": [
+        "src/groups/*"
+      ],
+      "@purchases/*": [
+        "src/purchases/*"
+      ],
+      "@qrcodes/*": [
+        "src/qrcodes/*"
+      ],
+      "@users/*": [
+        "src/users/*"
+      ],
     },
   }
 }
