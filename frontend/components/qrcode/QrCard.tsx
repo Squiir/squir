@@ -1,3 +1,4 @@
+import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { Badge } from "@components/ui/Badge";
 import { parseQrLabel } from "@utils/qrcode";
@@ -43,15 +44,12 @@ export function QrCard({ qr, onPress }: Props) {
         <Text className="text-white/60 text-xs">
           {qr.used ? "Statut: utilisé" : "Statut: disponible"}
         </Text>
-        <Text className="text-white/50 text-[11px]">
-          Offre ID: {qr.productId}
-        </Text>
       </View>
 
       {/* CTA */}
       <View className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 items-center">
         <Text className="text-white/70 text-xs">
-          afficher le QR
+          Afficher le QR
         </Text>
       </View>
     </Pressable>

@@ -23,7 +23,6 @@ export function ModalQrPreview({ visible, onClose, qrcode }: Props) {
                 className="flex-1 bg-black/70 items-center justify-center p-[18px]"
             >
                 <Pressable
-                    onPress={() => { }}
                     className="w-full max-w-[380px] rounded-[22px] p-4 bg-black/92 border border-white/12"
                 >
                     <Text className="text-white text-base font-black">

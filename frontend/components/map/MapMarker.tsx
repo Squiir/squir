@@ -26,7 +26,7 @@ export function MapMarker({ bar, onSelect }: Props) {
                         Paris {bar.arrondissement}e
                     </Text>
                     <Text className="text-white/60 mt-2 text-[11px]">
-                        Appuie pour voir les offres
+                        Voir les offres
                     </Text>
                 </View>
             </Callout>
