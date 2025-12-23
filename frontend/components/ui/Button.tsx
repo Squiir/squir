@@ -1,24 +1,36 @@
-import { Pressable, Text } from "react-native";
+import { ActivityIndicator, Pressable, PressableProps, Text } from "react-native";
 import clsx from "clsx";
-import { ButtonProps } from "@app-types/button";
 
-export function Button({ title, onPress, variant = "primary" }: ButtonProps) {
-  const bg =
-    variant === "primary"
-      ? "bg-blue-600"
-      : variant === "danger"
-      ? "bg-red-600"
-      : "bg-gray-200 dark:bg-gray-700";
+type ButtonProps = {
+	title: string;
+	variant?: "primary" | "secondary" | "outline" | "danger";
+	isSubmitting?: boolean;
+} & PressableProps;
 
-  const textColor =
-    variant === "secondary" ? "text-black dark:text-white" : "text-white";
+export function Button({ title, variant = "primary", isSubmitting, ...props }: ButtonProps) {
+	const bg =
+		variant === "primary" ? "bg-blue-600"
+			: variant === "secondary" ? "bg-gray-200 dark:bg-gray-700"
+				: variant === "outline" ? "bg-transparent border border-blue-600"
+					: variant === "danger" ? "bg-red-600" : "";
 
-  return (
-    <Pressable
-      onPress={onPress}
-      className={clsx("rounded-xl px-4 py-3 items-center", bg)}
-    >
-      <Text className={clsx("font-semibold", textColor)}>{title}</Text>
-    </Pressable>
-  );
+	const textColor =
+		variant === "primary" ? "text-white"
+			: variant === "secondary" ? "text-black dark:text-white"
+				: variant === "outline" ? "text-blue-600"
+					: variant === "danger" ? "text-white" : "";
+
+	return (
+		<Pressable
+			className={clsx("rounded-xl px-4 py-3 items-center", bg)}
+			disabled={isSubmitting}
+			{...props}
+		>
+			{isSubmitting ? (
+				<ActivityIndicator color="white" />
+			) : (
+				<Text className={clsx("font-semibold", textColor)}>{title}</Text>
+			)}
+		</Pressable>
+	);
 }

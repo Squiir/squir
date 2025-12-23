@@ -1,111 +1,113 @@
 import {
-  Injectable,
-  ConflictException,
-  ForbiddenException,
+	Injectable,
+	ConflictException,
+	ForbiddenException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import { RegisterDto } from "./dto/register.dto";
+import { iso8601ToDateTime } from "@utils/date";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-  ) {}
+	constructor(
+		private prisma: PrismaService,
+		private jwtService: JwtService,
+	) { }
 
-  async register(email: string, username: string, password: string) {
-    const existingEmail = await this.prisma.user.findUnique({
-      where: { email },
-    });
-    if (existingEmail) throw new ConflictException("Email already used");
+	async register(dto: RegisterDto) {
+		const existingEmail = await this.prisma.user.findUnique({
+			where: { email: dto.email },
+		});
+		if (existingEmail) throw new ConflictException("Email already used");
 
-    const existingUsername = await this.prisma.user.findUnique({
-      where: { username },
-    });
-    if (existingUsername) throw new ConflictException("Username already used");
+		const existingUsername = await this.prisma.user.findUnique({
+			where: { username: dto.username },
+		});
+		if (existingUsername) throw new ConflictException("Username already used");
 
-    const hashed = await bcrypt.hash(password, 10);
+		const hashed = await bcrypt.hash(dto.password, 10);
 
-    const user = await this.prisma.user.create({
-      data: { email, username, password: hashed },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        avatarUrl: true,
-        status: true,
-        loyaltyPoints: true,
-      },
-    });
+		const user = await this.prisma.user.create({
+			data: {
+				...dto,
+				password: hashed,
+				birthDate: iso8601ToDateTime(dto.birthDate),
+			},
+			omit: {
+				password: true,
+				refreshToken: true,
+			},
+		});
 
-    const tokens = await this.generateTokens(user.id);
-    return { user, ...tokens };
-  }
+		const tokens = await this.generateTokens(user.id);
+		return tokens;
+	}
 
-  async login(userId: string) {
-    const tokens = await this.generateTokens(userId);
-    await this.updateRefreshToken(userId, tokens.refreshToken);
-    return tokens;
-  }
+	async login(userId: string) {
+		const tokens = await this.generateTokens(userId);
+		await this.updateRefreshToken(userId, tokens.refreshToken);
+		return tokens;
+	}
 
-  async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+	async refreshTokens(userId: string, refreshToken: string) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
 
-    if (!user || !user.refreshToken) {
-      throw new ForbiddenException("Access denied");
-    }
+		if (!user || !user.refreshToken) {
+			throw new ForbiddenException("Access denied");
+		}
 
-    const refreshTokenMatches = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken,
-    );
+		const refreshTokenMatches = await bcrypt.compare(
+			refreshToken,
+			user.refreshToken,
+		);
 
-    if (!refreshTokenMatches) {
-      throw new ForbiddenException("Access denied");
-    }
+		if (!refreshTokenMatches) {
+			throw new ForbiddenException("Access denied");
+		}
 
-    const tokens = await this.generateTokens(userId);
-    await this.updateRefreshToken(userId, tokens.refreshToken);
+		const tokens = await this.generateTokens(userId);
+		await this.updateRefreshToken(userId, tokens.refreshToken);
 
-    return tokens;
-  }
+		return tokens;
+	}
 
-  async logout(userId: string) {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: null },
-    });
-  }
+	async logout(userId: string) {
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: { refreshToken: null },
+		});
+	}
 
-  private async generateTokens(userId: string) {
-    const payload = { sub: userId };
+	private async generateTokens(userId: string) {
+		const payload = { sub: userId };
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload, {
-        secret: process.env.ACCESS_TOKEN_SECRET,
-        expiresIn: Number(process.env.ACCESS_TOKEN_EXPIRES_IN),
-      }),
-      this.jwtService.signAsync(payload, {
-        secret: process.env.REFRESH_TOKEN_SECRET,
-        expiresIn: Number(process.env.REFRESH_TOKEN_EXPIRES_IN),
-      }),
-    ]);
+		const [accessToken, refreshToken] = await Promise.all([
+			this.jwtService.signAsync(payload, {
+				secret: process.env.ACCESS_TOKEN_SECRET,
+				expiresIn: Number(process.env.ACCESS_TOKEN_EXPIRES_IN),
+			}),
+			this.jwtService.signAsync(payload, {
+				secret: process.env.REFRESH_TOKEN_SECRET,
+				expiresIn: Number(process.env.REFRESH_TOKEN_EXPIRES_IN),
+			}),
+		]);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }
+		return {
+			accessToken,
+			refreshToken,
+		};
+	}
 
-  private async updateRefreshToken(userId: string, refreshToken: string) {
-    const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+	private async updateRefreshToken(userId: string, refreshToken: string) {
+		const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: refreshTokenHash },
-    });
-  }
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: { refreshToken: refreshTokenHash },
+		});
+	}
 }
