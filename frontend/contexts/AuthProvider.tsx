@@ -1,6 +1,5 @@
 import React, {
   useEffect,
-  ReactNode,
   createContext,
   useContext,
   useState,
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setIsLoading(false);
     };
     init();
-  }, []);
+  }, [loadTokens]);
 
   const value = {
     isLoading,
