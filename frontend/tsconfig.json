@@ -4,6 +4,8 @@
     "jsx": "react",
     "baseUrl": ".",
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@app/*": [
         "app/*"

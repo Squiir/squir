@@ -3,12 +3,13 @@ import { View, Text } from "react-native";
 import { Marker, Callout } from "react-native-maps";
 import { Bar } from "@app-types/bar";
 
-type Props = {
+type MapMarkerProps = {
+    key?: string;
     bar: Bar;
     onSelect: (bar: Bar) => void;
 };
 
-export function MapMarker({ bar, onSelect }: Props) {
+export function MapMarker({ bar, onSelect }: MapMarkerProps) {
     return (
         <Marker
             coordinate={{ latitude: bar.latitude, longitude: bar.longitude }}

@@ -4,13 +4,13 @@ import { Image } from "expo-image";
 import { QrCode } from "@app-types/qrcode";
 import { API_URL } from "@constants/api";
 
-type Props = {
+type ModalQrPreviewProps = {
     visible: boolean;
     onClose: () => void;
     qrcode?: QrCode;
 };
 
-export function ModalQrPreview({ visible, onClose, qrcode }: Props) {
+export function ModalQrPreview({ visible, onClose, qrcode }: ModalQrPreviewProps) {
     return (
         <Modal
             visible={visible}

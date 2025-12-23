@@ -1,8 +1,4 @@
-export interface Offer {
-    id: string;
-    name: string;
-    price: number;
-}
+import { Offer } from "./offer";
 
 export interface Bar {
     id: string;

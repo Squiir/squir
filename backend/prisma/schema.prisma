@@ -106,5 +106,6 @@ model Offer {
   bar       Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 

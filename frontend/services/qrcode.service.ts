@@ -7,18 +7,18 @@ export interface QrCodeDto {
   label?: string;
 }
 
-export const qrcodeService = {
-  async createQrcode(qrcodeDto: QrCodeDto) {
-    const { data } = await api.post<QrCode>("/qrcodes", qrcodeDto);
+export const qrCodeService = {
+  async createQrCode(qrCodeDto: QrCodeDto) {
+    const { data } = await api.post<QrCode>("/qrcodes", qrCodeDto);
     return data;
   },
 
-  async getMyQrcodes() {
+  async getMyQrCodes() {
     const { data } = await api.get<QrCode[]>("/qrcodes/me");
     return data;
   },
 
-  async deleteQrcode(id: string) {
+  async deleteQrCode(id: string) {
     return api.delete<void>(`/qrcodes/${id}`);
   },
 };
