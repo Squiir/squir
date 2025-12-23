@@ -19,7 +19,6 @@ interface ControlledDatePickerProps<T extends FieldValues> {
 	label: string;
 }
 
-// TODO: review and customize the date picker for better ui/ux
 export const ControlledDatePicker = <T extends FieldValues>({
 	control,
 	name,
@@ -68,7 +67,6 @@ export const ControlledDatePicker = <T extends FieldValues>({
 
 							{Platform.OS === "ios" ? (
 								<Modal visible={show} transparent animationType="slide">
-									{/* Backdrop cliquable pour fermer la modal */}
 									<Pressable
 										className="flex-1 bg-black/40"
 										onPress={() => setShow(false)}
@@ -91,7 +89,6 @@ export const ControlledDatePicker = <T extends FieldValues>({
 											</TouchableOpacity>
 										</View>
 
-										{/* Conteneur avec hauteur fixe pour le picker */}
 										<View className="h-[250px] justify-center bg-white">
 											<DateTimePicker
 												value={dateValue}

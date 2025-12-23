@@ -1,10 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 import { ControlledInput } from "@components/form/controlled/ControlledInput";
-import { ControlledDatePicker } from "./controlled/ControlledDatePicker";
+import { ControlledDatePicker } from "@components/form/controlled/ControlledDatePicker";
 import { useRegistrationForm } from "@hooks/form/use-registration-form";
-import { FormStep } from "./FormStep";
-import { MultiStepSelector } from "./MultiStepSelector";
+import { FormStep } from "@components/form/FormStep";
+import { MultiStepSelector } from "@components/form/MultiStepSelector";
 
 export function RegistrationForm() {
 	const {
