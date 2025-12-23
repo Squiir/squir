@@ -2,6 +2,9 @@
   "name": "mon-app-globale",
   "private": true,
   "scripts": {
+    "format": "prettier --write .",
+    "format:db": "prisma format --schema=backend/prisma/schema.prisma",
+    "format:all": "npm run format && npm run format:db",
     "prepare": "husky"
   },
   "lint-staged": {
