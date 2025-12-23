@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Alert } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { Link } from "expo-router";
 import { useLogin } from "@hooks/auth/use-login";
 import { Button } from "@components/ui/Button";
