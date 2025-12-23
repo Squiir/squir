@@ -14,33 +14,33 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  username      String   @unique
+  id            String  @id @default(uuid())
+  email         String  @unique
+  username      String  @unique
   password      String
   avatarUrl     String?
   status        String?
-  loyaltyPoints Int      @default(0)
+  loyaltyPoints Int     @default(0)
 
-  qrCodes       QRCode[]
-  friends       Friend[] @relation("UserFriends")
-  groups        GroupMember[]
+  qrCodes QRCode[]
+  friends Friend[]      @relation("UserFriends")
+  groups  GroupMember[]
 
-  refreshToken  String?
+  refreshToken String?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model QRCode { 
-  id        String   @id @default(uuid())
-  label     String
-  used      Boolean  @default(false)
+model QRCode {
+  id    String  @id @default(uuid())
+  label String
+  used  Boolean @default(false)
 
   userId    String
   barId     String
   productId String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -48,14 +48,13 @@ model QRCode {
   @@unique([userId, barId, productId], name: "userId_barId_productId")
 }
 
-
 model Friend {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId    String
-  friendId  String
+  userId   String
+  friendId String
 
-  user      User @relation("UserFriends", fields: [userId], references: [id])
+  user User @relation("UserFriends", fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -63,22 +62,22 @@ model Friend {
 }
 
 model Group {
-  id        String   @id @default(uuid())
-  name      String
+  id   String @id @default(uuid())
+  name String
 
-  members   GroupMember[]
+  members GroupMember[]
 
   createdAt DateTime @default(now())
 }
 
 model GroupMember {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId    String
-  groupId   String
+  userId  String
+  groupId String
 
-  user      User  @relation(fields: [userId], references: [id])
-  group     Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
 
   @@unique([userId, groupId])
 }

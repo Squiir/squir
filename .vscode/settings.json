@@ -1,0 +1,33 @@
+{
+  // --- Formatage automatique ---
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit" // Range les imports tout seul à la sauvegarde !
+  },
+
+  // --- UI & UX pour le multi-dossier ---
+  "workbench.editor.labelFormat": "short", // Aide à distinguer les "index.tsx" du web vs mobile
+  "explorer.compactFolders": false, // Plus facile de naviguer dans les arborescences NestJS
+
+  // --- TypeScript & Qualité ---
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.quoteStyle": "double",
+  "javascript.preferences.quoteStyle": "double",
+  "typescript.updateImportsOnFileMove.enabled": "always", // Met à jour les chemins quand tu déplaces un fichier
+
+  // --- Nettoyage visuel ---
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true
+  },
+
+  // --- Spécifique à NestJS / Prisma ---
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
+}
