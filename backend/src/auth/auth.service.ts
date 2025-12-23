@@ -35,9 +35,8 @@ export class AuthService {
         password: hashed,
         birthDate: iso8601ToDateTime(dto.birthDate),
       },
-      omit: {
-        password: true,
-        refreshToken: true,
+      select: {
+        id: true,
       },
     });
 
