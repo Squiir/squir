@@ -1,13 +1,22 @@
-import React from 'react';
-import { View } from 'react-native';
-import { ControlledInput } from '@components/form/controlled/ControlledInput';
-import { ControlledDatePicker } from './controlled/ControlledDatePicker';
-import { useRegistrationForm } from '@hooks/form/use-registration-form';
-import { FormStep } from './FormStep';
-import { MultiStepSelector } from './MultiStepSelector';
+import React from "react";
+import { View } from "react-native";
+import { ControlledInput } from "@components/form/controlled/ControlledInput";
+import { ControlledDatePicker } from "./controlled/ControlledDatePicker";
+import { useRegistrationForm } from "@hooks/form/use-registration-form";
+import { FormStep } from "./FormStep";
+import { MultiStepSelector } from "./MultiStepSelector";
 
 export function RegistrationForm() {
-	const { step, control, isSubmitting, nextStep, prevStep, submit, isFirstStep, isLastStep } = useRegistrationForm();
+	const {
+		step,
+		control,
+		isSubmitting,
+		nextStep,
+		prevStep,
+		submit,
+		isFirstStep,
+		isLastStep,
+	} = useRegistrationForm();
 
 	return (
 		<View className="flex-1 bg-white px-6 justify-center">
@@ -15,7 +24,12 @@ export function RegistrationForm() {
 				<FormStep title="Identifiants">
 					<ControlledInput name="username" label="Pseudo" control={control} />
 					<ControlledInput name="email" label="Email" control={control} />
-					<ControlledInput name="password" label="Mot de passe" control={control} secureTextEntry />
+					<ControlledInput
+						name="password"
+						label="Mot de passe"
+						control={control}
+						secureTextEntry
+					/>
 				</FormStep>
 			)}
 
@@ -46,4 +60,4 @@ export function RegistrationForm() {
 			/>
 		</View>
 	);
-};
+}

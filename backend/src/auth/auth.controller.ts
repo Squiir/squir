@@ -9,31 +9,31 @@ import { CurrentUserId } from "@auth/current-user.decorator";
 
 @Controller("auth")
 export class AuthController {
-	constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService) {}
 
-	@Post("register")
-	register(@Body() dto: RegisterDto) {
-		return this.auth.register(dto);
-	}
+  @Post("register")
+  register(@Body() dto: RegisterDto) {
+    return this.auth.register(dto);
+  }
 
-	@UseGuards(LocalAuthGuard)
-	@Post("login")
-	login(@Req() req: AuthDto) {
-		return this.auth.login(req.user.id);
-	}
+  @UseGuards(LocalAuthGuard)
+  @Post("login")
+  login(@Req() req: AuthDto) {
+    return this.auth.login(req.user.id);
+  }
 
-	@UseGuards(JwtRefreshTokenGuard)
-	@Post("refresh")
-	async refresh(
-		@Req() req: AuthDto,
-		@Body("refreshToken") refreshToken: string,
-	) {
-		return this.auth.refreshTokens(req.user.id, refreshToken);
-	}
+  @UseGuards(JwtRefreshTokenGuard)
+  @Post("refresh")
+  async refresh(
+    @Req() req: AuthDto,
+    @Body("refreshToken") refreshToken: string,
+  ) {
+    return this.auth.refreshTokens(req.user.id, refreshToken);
+  }
 
-	@UseGuards(JwtAuthGuard)
-	@Post("logout")
-	logout(@CurrentUserId() userId: string) {
-		return this.auth.logout(userId);
-	}
+  @UseGuards(JwtAuthGuard)
+  @Post("logout")
+  logout(@CurrentUserId() userId: string) {
+    return this.auth.logout(userId);
+  }
 }

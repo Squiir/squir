@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import { View, Text, TextInput, Alert } from "react-native";
 import { Link } from "expo-router";
 import { useLogin } from "@hooks/auth/use-login";
+import { Button } from "@components/ui/Button";
+import { Input } from "@components/ui/Input";
 
 export default function LoginScreen() {
 	const { mutate: login, isPending } = useLogin();
@@ -21,45 +23,40 @@ export default function LoginScreen() {
 				onError: () => {
 					Alert.alert("Login failed", "Identifiants incorrects");
 				},
-			}
+			},
 		);
 	}
 
 	return (
-		<View className="items-center justify-center flex-1 gap-4 px-6 background-white">
+		<View className="items-center justify-center flex-1 px-4 gap-4 background-white">
 			<Text className="text-2xl font-bold">Login</Text>
 
-			<TextInput
+			<Input
 				placeholder="Username"
 				autoCapitalize="none"
-				className="w-full px-4 py-3 border rounded-lg"
 				value={username}
 				onChangeText={setUsername}
 			/>
 
-			<TextInput
+			<Input
 				placeholder="Password"
 				secureTextEntry
-				className="w-full px-4 py-3 border rounded-lg"
 				value={password}
 				onChangeText={setPassword}
 			/>
 
-			<Pressable
-				disabled={isPending}
-				onPress={onSubmit}
-				className={`w-full items-center py-3 rounded-lg ${isPending ? "bg-blue-300" : "bg-blue-600"}`}
-			>
-				<Text className="font-semibold text-white">
-					{isPending ? "..." : "Se connecter"}
-				</Text>
-			</Pressable>
+			<View className="w-full flex-row gap-2">
+				<Button
+					title="Se connecter"
+					variant="primary"
+					onPress={onSubmit}
+					disabled={isPending}
+				/>
 
-			<Link href="/register" asChild>
-				<Pressable className="mt-4">
-					<Text className="text-blue-600 text-center">Pas de compte ? S'inscrire</Text>
-				</Pressable>
-			</Link>
+				<Link href="/register" asChild>
+					<Button title="Pas de compte ? S'inscrire" variant="ghost" />
+				</Link>
+			</View>
 		</View>
 	);
 }

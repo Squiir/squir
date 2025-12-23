@@ -15,7 +15,10 @@ export function Input({ variant, ...props }: InputProps) {
 
 	return (
 		<TextInput
-			className={clsx("border rounded-xl p-4 text-base bg-slate-50", border)}
+			className={clsx(
+				"w-full rounded-xl p-3 text-base bg-slate-50 border",
+				border,
+			)}
 			placeholderTextColor="#94a3b8"
 			{...props}
 		/>
