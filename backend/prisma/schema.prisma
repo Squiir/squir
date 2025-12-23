@@ -82,3 +82,30 @@ model GroupMember {
 
   @@unique([userId, groupId])
 }
+
+model Bar {
+  id              String   @id @default(uuid())
+  name            String
+  arrondissement  Int
+  latitude        Float
+  longitude       Float
+  color           String
+
+  offers          Offer[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Offer {
+  id        String   @id @default(uuid())
+  name      String
+  price     Float
+
+  barId     String
+  bar       Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

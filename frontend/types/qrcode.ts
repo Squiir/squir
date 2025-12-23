@@ -1,6 +1,6 @@
 import { User } from "@app-types/user";
 
-export interface Qrcode {
+export interface QrCode {
   id: string;
   label: string;
   used: boolean;
