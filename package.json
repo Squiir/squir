@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "format:db": "prisma format --schema=backend/prisma/schema.prisma",
+    "format:db": "npx prisma format --schema=backend/prisma/schema.prisma",
     "format:all": "npm run format && npm run format:db",
     "prepare": "husky"
   },
