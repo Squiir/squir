@@ -1,4 +1,4 @@
-import type { Qrcode } from "./qrcode";
+import type { QrCode } from "@app-types/qrcode";
 
 export interface User {
   id: string;
@@ -8,7 +8,7 @@ export interface User {
   status?: string;
   loyaltyPoints: number;
 
-  qrCodes: Qrcode[];
+  qrCodes: QrCode[];
 
   refreshToken?: string;
 

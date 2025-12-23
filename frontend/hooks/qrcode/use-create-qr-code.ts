@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { qrcodeService } from "@services/qrcode.service";
+import { QrCodeDto, qrCodeService } from "@services/qrcode.service";
 
-export function useDeleteQrCode() {
+export function useCreateQrCode() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => qrcodeService.deleteQrcode(id),
+    mutationFn: (qrCodeDto: QrCodeDto) => qrCodeService.createQrCode(qrCodeDto),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
     },

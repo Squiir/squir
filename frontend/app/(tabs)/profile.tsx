@@ -2,14 +2,14 @@ import React from "react";
 import { ActivityIndicator, ScrollView, Text, View, Alert } from "react-native";
 
 import { useMe } from "@hooks/use-me";
-import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qrcode";
+import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qr-code";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { useLogout } from "@hooks/auth/use-logout";
 import { Button } from "@components/ui/Button";
 import { QrCard } from "@components/qrcode/QrCard";
 import { QrModal } from "@components/qrcode/QrModal";
-import { useGetMyQrcodes } from "@hooks/qrcode/use-get-qrcodes";
-import { Qrcode } from "@app-types/qrcode";
+import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
+import { QrCode } from "@app-types/qrcode";
 
 export default function ProfileScreen() {
   const { data: user } = useMe();
@@ -20,17 +20,11 @@ export default function ProfileScreen() {
     isLoading: qrsLoading,
     isError: qrsError,
     error: qrsErr,
-  } = useGetMyQrcodes();
+  } = useGetMyQrCodes();
 
-  const { mutateAsync: deleteQrcode, isPending } = useDeleteQrCode();
+  const { mutateAsync: deleteQrCode, isPending } = useDeleteQrCode();
 
-  const [selectedQr, setSelectedQr] = React.useState<null | {
-    id: string;
-    label?: string;
-    used?: boolean;
-    barId?: string;
-    productId?: string;
-  }>(null);
+  const [selectedQr, setSelectedQr] = React.useState<null | QrCode>(null);
 
   function handleDeleteQr() {
     if (!selectedQr?.id) return;
@@ -42,7 +36,7 @@ export default function ProfileScreen() {
         style: "destructive",
         onPress: async () => {
           try {
-            await deleteQrcode(selectedQr.id);
+            await deleteQrCode(selectedQr.id);
             setSelectedQr(null);
           } catch (e: any) {
             Alert.alert(
@@ -83,7 +77,7 @@ export default function ProfileScreen() {
         ) : (
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View className="flex-row gap-4 pr-4">
-              {qrcodes.map((qr: Qrcode) => (
+              {qrcodes.map((qr: QrCode) => (
                 <QrCard key={qr.id} qr={qr} onPress={() => setSelectedQr(qr)} />
               ))}
             </View>
