@@ -1,17 +1,17 @@
-import type { Qrcode } from "./qrcode";
+import type { QrCode } from "@app-types/qrcode";
 
 export interface User {
-  id: string;
-  email: string;
-  username: string;
-  avatarUrl?: string;
-  status?: string;
-  loyaltyPoints: number;
+	id: string;
+	email: string;
+	username: string;
+	avatarUrl?: string;
+	status?: string;
+	loyaltyPoints: number;
 
-  qrCodes: Qrcode[];
+	qrCodes: QrCode[];
 
-  refreshToken?: string;
+	refreshToken?: string;
 
-  createdAt: string;
-  updatedAt: string;
+	createdAt: string;
+	updatedAt: string;
 }

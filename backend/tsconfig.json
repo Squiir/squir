@@ -26,11 +26,13 @@
     "paths": {
       "@prisma/*": ["prisma/*"],
       "@auth/*": ["src/auth/*"],
+      "@bars/*": ["src/bars/*"],
       "@friends/*": ["src/friends/*"],
       "@groups/*": ["src/groups/*"],
       "@purchases/*": ["src/purchases/*"],
       "@qrcodes/*": ["src/qrcodes/*"],
       "@users/*": ["src/users/*"],
-    },
+      "@utils/*": ["src/utils/*"]
+    }
   }
 }

@@ -1,15 +1,15 @@
 import { User } from "@app-types/user";
 
-export interface Qrcode {
-  id: string;
-  label: string;
-  used: boolean;
-  url: string;
+export interface QrCode {
+	id: string;
+	label: string;
+	used: boolean;
+	url: string;
 
-  user: User;
+	user: User;
 
-  barId: string;
-  productId: string;
+	barId: string;
+	productId: string;
 
-  createdAt: string;
+	createdAt: string;
 }

@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
 
 export type SectionProps = {
-  title: string;
+	title: string;
 } & PropsWithChildren;
