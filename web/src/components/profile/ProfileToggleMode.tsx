@@ -14,7 +14,7 @@ export function ProfileToggleMode() {
       <Sun
         className={cn(
           "h-[1.2rem] w-[1.2rem] scale-100 transition-all",
-          isDark ? "dark:-rotate-90" : "rotate-0"
+          isDark ? "dark:-rotate-90" : "rotate-0",
         )}
       />
       <Switch
@@ -25,7 +25,7 @@ export function ProfileToggleMode() {
       <Moon
         className={cn(
           "h-[1.2rem] w-[1.2rem] scale-100 transition-all",
-          isDark ? "dark:rotate-0" : "-rotate-90"
+          isDark ? "dark:rotate-0" : "-rotate-90",
         )}
       />
     </div>

@@ -47,11 +47,7 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <Input placeholder="Username" {...form.register("username")} />
-            <Input
-              type="password"
-              placeholder="Mot de passe"
-              {...form.register("password")}
-            />
+            <Input type="password" placeholder="Mot de passe" {...form.register("password")} />
 
             <Button className="w-full" disabled={isPending}>
               {isPending ? "..." : "Se connecter"}

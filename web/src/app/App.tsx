@@ -5,9 +5,7 @@ import AppLayout from "@/layouts/AppLayout";
 export default function App() {
   return useRoutes([
     {
-      element: (
-        <AppLayout />
-      ),
+      element: <AppLayout />,
       children: routes.filter((r) => !["/login", "/register"].includes(r.path)),
     },
     ...routes.filter((r) => ["/login", "/register"].includes(r.path)),

@@ -3,129 +3,141 @@ import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
 import { formatPrice } from "@utils/qrcode";
 import { Bar } from "@app-types/bar";
 import { Offer } from "@app-types/offer";
-import { QrCode } from "@app-types/qrcode"
+import { QrCode } from "@app-types/qrcode";
 import { QrCodeDto } from "@services/qrcode.service";
 
 import clsx from "clsx";
 
 interface OfferItemProps {
-    key?: string;
-    offer: Offer;
-    selectedBar: Bar;
-    alreadyHas: boolean;
-    disabled: boolean;
-    onCreateQrCode: (qr: QrCodeDto) => void;
+	key?: string;
+	offer: Offer;
+	selectedBar: Bar;
+	alreadyHas: boolean;
+	disabled: boolean;
+	onCreateQrCode: (qr: QrCodeDto) => void;
 }
 
-function OfferItem({ offer, selectedBar, alreadyHas, disabled, onCreateQrCode }: OfferItemProps) {
-    const handlePress = () => {
-        onCreateQrCode({
-            barId: selectedBar.id,
-            productId: offer.id,
-            label: `${selectedBar.name} • ${offer.name}${typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""}`,
-        });
-    };
+function OfferItem({
+	offer,
+	selectedBar,
+	alreadyHas,
+	disabled,
+	onCreateQrCode,
+}: OfferItemProps) {
+	const handlePress = () => {
+		onCreateQrCode({
+			barId: selectedBar.id,
+			productId: offer.id,
+			label: `${selectedBar.name} • ${offer.name}${typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""}`,
+		});
+	};
 
-    return (
-        <Pressable
-            onPress={handlePress}
-            disabled={disabled}
-            className={clsx(
-                "py-3 px-3 rounded-[14px] border",
-                alreadyHas ? "bg-white/6 border-white/14" : "bg-white/10 border-white/18",
-                disabled && "opacity-65"
-            )}
-        >
-            <View className="flex-row justify-between">
-                <Text className="text-white font-extrabold">{offer.name}</Text>
-                {alreadyHas && <Text className="text-white/65 font-extrabold">Déjà en stock</Text>}
-            </View>
-            {typeof offer.price === "number" && (
-                <Text className="text-white/70 mt-1">{formatPrice(offer.price)}</Text>
-            )}
-        </Pressable>
-    );
+	return (
+		<Pressable
+			onPress={handlePress}
+			disabled={disabled}
+			className={clsx(
+				"py-3 px-3 rounded-[14px] border",
+				alreadyHas
+					? "bg-white/6 border-white/14"
+					: "bg-white/10 border-white/18",
+				disabled && "opacity-65",
+			)}
+		>
+			<View className="flex-row justify-between">
+				<Text className="text-white font-extrabold">{offer.name}</Text>
+				{alreadyHas && (
+					<Text className="text-white/65 font-extrabold">Déjà en stock</Text>
+				)}
+			</View>
+			{typeof offer.price === "number" && (
+				<Text className="text-white/70 mt-1">{formatPrice(offer.price)}</Text>
+			)}
+		</Pressable>
+	);
 }
 
 export function OfferCard({
-    offerOpen,
-    setOfferOpen,
-    selectedBar,
-    qrcodes,
-    onCreateQrCode,
-    isCreateQrCodePending,
-    isGetMyQrCodesPending,
+	offerOpen,
+	setOfferOpen,
+	selectedBar,
+	qrcodes,
+	onCreateQrCode,
+	isCreateQrCodePending,
+	isGetMyQrCodesPending,
 }: {
-    offerOpen: boolean;
-    setOfferOpen: (open: boolean) => void;
-    selectedBar: Bar | null | undefined;
-    qrcodes: QrCode[] | null;
-    onCreateQrCode: (qr: QrCodeDto) => void;
-    isCreateQrCodePending: boolean;
-    isGetMyQrCodesPending: boolean;
+	offerOpen: boolean;
+	setOfferOpen: (open: boolean) => void;
+	selectedBar: Bar | null | undefined;
+	qrcodes: QrCode[] | null;
+	onCreateQrCode: (qr: QrCodeDto) => void;
+	isCreateQrCodePending: boolean;
+	isGetMyQrCodesPending: boolean;
 }) {
-    const offers = selectedBar?.offers ?? [];
+	const offers = selectedBar?.offers ?? [];
 
-    return (
-        <Modal
-            visible={offerOpen}
-            transparent
-            animationType="fade"
-            onRequestClose={() => setOfferOpen(false)}
-        >
-            <Pressable
-                onPress={() => setOfferOpen(false)}
-                className="flex-1 bg-black/70 items-center justify-center p-[18px]"
-            >
-                <Pressable
-                    className="w-full max-w-[380px] rounded-[22px] p-4 bg-black/92 border border-white/12"
-                >
-                    <Text className="text-white text-base font-black">
-                        {selectedBar?.name ?? "Offres"}
-                    </Text>
-                    <Text className="text-white/70 mt-1.5">
-                        Choisis une offre pour générer le QR code
-                    </Text>
+	return (
+		<Modal
+			visible={offerOpen}
+			transparent
+			animationType="fade"
+			onRequestClose={() => setOfferOpen(false)}
+		>
+			<Pressable
+				onPress={() => setOfferOpen(false)}
+				className="flex-1 bg-black/70 items-center justify-center p-[18px]"
+			>
+				<Pressable className="w-full max-w-[380px] rounded-[22px] p-4 bg-black/92 border border-white/12">
+					<Text className="text-white text-base font-black">
+						{selectedBar?.name ?? "Offres"}
+					</Text>
+					<Text className="text-white/70 mt-1.5">
+						Choisis une offre pour générer le QR code
+					</Text>
 
-                    <View className="mt-3.5 gap-2.5">
-                        {offers.map((offer) => (
-                            <OfferItem
-                                key={offer.id}
-                                offer={offer}
-                                selectedBar={selectedBar!}
-                                alreadyHas={qrcodes?.some(
-                                    (qr) => qr.barId === selectedBar!.id && qr.productId === offer.id
-                                ) ?? false}
-                                disabled={isCreateQrCodePending}
-                                onCreateQrCode={onCreateQrCode}
-                            />
-                        ))}
+					<View className="mt-3.5 gap-2.5">
+						{offers.map((offer) => (
+							<OfferItem
+								key={offer.id}
+								offer={offer}
+								selectedBar={selectedBar!}
+								alreadyHas={
+									qrcodes?.some(
+										(qr) =>
+											qr.barId === selectedBar!.id && qr.productId === offer.id,
+									) ?? false
+								}
+								disabled={isCreateQrCodePending}
+								onCreateQrCode={onCreateQrCode}
+							/>
+						))}
 
-                        {offers.length === 0 && (
-                            <Text className="text-white/70">Aucune offre disponible.</Text>
-                        )}
-                    </View>
+						{offers.length === 0 && (
+							<Text className="text-white/70">Aucune offre disponible.</Text>
+						)}
+					</View>
 
-                    <View className="mt-3.5 flex-row items-center">
-                        {(isCreateQrCodePending || isGetMyQrCodesPending) && (
-                            <>
-                                <ActivityIndicator />
-                                <Text className="text-white/75 ml-2">
-                                    {isCreateQrCodePending ? "Génération…" : "Chargement du stock…"}
-                                </Text>
-                            </>
-                        )}
-                    </View>
+					<View className="mt-3.5 flex-row items-center">
+						{(isCreateQrCodePending || isGetMyQrCodesPending) && (
+							<>
+								<ActivityIndicator />
+								<Text className="text-white/75 ml-2">
+									{isCreateQrCodePending
+										? "Génération…"
+										: "Chargement du stock…"}
+								</Text>
+							</>
+						)}
+					</View>
 
-                    <Pressable
-                        onPress={() => setOfferOpen(false)}
-                        className="mt-3.5 py-3 rounded-[14px] bg-white/10 items-center"
-                    >
-                        <Text className="text-white font-extrabold">Fermer</Text>
-                    </Pressable>
-                </Pressable>
-            </Pressable>
-        </Modal>
-    );
+					<Pressable
+						onPress={() => setOfferOpen(false)}
+						className="mt-3.5 py-3 rounded-[14px] bg-white/10 items-center"
+					>
+						<Text className="text-white font-extrabold">Fermer</Text>
+					</Pressable>
+				</Pressable>
+			</Pressable>
+		</Modal>
+	);
 }
-

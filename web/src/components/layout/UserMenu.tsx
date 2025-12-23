@@ -54,10 +54,7 @@ export function UserMenu() {
           Profil
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={() => logout()}
-          className="text-red-600 focus:text-red-600"
-        >
+        <DropdownMenuItem onClick={() => logout()} className="text-red-600 focus:text-red-600">
           <LogOut className="w-4 h-4 mr-2" />
           Déconnexion
         </DropdownMenuItem>

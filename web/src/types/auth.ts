@@ -4,6 +4,6 @@ export interface LoginRequestDto {
 }
 
 export interface LoginResponseDto {
-  accessToken: string,
-  refreshToken: string,
+  accessToken: string;
+  refreshToken: string;
 }

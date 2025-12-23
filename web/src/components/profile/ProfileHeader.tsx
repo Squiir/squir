@@ -15,16 +15,12 @@ export function ProfileHeader({ user, isLoading }: Props) {
         <div className="flex items-center gap-4">
           <Avatar className="w-16 h-16">
             <AvatarImage src={user?.avatarUrl ?? undefined} />
-            <AvatarFallback>
-              {user?.username?.[0]?.toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{user?.username?.[0]?.toUpperCase()}</AvatarFallback>
           </Avatar>
 
           <div>
             <p className="text-lg font-semibold">{user?.username ?? "—"}</p>
-            {user?.status && (
-              <p className="text-sm text-muted-foreground">{user.status}</p>
-            )}
+            {user?.status && <p className="text-sm text-muted-foreground">{user.status}</p>}
           </div>
         </div>
 

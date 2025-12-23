@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { PropsWithChildren } from "react"
+import type { PropsWithChildren } from "react";
 import { useAuthStore } from "@/store/auth.store";
-import { AuthContext } from "@/contexts/auth-context"
+import { AuthContext } from "@/contexts/auth-context";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const loadTokens = useAuthStore((state) => state.loadTokens);

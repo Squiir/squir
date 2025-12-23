@@ -1,17 +1,12 @@
-import { useState } from 'react';
-import {
-	useForm,
-	UseFormProps,
-	FieldValues,
-	FieldPath
-} from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ZodType } from 'zod';
+import { useState } from "react";
+import { useForm, UseFormProps, FieldValues, FieldPath } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ZodType } from "zod";
 
 interface MultiStepOptions<T extends FieldValues> {
 	schema: ZodType<T, any, any>;
 	stepsFields: FieldPath<T>[][];
-	defaultValues: UseFormProps<T>['defaultValues'];
+	defaultValues: UseFormProps<T>["defaultValues"];
 	onSubmit: (data: T) => Promise<void> | void;
 }
 
@@ -27,11 +22,11 @@ export function useMultiStepForm<T extends FieldValues>({
 		control,
 		handleSubmit,
 		trigger,
-		formState: { isSubmitting, errors }
+		formState: { isSubmitting, errors },
 	} = useForm<T>({
 		resolver: zodResolver(schema),
 		defaultValues,
-		mode: 'onBlur',
+		mode: "onBlur",
 	});
 
 	const nextStep = async () => {
@@ -56,4 +51,4 @@ export function useMultiStepForm<T extends FieldValues>({
 		isLastStep: step === stepsFields.length - 1,
 		submit: handleSubmit(onSubmit),
 	};
-};
+}

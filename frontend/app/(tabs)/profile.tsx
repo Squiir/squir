@@ -12,101 +12,101 @@ import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
 import { QrCode } from "@app-types/qrcode";
 
 export default function ProfileScreen() {
-  const { data: user } = useMe();
-  const { mutate: logout } = useLogout();
+	const { data: user } = useMe();
+	const { mutate: logout } = useLogout();
 
-  const {
-    data: qrcodes,
-    isLoading: qrsLoading,
-    isError: qrsError,
-    error: qrsErr,
-  } = useGetMyQrCodes();
+	const {
+		data: qrcodes,
+		isLoading: qrsLoading,
+		isError: qrsError,
+		error: qrsErr,
+	} = useGetMyQrCodes();
 
-  const { mutateAsync: deleteQrCode, isPending } = useDeleteQrCode();
+	const { mutateAsync: deleteQrCode, isPending } = useDeleteQrCode();
 
-  const [selectedQr, setSelectedQr] = React.useState<null | QrCode>(null);
+	const [selectedQr, setSelectedQr] = React.useState<null | QrCode>(null);
 
-  function handleDeleteQr() {
-    if (!selectedQr?.id) return;
+	function handleDeleteQr() {
+		if (!selectedQr?.id) return;
 
-    Alert.alert("Supprimer ce QR code ?", "Cette action est irréversible.", [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Supprimer",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await deleteQrCode(selectedQr.id);
-            setSelectedQr(null);
-          } catch (e: any) {
-            Alert.alert(
-              "Erreur",
-              e?.message ?? "Impossible de supprimer le QR code."
-            );
-          }
-        },
-      },
-    ]);
-  }
+		Alert.alert("Supprimer ce QR code ?", "Cette action est irréversible.", [
+			{ text: "Annuler", style: "cancel" },
+			{
+				text: "Supprimer",
+				style: "destructive",
+				onPress: async () => {
+					try {
+						await deleteQrCode(selectedQr.id);
+						setSelectedQr(null);
+					} catch (e: any) {
+						Alert.alert(
+							"Erreur",
+							e?.message ?? "Impossible de supprimer le QR code.",
+						);
+					}
+				},
+			},
+		]);
+	}
 
-  if (!user) return null;
+	if (!user) return null;
 
-  return (
-    <ScrollView className="flex-1 px-4 pt-6">
-      {/* Header */}
-      <ProfileHeader
-        username={user.username}
-        avatarUrl={user.avatarUrl}
-        status={user.status}
-      />
+	return (
+		<ScrollView className="flex-1 px-4 pt-6">
+			{/* Header */}
+			<ProfileHeader
+				username={user.username}
+				avatarUrl={user.avatarUrl}
+				status={user.status}
+			/>
 
-      {/* QR codes */}
-      <View className="mt-8">
-        <Text className="text-white text-lg font-bold mb-3">Mes QR codes</Text>
+			{/* QR codes */}
+			<View className="mt-8">
+				<Text className="text-white text-lg font-bold mb-3">Mes QR codes</Text>
 
-        {qrsLoading ? (
-          <View className="py-6 items-center">
-            <ActivityIndicator />
-          </View>
-        ) : qrsError ? (
-          <Text className="text-red-400">
-            {qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
-          </Text>
-        ) : !qrcodes || qrcodes.length === 0 ? (
-          <Text className="text-white/70">Aucun QR code pour l’instant.</Text>
-        ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row gap-4 pr-4">
-              {qrcodes.map((qr: QrCode) => (
-                <QrCard key={qr.id} qr={qr} onPress={() => setSelectedQr(qr)} />
-              ))}
-            </View>
-          </ScrollView>
-        )}
-      </View>
+				{qrsLoading ? (
+					<View className="py-6 items-center">
+						<ActivityIndicator />
+					</View>
+				) : qrsError ? (
+					<Text className="text-red-400">
+						{qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
+					</Text>
+				) : !qrcodes || qrcodes.length === 0 ? (
+					<Text className="text-white/70">Aucun QR code pour l’instant.</Text>
+				) : (
+					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						<View className="flex-row gap-4 pr-4">
+							{qrcodes.map((qr: QrCode) => (
+								<QrCard key={qr.id} qr={qr} onPress={() => setSelectedQr(qr)} />
+							))}
+						</View>
+					</ScrollView>
+				)}
+			</View>
 
-      {/* Modal QR */}
-      <QrModal
-        qr={selectedQr}
-        deleting={isPending}
-        onClose={() => setSelectedQr(null)}
-        onDelete={handleDeleteQr}
-      />
+			{/* Modal QR */}
+			<QrModal
+				qr={selectedQr}
+				deleting={isPending}
+				onClose={() => setSelectedQr(null)}
+				onDelete={handleDeleteQr}
+			/>
 
-      {/* Actions */}
-      <View className="px-6 pt-16 pb-6">
-        <View className="gap-4">
-          <Button
-            title="Se déconnecter"
-            variant="secondary"
-            onPress={() => logout()}
-          />
+			{/* Actions */}
+			<View className="px-6 pt-16 pb-6">
+				<View className="gap-4">
+					<Button
+						title="Se déconnecter"
+						variant="secondary"
+						onPress={() => logout()}
+					/>
 
-          <View className="h-2" />
+					<View className="h-2" />
 
-          <Button title="Supprimer le compte" variant="danger" />
-        </View>
-      </View>
-    </ScrollView>
-  );
+					<Button title="Supprimer le compte" variant="danger" />
+				</View>
+			</View>
+		</ScrollView>
+	);
 }

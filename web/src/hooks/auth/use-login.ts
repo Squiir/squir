@@ -6,8 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ username, password }: LoginRequestDto) =>
-      authService.login(username, password),
+    mutationFn: ({ username, password }: LoginRequestDto) => authService.login(username, password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },

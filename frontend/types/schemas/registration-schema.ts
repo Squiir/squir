@@ -6,9 +6,11 @@ export const registrationSchema = z.object({
 	password: z.string().min(8, "Minimum 8 caractères"),
 	firstName: z.string().min(2, "Prénom requis"),
 	lastName: z.string().min(2, "Nom requis"),
-	birthDate: z.date({
-		message: "La date de naissance est requise",
-	}).max(new Date(), "La date ne peut pas être dans le futur"),
+	birthDate: z
+		.date({
+			message: "La date de naissance est requise",
+		})
+		.max(new Date(), "La date ne peut pas être dans le futur"),
 });
 
 export type RegistrationFormData = z.infer<typeof registrationSchema>;

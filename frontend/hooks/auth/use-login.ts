@@ -3,8 +3,8 @@ import { authService } from "@services/auth.service";
 import { useMutation } from "@tanstack/react-query";
 
 export function useLogin() {
-  return useMutation({
-    mutationFn: (loginRequestDto: LoginRequestDto) =>
-      authService.login(loginRequestDto),
-  });
+	return useMutation({
+		mutationFn: (loginRequestDto: LoginRequestDto) =>
+			authService.login(loginRequestDto),
+	});
 }
