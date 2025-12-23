@@ -6,6 +6,8 @@ import {
 import { PrismaService } from "@prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import { RegisterDto } from "./dto/register.dto";
+import { iso8601ToDateTime } from "@utils/date";
 
 @Injectable()
 export class AuthService {
@@ -14,33 +16,32 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, username: string, password: string) {
+  async register(dto: RegisterDto) {
     const existingEmail = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email: dto.email },
     });
     if (existingEmail) throw new ConflictException("Email already used");
 
     const existingUsername = await this.prisma.user.findUnique({
-      where: { username },
+      where: { username: dto.username },
     });
     if (existingUsername) throw new ConflictException("Username already used");
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
-      data: { email, username, password: hashed },
+      data: {
+        ...dto,
+        password: hashed,
+        birthDate: iso8601ToDateTime(dto.birthDate),
+      },
       select: {
         id: true,
-        email: true,
-        username: true,
-        avatarUrl: true,
-        status: true,
-        loyaltyPoints: true,
       },
     });
 
     const tokens = await this.generateTokens(user.id);
-    return { user, ...tokens };
+    return tokens;
   }
 
   async login(userId: string) {

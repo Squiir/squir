@@ -50,6 +50,9 @@
       "@users/*": [
         "src/users/*"
       ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
     },
   }
 }
