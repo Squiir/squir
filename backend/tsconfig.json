@@ -51,7 +51,7 @@
         "src/users/*"
       ],
       "@utils/*": [
-        "src/users/*"
+        "src/utils/*"
       ],
     },
   }
