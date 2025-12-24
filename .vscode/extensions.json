@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "prisma.prisma-vscode", // Indispensable pour ton backend
     "wayou.vscode-todo-highlight", // Pour ne pas oublier les // TODO:
