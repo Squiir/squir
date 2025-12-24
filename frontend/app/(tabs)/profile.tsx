@@ -1,14 +1,14 @@
 import { useRouter } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import { QrCode } from "@app-types/qrcode";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { QrCard } from "@components/qrcode/QrCard";
+import { QrCodeHistory } from "@components/qrcode/QrCodeHistory";
 import { QrModal } from "@components/qrcode/QrModal";
 import { Button } from "@components/ui/Button";
 import { useLogout } from "@hooks/auth/use-logout";
-import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qr-code";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
 import { useMe } from "@hooks/use-me";
 import { useSocketNotifications } from "@hooks/use-socket-notifications";
@@ -28,32 +28,7 @@ export default function ProfileScreen() {
 		error: qrsErr,
 	} = useGetMyQrCodes();
 
-	const { mutateAsync: deleteQrCode, isPending } = useDeleteQrCode();
-
 	const [selectedQr, setSelectedQr] = React.useState<null | QrCode>(null);
-
-	function handleDeleteQr() {
-		if (!selectedQr?.id) return;
-
-		Alert.alert("Supprimer ce QR code ?", "Cette action est irréversible.", [
-			{ text: "Annuler", style: "cancel" },
-			{
-				text: "Supprimer",
-				style: "destructive",
-				onPress: async () => {
-					try {
-						await deleteQrCode(selectedQr.id);
-						setSelectedQr(null);
-					} catch (e: any) {
-						Alert.alert(
-							"Erreur",
-							e?.message ?? "Impossible de supprimer le QR code.",
-						);
-					}
-				},
-			},
-		]);
-	}
 
 	if (!user) return null;
 
@@ -71,9 +46,7 @@ export default function ProfileScreen() {
 				<Text className="text-white text-lg font-bold mb-3">Mes QR codes</Text>
 
 				{qrsLoading ? (
-					<View className="py-6 items-center">
-						<ActivityIndicator />
-					</View>
+					<Text className="text-white/70">Chargement...</Text>
 				) : qrsError ? (
 					<Text className="text-red-400">
 						{qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
@@ -92,12 +65,7 @@ export default function ProfileScreen() {
 			</View>
 
 			{/* Modal QR */}
-			<QrModal
-				qr={selectedQr}
-				deleting={isPending}
-				onClose={() => setSelectedQr(null)}
-				onDelete={handleDeleteQr}
-			/>
+			<QrModal qr={selectedQr} onClose={() => setSelectedQr(null)} />
 
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
@@ -119,6 +87,9 @@ export default function ProfileScreen() {
 					<Button title="Supprimer le compte" variant="danger" />
 				</View>
 			</View>
+
+			{/* Historique */}
+			<QrCodeHistory />
 		</ScrollView>
 	);
 }

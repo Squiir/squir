@@ -39,17 +39,17 @@ export default function RootLayout() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<SocketProvider>
-			<QueryClientProvider client={queryClient}>
-				<AuthProvider>
+		<QueryClientProvider client={queryClient}>
+			<AuthProvider>
+				<SocketProvider>
 					<ThemeProvider
 						value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
 					>
 						<RootNavigator />
 						<StatusBar style="auto" />
 					</ThemeProvider>
-				</AuthProvider>
-			</QueryClientProvider>
-		</SocketProvider>
+				</SocketProvider>
+			</AuthProvider>
+		</QueryClientProvider>
 	);
 }

@@ -1,10 +1,10 @@
-import React from "react";
-import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
-import { formatPrice } from "@utils/qrcode";
 import { Bar } from "@app-types/bar";
 import { Offer } from "@app-types/offer";
 import { QrCode } from "@app-types/qrcode";
 import { QrCodeDto } from "@services/qrcode.service";
+import { formatPrice } from "@utils/qrcode";
+import React from "react";
+import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
 
 import clsx from "clsx";
 
@@ -37,21 +37,23 @@ function OfferItem({
 			onPress={handlePress}
 			disabled={disabled}
 			className={clsx(
-				"py-3 px-3 rounded-[14px] border",
+				"py-3 px-4 rounded-xl border-2",
 				alreadyHas
-					? "bg-white/6 border-white/14"
-					: "bg-white/10 border-white/18",
-				disabled && "opacity-65",
+					? "bg-gray-100 border-gray-300"
+					: "bg-blue-50 border-blue-200",
+				disabled && "opacity-50",
 			)}
 		>
-			<View className="flex-row justify-between">
-				<Text className="text-white font-extrabold">{offer.name}</Text>
+			<View className="flex-row justify-between items-center">
+				<Text className="text-gray-900 font-bold">{offer.name}</Text>
 				{alreadyHas && (
-					<Text className="text-white/65 font-extrabold">Déjà en stock</Text>
+					<Text className="text-gray-500 font-semibold text-sm">
+						Déjà en stock
+					</Text>
 				)}
 			</View>
 			{typeof offer.price === "number" && (
-				<Text className="text-white/70 mt-1">{formatPrice(offer.price)}</Text>
+				<Text className="text-gray-600 mt-1">{formatPrice(offer.price)}</Text>
 			)}
 		</Pressable>
 	);
@@ -85,17 +87,27 @@ export function OfferCard({
 		>
 			<Pressable
 				onPress={() => setOfferOpen(false)}
-				className="flex-1 bg-black/70 items-center justify-center p-[18px]"
+				className="flex-1 items-center justify-center px-6"
+				style={{
+					backgroundColor: "rgba(0, 0, 0, 0.5)",
+				}}
 			>
-				<Pressable className="w-full max-w-[380px] rounded-[22px] p-4 bg-black/92 border border-white/12">
-					<Text className="text-white text-base font-black">
+				<Pressable
+					className="w-full max-w-[380px] rounded-3xl overflow-hidden p-6"
+					style={{
+						backgroundColor: "white",
+						backgroundImage:
+							"linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)",
+					}}
+				>
+					<Text className="text-gray-900 text-xl font-bold mb-1">
 						{selectedBar?.name ?? "Offres"}
 					</Text>
-					<Text className="text-white/70 mt-1.5">
+					<Text className="text-gray-600 text-sm mb-4">
 						Choisis une offre pour générer le QR code
 					</Text>
 
-					<View className="mt-3.5 gap-2.5">
+					<View className="gap-2.5 mb-4">
 						{offers.map((offer) => (
 							<OfferItem
 								key={offer.id}
@@ -113,15 +125,15 @@ export function OfferCard({
 						))}
 
 						{offers.length === 0 && (
-							<Text className="text-white/70">Aucune offre disponible.</Text>
+							<Text className="text-gray-500">Aucune offre disponible.</Text>
 						)}
 					</View>
 
-					<View className="mt-3.5 flex-row items-center">
+					<View className="flex-row items-center mb-4 min-h-[24px]">
 						{(isCreateQrCodePending || isGetMyQrCodesPending) && (
 							<>
-								<ActivityIndicator />
-								<Text className="text-white/75 ml-2">
+								<ActivityIndicator color="#3b82f6" />
+								<Text className="text-gray-600 ml-2">
 									{isCreateQrCodePending
 										? "Génération…"
 										: "Chargement du stock…"}
@@ -132,9 +144,9 @@ export function OfferCard({
 
 					<Pressable
 						onPress={() => setOfferOpen(false)}
-						className="mt-3.5 py-3 rounded-[14px] bg-white/10 items-center"
+						className="py-4 rounded-xl bg-blue-500 items-center"
 					>
-						<Text className="text-white font-extrabold">Fermer</Text>
+						<Text className="text-white font-bold text-base">Fermer</Text>
 					</Pressable>
 				</Pressable>
 			</Pressable>
