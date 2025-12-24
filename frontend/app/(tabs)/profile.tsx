@@ -1,19 +1,25 @@
+import { useRouter } from "expo-router";
 import React from "react";
-import { ActivityIndicator, ScrollView, Text, View, Alert } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
 
-import { useMe } from "@hooks/use-me";
-import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qr-code";
+import { QrCode } from "@app-types/qrcode";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
-import { useLogout } from "@hooks/auth/use-logout";
-import { Button } from "@components/ui/Button";
 import { QrCard } from "@components/qrcode/QrCard";
 import { QrModal } from "@components/qrcode/QrModal";
+import { Button } from "@components/ui/Button";
+import { useLogout } from "@hooks/auth/use-logout";
+import { useDeleteQrCode } from "@hooks/qrcode/use-delete-qr-code";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
-import { QrCode } from "@app-types/qrcode";
+import { useMe } from "@hooks/use-me";
+import { useSocketNotifications } from "@hooks/use-socket-notifications";
 
 export default function ProfileScreen() {
 	const { data: user } = useMe();
 	const { mutate: logout } = useLogout();
+	const router = useRouter();
+
+	// Activer les notifications temps réel
+	useSocketNotifications();
 
 	const {
 		data: qrcodes,
@@ -96,6 +102,12 @@ export default function ProfileScreen() {
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
 				<View className="gap-4">
+					<Button
+						title="📷 Scanner un QR code"
+						variant="primary"
+						onPress={() => router.push("/scanner")}
+					/>
+
 					<Button
 						title="Se déconnecter"
 						variant="secondary"

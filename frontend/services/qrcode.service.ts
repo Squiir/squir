@@ -21,4 +21,12 @@ export const qrCodeService = {
 	async deleteQrCode(id: string) {
 		return api.delete<void>(`/qrcodes/${id}`);
 	},
+
+	async consumeQrCode(id: string) {
+		const { data } = await api.post<{
+			message: string;
+			qrCode: QrCode;
+		}>(`/qrcodes/${id}/consume`);
+		return data;
+	},
 };

@@ -6,10 +6,14 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 import QRCode from "qrcode";
+import { QrcodeGateway } from "./qrcode.gateway";
 
 @Injectable()
 export class QrCodesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private qrcodeGateway: QrcodeGateway,
+  ) {}
 
   private qrValue(qrId: string) {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
@@ -71,7 +75,10 @@ export class QrCodesService {
     if (!userId) throw new BadRequestException("Missing userId");
 
     const items = await this.prisma.qRCode.findMany({
-      where: { userId },
+      where: {
+        userId,
+        used: false, // Ne retourner que les QR codes non utilisés
+      },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -127,5 +134,60 @@ export class QrCodesService {
     });
 
     return png;
+  }
+
+  async consumeQrCode(id: string) {
+    if (!id) throw new BadRequestException("Missing QR code ID");
+
+    const qr = await this.prisma.qRCode.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        used: true,
+        barId: true,
+        productId: true,
+        label: true,
+        userId: true,
+        createdAt: true,
+      },
+    });
+
+    if (!qr) throw new NotFoundException("QR code not found");
+    if (qr.used) throw new BadRequestException("QR code already used");
+
+    const updatedQr = await this.prisma.qRCode.update({
+      where: { id },
+      data: { used: true },
+      select: {
+        id: true,
+        used: true,
+        barId: true,
+        productId: true,
+        label: true,
+        userId: true,
+        createdAt: true,
+      },
+    });
+
+    // Notifier le propriétaire du QR code via WebSocket
+    this.qrcodeGateway.notifyQrCodeConsumed(updatedQr.userId, {
+      qrCodeId: updatedQr.id,
+      barId: updatedQr.barId,
+      productId: updatedQr.productId,
+      label: updatedQr.label,
+      timestamp: new Date(),
+    });
+
+    return {
+      message: "QR code consumed successfully",
+      qrCode: {
+        id: updatedQr.id,
+        used: updatedQr.used,
+        barId: updatedQr.barId,
+        productId: updatedQr.productId,
+        label: updatedQr.label,
+        createdAt: updatedQr.createdAt,
+      },
+    };
   }
 }
