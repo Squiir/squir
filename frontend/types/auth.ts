@@ -1,3 +1,4 @@
+import { LoginFormData } from "./schemas/login-schema";
 import { RegistrationFormData } from "./schemas/registration-schema";
 
 export interface RegisterRequestDto extends Omit<
@@ -7,10 +8,7 @@ export interface RegisterRequestDto extends Omit<
 	birthDate: string;
 }
 
-export interface LoginRequestDto {
-	username: string;
-	password: string;
-}
+export interface LoginRequestDto extends LoginFormData {}
 
 export interface AuthResponseDto {
 	accessToken: string;

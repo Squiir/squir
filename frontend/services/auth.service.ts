@@ -20,6 +20,7 @@ export const authService = {
 	},
 
 	async login(loginRequestDto: LoginRequestDto) {
+		console.log(loginRequestDto);
 		const { data } = await api.post<AuthResponseDto>(
 			"/auth/login",
 			loginRequestDto,
