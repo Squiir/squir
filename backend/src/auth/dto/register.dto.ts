@@ -1,10 +1,19 @@
 import {
+  IsDateString,
   IsEmail,
+  IsEnum,
+  IsOptional,
   IsString,
+  IsUUID,
   MinLength,
-  MaxLength,
-  IsISO8601,
+  ValidateIf,
 } from "class-validator";
+
+export enum UserRole {
+  CUSTOMER = "CUSTOMER",
+  BAR_STAFF = "BAR_STAFF",
+  ADMIN = "ADMIN",
+}
 
 export class RegisterDto {
   @IsEmail()
@@ -12,22 +21,29 @@ export class RegisterDto {
 
   @IsString()
   @MinLength(3)
-  @MaxLength(30)
   username!: string;
 
   @IsString()
-  @MinLength(8)
-  @MaxLength(72)
+  @MinLength(6)
   password!: string;
 
-  @IsISO8601()
+  @IsDateString()
   birthDate!: string;
 
   @IsString()
-  @MinLength(2)
+  @IsOptional()
   firstName?: string;
 
   @IsString()
-  @MinLength(2)
+  @IsOptional()
   lastName?: string;
+
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole;
+
+  @IsUUID()
+  @IsOptional()
+  @ValidateIf((o) => o.role === UserRole.BAR_STAFF)
+  barId?: string;
 }

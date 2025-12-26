@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CUSTOMER
+  BAR_STAFF
+  ADMIN
+}
+
 model User {
   id       String @id @default(uuid())
   email    String @unique
@@ -26,6 +32,10 @@ model User {
   avatarUrl     String?
   status        String?
   loyaltyPoints Int     @default(0)
+
+  role  UserRole @default(CUSTOMER)
+  barId String?
+  bar   Bar?     @relation("BarStaff", fields: [barId], references: [id], onDelete: SetNull)
 
   qrCodes QRCode[]
   friends Friend[]      @relation("UserFriends")
@@ -42,15 +52,14 @@ model QRCode {
   label String
   used  Boolean @default(false)
 
-  userId    String
-  barId     String
-  productId String
-  user      User   @relation(fields: [userId], references: [id])
+  userId     String
+  barId      String
+  productId  String
+  user       User      @relation(fields: [userId], references: [id])
+  consumedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId, barId, productId], name: "userId_barId_productId")
 }
 
 model Friend {
@@ -96,6 +105,7 @@ model Bar {
   color          String
 
   offers Offer[]
+  staff  User[]  @relation("BarStaff")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

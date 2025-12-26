@@ -1,20 +1,23 @@
+import { Public } from "@auth/public.decorator";
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Header,
   Param,
   Post,
+  Req,
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { UserRole } from "@prisma/client";
 import type { Response } from "express";
-import { QrCodesService } from "./qrcodes.service";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { CurrentUserId } from "../auth/current-user.decorator";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { GenerateQrCodeDto } from "./dto/qrcodes.dto";
-import { Public } from "@auth/public.decorator";
+import { QrCodesService } from "./qrcodes.service";
 
 @Controller("qrcodes")
 @UseGuards(JwtAuthGuard)
@@ -39,9 +42,22 @@ export class QrCodesController {
     return this.qr.getMyQrcodes(userId);
   }
 
-  @Delete(":id")
-  removeQrcode(@CurrentUserId() userId: string, @Param("id") id: string) {
-    return this.qr.removeQrcode(userId, id);
+  @Get("history")
+  getHistory(@CurrentUserId() userId: string) {
+    return this.qr.getHistory(userId);
+  }
+
+  @Post(":id/consume")
+  @Roles(UserRole.BAR_STAFF, UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  consumeQrcode(@Param("id") id: string, @Req() req: any) {
+    // req.user comes from JwtStrategy.validate() and contains userId, role, barId
+    const scanner = {
+      userId: req.user.userId,
+      role: req.user.role,
+      barId: req.user.barId,
+    };
+    return this.qr.consumeQrCode(id, scanner);
   }
 
   @Public()

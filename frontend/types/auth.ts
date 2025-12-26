@@ -1,4 +1,5 @@
 import { RegistrationFormData } from "./schemas/registration-schema";
+import { User } from "./user";
 
 export interface RegisterRequestDto extends Omit<
 	RegistrationFormData,
@@ -15,4 +16,5 @@ export interface LoginRequestDto {
 export interface AuthResponseDto {
 	accessToken: string;
 	refreshToken: string;
+	user?: User;
 }
