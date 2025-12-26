@@ -1,9 +1,9 @@
-import { useRegister } from "@hooks/auth/use-register";
-import { useMultiStepForm } from "@hooks/form/use-multi-step-form";
 import {
 	RegistrationFormData,
 	registrationSchema,
 } from "@app-types/schemas/registration-schema";
+import { useRegister } from "@hooks/auth/use-register";
+import { useMultiStepForm } from "@hooks/form/use-multi-step-form";
 
 export function useRegistrationForm() {
 	const { mutate: register } = useRegister();
