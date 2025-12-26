@@ -150,7 +150,7 @@ export class QrCodesService {
     if (qr.consumedAt)
       throw new BadRequestException("QR code already consumed");
 
-    // ✅ AUTHORIZATION CHECK
+    // Authorization check for BAR_STAFF
     if (scanner.role === UserRole.BAR_STAFF) {
       if (!scanner.barId) {
         throw new ForbiddenException("Bar staff must be associated with a bar");
@@ -181,9 +181,9 @@ export class QrCodesService {
       data: { consumedAt: new Date() },
     });
 
-    // 📝 LOG SCAN
+    // Log scan event
     console.log(
-      `🎯 ${scannerUser?.username || "Unknown"} vient de scanner "${qr.label}" de ${ownerUser?.username || "Unknown"}`,
+      `[SCAN] ${scannerUser?.username || "Unknown"} scanned "${qr.label}" from ${ownerUser?.username || "Unknown"}`,
     );
 
     // Notifier le propriétaire du QR code via WebSocket

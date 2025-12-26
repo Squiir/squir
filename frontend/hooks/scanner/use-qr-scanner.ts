@@ -45,7 +45,7 @@ export function useQrScanner() {
 			await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
 			Alert.alert(
-				"✅ Succès !",
+				"Succès",
 				result.message || "QR code scanné et consommé avec succès !",
 				[
 					{
@@ -69,7 +69,7 @@ export function useQrScanner() {
 			// Vibration d'erreur
 			await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
-			Alert.alert("❌ Erreur", errorMessage, [
+			Alert.alert("Erreur", errorMessage, [
 				{
 					text: "Réessayer",
 					onPress: () => {

@@ -12,7 +12,7 @@ type QrCode = {
 };
 
 type Props = {
-	qr: QrCode | null;
+	qr?: QrCode;
 	onClose: () => void;
 };
 
