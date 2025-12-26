@@ -7,6 +7,7 @@ interface Props {
 }
 
 export function ProfileQrCodes({ user }: Props) {
+  console.log("QRCIDE:", user?.qrCodes);
   return (
     <Card className="p-6">
       <p className="mb-4 text-sm font-medium uppercase text-muted-foreground">Mes QR Codes</p>
