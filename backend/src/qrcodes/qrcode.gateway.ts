@@ -82,7 +82,7 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomName = `user:${userId}`;
     this.logger.log(`Notifying room ${roomName} of QR code consumption`);
 
-    this.server.to(roomName).emit("qr-consumed", {
+    this.server.to(roomName).emit("qrcode:consumed", {
       message: "Votre QR code a été scanné !",
       ...data,
     });

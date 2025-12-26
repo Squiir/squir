@@ -27,7 +27,7 @@ export const qrCodeService = {
 	},
 
 	async getHistory() {
-		const { data } = await api.get<any[]>("/qrcodes/history");
+		const { data } = await api.get<QrCode[]>("/qrcodes/history");
 		return data;
 	},
 };

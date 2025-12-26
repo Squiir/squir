@@ -33,11 +33,11 @@ export function useSocketNotifications() {
 		};
 
 		// Écouter l'événement
-		socket.on("qr-consumed", handleQrConsumed);
+		socket.on("qrcode:consumed", handleQrConsumed);
 
 		// Cleanup
 		return () => {
-			socket.off("qr-consumed", handleQrConsumed);
+			socket.off("qrcode:consumed", handleQrConsumed);
 		};
 	}, [socket, isConnected, queryClient]);
 }

@@ -22,10 +22,7 @@ export function ModalQrPreview({
 		>
 			<Pressable
 				onPress={onClose}
-				className="flex-1 items-center justify-center px-6"
-				style={{
-					backgroundColor: "rgba(0, 0, 0, 0.5)",
-				}}
+				className="flex-1 items-center justify-center px-6 bg-black/50"
 			>
 				<Pressable
 					className="w-full max-w-[380px] rounded-3xl overflow-hidden p-6"

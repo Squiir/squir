@@ -1,15 +1,14 @@
-import { User } from "@app-types/user";
-
+// QR Code types
 export interface QrCode {
 	id: string;
 	label: string;
 	used: boolean;
-	url: string;
-
-	user: User;
-
+	userId: string;
 	barId: string;
 	productId: string;
-
+	consumedAt?: string; // ISO date string, present only if consumed
 	createdAt: string;
+	updatedAt: string;
+	url?: string; // QR code image URL
+	value?: string; // squir://redeem?qr=...
 }

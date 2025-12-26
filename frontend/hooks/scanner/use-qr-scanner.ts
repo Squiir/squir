@@ -1,10 +1,11 @@
 import { useConsumeQrCode } from "@hooks/qrcode/use-consume-qr-code";
+import { BarcodeScanningResult } from "expo-camera";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Alert } from "react-native";
 
-const SCAN_DEBOUNCE_MS = 2000;
+import { QR_HOSTNAME, QR_PROTOCOL, SCAN_DEBOUNCE_MS } from "@constants/scanner";
 
 export function useQrScanner() {
 	const [scanned, setScanned] = useState(false);
@@ -12,7 +13,8 @@ export function useQrScanner() {
 	const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
 	const lastScanTime = useRef<number>(0);
 
-	const handleBarCodeScanned = async ({ data }: { data: string }) => {
+	const handleBarCodeScanned = async (result: BarcodeScanningResult) => {
+		const { data } = result;
 		// Debounce: éviter les scans multiples rapides
 		const now = Date.now();
 		if (now - lastScanTime.current < SCAN_DEBOUNCE_MS) {
@@ -27,7 +29,7 @@ export function useQrScanner() {
 		try {
 			// Extraire l'ID du QR code depuis l'URL squir://redeem?qr=<id>
 			const url = new URL(data);
-			if (url.protocol !== "squir:" || url.hostname !== "redeem") {
+			if (url.protocol !== QR_PROTOCOL || url.hostname !== QR_HOSTNAME) {
 				throw new Error("QR code invalide");
 			}
 
