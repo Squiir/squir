@@ -1,0 +1,9 @@
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('CUSTOMER', 'BAR_STAFF', 'ADMIN');
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "barId" TEXT,
+ADD COLUMN     "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER';
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_barId_fkey" FOREIGN KEY ("barId") REFERENCES "Bar"("id") ON DELETE SET NULL ON UPDATE CASCADE;
