@@ -1,6 +1,6 @@
 import {
-  Injectable,
   ConflictException,
+  Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -13,7 +13,7 @@ export class UsersService {
   async me(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { qrCodes: true, friends: true, groups: true },
+      include: { qrCodes: true },
     });
     if (!user) throw new NotFoundException("User not found");
 
@@ -25,7 +25,7 @@ export class UsersService {
   async deleteMe(userId: string) {
     await this.prisma.qRCode.deleteMany({ where: { userId } });
     await this.prisma.friend.deleteMany({
-      where: { OR: [{ userId }, { friendId: userId }] },
+      where: { OR: [{ requesterId: userId }, { receiverId: userId }] },
     });
     await this.prisma.groupMember.deleteMany({ where: { userId } });
 

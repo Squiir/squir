@@ -4,21 +4,51 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
+import { SocialGateway } from "@social/social.gateway";
 
 @Injectable()
 export class GroupsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private socket: SocialGateway,
+  ) {}
 
-  async create(userId: string, name: string) {
-    return this.prisma.group.create({
+  async create(userId: string, name: string, memberIds: string[]) {
+    const group = await this.prisma.group.create({
       data: {
         name,
-        members: { create: [{ userId }] },
+        members: {
+          create: [
+            { userId: userId },
+            ...memberIds.map((id) => ({ userId: id })),
+          ],
+        },
       },
-      include: { members: true },
+      include: {
+        members: {
+          include: {
+            user: { select: { id: true, username: true, avatarUrl: true } },
+          },
+        },
+      },
     });
+
+    const creator = group.members.find((m) => m.userId === userId)!.user;
+
+    for (const member of group.members) {
+      if (member.userId === userId) continue;
+
+      this.socket.notifyGroupInvite(member.userId, {
+        groupId: group.id,
+        groupName: group.name,
+        invitedBy: creator,
+      });
+    }
+
+    return group;
   }
 
+  // TODO : update member list
   async updateName(userId: string, groupId: string, name: string) {
     const member = await this.prisma.groupMember.findUnique({
       where: { userId_groupId: { userId, groupId } },
@@ -34,18 +64,20 @@ export class GroupsService {
     });
     if (!group) throw new NotFoundException("Group not found");
 
-    await this.prisma.groupMember
-      .create({
-        data: { userId, groupId },
-      })
-      .catch(() => null);
-
-    return { ok: true };
+    return await this.prisma.groupMember.create({
+      data: { userId, groupId },
+    });
   }
 
   async leave(userId: string, groupId: string) {
-    await this.prisma.groupMember.deleteMany({ where: { userId, groupId } });
-    return { ok: true };
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId },
+    });
+    if (!group) throw new NotFoundException("Group not found");
+
+    return await this.prisma.groupMember.deleteMany({
+      where: { userId, groupId },
+    });
   }
 
   async share(groupId: string) {

@@ -1,3 +1,7 @@
+import { CurrentUserId } from "@auth/current-user.decorator";
+import { JwtAuthGuard } from "@auth/jwt-auth.guard";
+import { CreateGroupDto, UpdateGroupDto } from "@groups/dto/groups.dto";
+import { GroupsService } from "@groups/groups.service";
 import {
   Body,
   Controller,
@@ -7,10 +11,6 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { JwtAuthGuard } from "@auth/jwt-auth.guard";
-import { CurrentUserId } from "@auth/current-user.decorator";
-import { GroupsService } from "@groups/groups.service";
-import { CreateGroupDto, UpdateGroupDto } from "@groups/dto/groups.dto";
 
 @Controller("groups")
 @UseGuards(JwtAuthGuard)
@@ -19,7 +19,7 @@ export class GroupsController {
 
   @Post()
   create(@CurrentUserId() userId: string, @Body() dto: CreateGroupDto) {
-    return this.groups.create(userId, dto.name);
+    return this.groups.create(userId, dto.name, dto.memberIds);
   }
 
   @Patch(":groupId")
