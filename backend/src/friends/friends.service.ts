@@ -1,34 +1,123 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { FriendStatus } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
+import { SocialGateway } from "@social/social.gateway";
 
 @Injectable()
 export class FriendsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private socket: SocialGateway,
+  ) {}
 
-  async add(userId: string, friendId: string) {
-    if (userId === friendId)
+  async sendRequest(requesterId: string, receiverId: string) {
+    if (requesterId === receiverId) {
       throw new BadRequestException("Cannot add yourself");
+    }
 
-    await this.prisma.friend.createMany({
-      data: [
-        { userId, friendId },
-        { userId: friendId, friendId: userId },
-      ],
-      skipDuplicates: true,
+    const request = await this.prisma.friend.create({
+      data: {
+        requesterId,
+        receiverId,
+        status: FriendStatus.PENDING,
+      },
+      include: {
+        requester: {
+          select: { id: true, username: true, avatarUrl: true },
+        },
+      },
     });
 
-    return { ok: true };
+    this.socket.notifyFriendRequest(receiverId, request.requester);
+
+    return request;
   }
 
-  async remove(userId: string, friendId: string) {
-    await this.prisma.friend.deleteMany({
+  async respondToRequest(
+    userId: string,
+    friendRequestId: string,
+    status: FriendStatus,
+  ) {
+    const request = await this.prisma.friend.findUnique({
+      where: { id: friendRequestId },
+    });
+
+    if (!request || request.receiverId !== userId) {
+      throw new NotFoundException("Friend request not found");
+    }
+
+    const updatedRequest = await this.prisma.friend.update({
+      where: { id: request.id },
+      data: { status },
+      include: {
+        requester: { select: { id: true, username: true, avatarUrl: true } },
+        receiver: { select: { id: true, username: true, avatarUrl: true } },
+      },
+    });
+
+    if (status === FriendStatus.ACCEPTED) {
+      this.socket.notifyFriendAccepted(
+        updatedRequest.requesterId,
+        updatedRequest.receiver,
+      );
+    }
+
+    return updatedRequest;
+  }
+
+  async listPending(userId: string) {
+    return this.prisma.friend.findMany({
       where: {
+        receiverId: userId,
+        status: FriendStatus.PENDING,
+      },
+      include: {
+        requester: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+  }
+
+  async listFriends(userId: string) {
+    return this.prisma.friend.findMany({
+      where: {
+        status: FriendStatus.ACCEPTED,
+        OR: [{ requesterId: userId }, { receiverId: userId }],
+      },
+      include: {
+        requester: { select: { id: true, username: true, avatarUrl: true } },
+        receiver: { select: { id: true, username: true, avatarUrl: true } },
+      },
+    });
+  }
+
+  async deleteFriend(userId: string, friendId: string) {
+    const friendship = await this.prisma.friend.findFirst({
+      where: {
+        status: FriendStatus.ACCEPTED,
         OR: [
-          { userId, friendId },
-          { userId: friendId, friendId: userId },
+          { requesterId: userId, receiverId: friendId },
+          { requesterId: friendId, receiverId: userId },
         ],
       },
     });
-    return { ok: true };
+
+    if (!friendship) {
+      throw new NotFoundException("Friendship not found");
+    }
+
+    return this.prisma.friend.update({
+      where: { id: friendship.id },
+      data: { status: FriendStatus.REJECTED },
+    });
   }
 }
