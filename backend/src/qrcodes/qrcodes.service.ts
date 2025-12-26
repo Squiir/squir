@@ -31,18 +31,8 @@ export class QrCodesService {
     if (!barId) throw new BadRequestException("Missing barId");
     if (!productId) throw new BadRequestException("Missing productId");
 
-    const qr = await this.prisma.qRCode.upsert({
-      where: {
-        userId_barId_productId: {
-          userId,
-          barId,
-          productId,
-        },
-      },
-      update: {
-        label: label ?? `QR for bar=${barId} product=${productId}`,
-      },
-      create: {
+    const qr = await this.prisma.qRCode.create({
+      data: {
         userId,
         barId,
         productId,
@@ -75,7 +65,10 @@ export class QrCodesService {
     if (!userId) throw new BadRequestException("Missing userId");
 
     const items = await this.prisma.qRCode.findMany({
-      where: { userId },
+      where: {
+        userId,
+        consumedAt: null, // Only active QR codes
+      },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -145,26 +138,18 @@ export class QrCodesService {
         label: true,
         userId: true,
         createdAt: true,
+        consumedAt: true,
       },
     });
 
     if (!qr) throw new NotFoundException("QR code not found");
+    if (qr.consumedAt)
+      throw new BadRequestException("QR code already consumed");
 
-    // Créer entrée dans l'historique
-    await this.prisma.qRCodeHistory.create({
-      data: {
-        userId: qr.userId,
-        barId: qr.barId,
-        productId: qr.productId,
-        label: qr.label,
-        consumedAt: new Date(),
-        createdAt: qr.createdAt,
-      },
-    });
-
-    // Supprimer le QR code
-    await this.prisma.qRCode.delete({
+    // Marquer comme consommé
+    const updatedQr = await this.prisma.qRCode.update({
       where: { id },
+      data: { consumedAt: new Date() },
     });
 
     // Notifier le propriétaire du QR code via WebSocket
@@ -191,8 +176,11 @@ export class QrCodesService {
   async getHistory(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
-    return this.prisma.qRCodeHistory.findMany({
-      where: { userId },
+    return this.prisma.qRCode.findMany({
+      where: {
+        userId,
+        consumedAt: { not: null },
+      },
       orderBy: { consumedAt: "desc" },
       take: 50,
       select: {
@@ -202,12 +190,6 @@ export class QrCodesService {
         label: true,
         consumedAt: true,
         createdAt: true,
-        bar: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
     });
   }

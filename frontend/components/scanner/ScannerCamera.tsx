@@ -1,13 +1,12 @@
-import { CameraView } from "expo-camera";
+import { BarcodeScanningResult, CameraView } from "expo-camera";
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { View } from "react-native";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const SCAN_AREA_SIZE = 250;
+import { SCAN_AREA_SIZE } from "@constants/scanner";
 
 type ScannerCameraProps = {
 	scanned: boolean;
-	onBarCodeScanned: ({ data }: { data: string }) => void;
+	onBarCodeScanned: (result: BarcodeScanningResult) => void;
 };
 
 export function ScannerCamera({
@@ -16,18 +15,10 @@ export function ScannerCamera({
 }: ScannerCameraProps) {
 	return (
 		<View
+			className="rounded-3xl overflow-hidden border-4 border-blue-500 bg-white shadow-lg"
 			style={{
 				width: SCAN_AREA_SIZE + 8,
 				height: SCAN_AREA_SIZE + 8,
-				borderRadius: 24,
-				overflow: "hidden",
-				borderWidth: 4,
-				borderColor: "#3b82f6",
-				backgroundColor: "#fff",
-				shadowColor: "#000",
-				shadowOffset: { width: 0, height: 4 },
-				shadowOpacity: 0.3,
-				shadowRadius: 8,
 				elevation: 8,
 			}}
 		>
