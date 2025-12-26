@@ -70,11 +70,15 @@ export default function ProfileScreen() {
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
 				<View className="gap-4">
-					<Button
-						title="📷 Scanner un QR code"
-						variant="primary"
-						onPress={() => router.push("/scanner")}
-					/>
+					{/* Scanner Button - Only BAR_STAFF and ADMIN */}
+					{user?.role &&
+						(user.role === "BAR_STAFF" || user.role === "ADMIN") && (
+							<Button
+								title="📷 Scanner un QR code"
+								variant="primary"
+								onPress={() => router.push("/scanner")}
+							/>
+						)}
 
 					<Button
 						title="Se déconnecter"

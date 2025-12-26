@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { UserRole } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import QRCode from "qrcode";
 import { QrcodeGateway } from "./qrcode.gateway";
@@ -126,7 +127,10 @@ export class QrCodesService {
     return png;
   }
 
-  async consumeQrCode(id: string) {
+  async consumeQrCode(
+    id: string,
+    scanner: { userId: string; role: UserRole; barId?: string },
+  ) {
     if (!id) throw new BadRequestException("Missing QR code ID");
 
     const qr = await this.prisma.qRCode.findUnique({
@@ -146,11 +150,41 @@ export class QrCodesService {
     if (qr.consumedAt)
       throw new BadRequestException("QR code already consumed");
 
+    // ✅ AUTHORIZATION CHECK
+    if (scanner.role === UserRole.BAR_STAFF) {
+      if (!scanner.barId) {
+        throw new ForbiddenException("Bar staff must be associated with a bar");
+      }
+      if (qr.barId !== scanner.barId) {
+        throw new ForbiddenException(
+          "You can only scan QR codes from your bar",
+        );
+      }
+    }
+    // If ADMIN or CUSTOMER, no additional check (for now)
+
+    // Get scanner and owner usernames for logging
+    const [scannerUser, ownerUser] = await Promise.all([
+      this.prisma.user.findUnique({
+        where: { id: scanner.userId },
+        select: { username: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: qr.userId },
+        select: { username: true },
+      }),
+    ]);
+
     // Marquer comme consommé
     const updatedQr = await this.prisma.qRCode.update({
       where: { id },
       data: { consumedAt: new Date() },
     });
+
+    // 📝 LOG SCAN
+    console.log(
+      `🎯 ${scannerUser?.username || "Unknown"} vient de scanner "${qr.label}" de ${ownerUser?.username || "Unknown"}`,
+    );
 
     // Notifier le propriétaire du QR code via WebSocket
     this.qrcodeGateway.notifyQrCodeConsumed(qr.userId, {

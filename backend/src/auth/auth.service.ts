@@ -1,13 +1,16 @@
 import {
-  Injectable,
+  BadRequestException,
   ConflictException,
   ForbiddenException,
+  Injectable,
+  NotFoundException,
 } from "@nestjs/common";
-import { PrismaService } from "@prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
+import { UserRole } from "@prisma/client";
+import { PrismaService } from "@prisma/prisma.service";
+import { iso8601ToDateTime } from "@utils/date";
 import * as bcrypt from "bcrypt";
 import { RegisterDto } from "./dto/register.dto";
-import { iso8601ToDateTime } from "@utils/date";
 
 @Injectable()
 export class AuthService {
@@ -27,32 +30,77 @@ export class AuthService {
     });
     if (existingUsername) throw new ConflictException("Username already used");
 
+    // Validation: BAR_STAFF must have barId
+    if (dto.role === UserRole.BAR_STAFF && !dto.barId) {
+      throw new BadRequestException("Bar staff must be associated with a bar");
+    }
+
+    // Verify bar exists if barId provided
+    if (dto.barId) {
+      const bar = await this.prisma.bar.findUnique({
+        where: { id: dto.barId },
+      });
+      if (!bar) throw new NotFoundException("Bar not found");
+    }
+
     const hashed = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
-        ...dto,
+        email: dto.email,
+        username: dto.username,
         password: hashed,
         birthDate: iso8601ToDateTime(dto.birthDate),
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        role: dto.role || UserRole.CUSTOMER,
+        barId: dto.barId,
       },
       select: {
         id: true,
+        email: true,
+        username: true,
+        role: true,
+        barId: true,
       },
     });
 
-    const tokens = await this.generateTokens(user.id);
-    return tokens;
+    const tokens = await this.generateTokens(
+      user.id,
+      user.email,
+      user.role,
+      user.barId,
+    );
+    return { ...tokens, user };
   }
 
   async login(userId: string) {
-    const tokens = await this.generateTokens(userId);
-    await this.updateRefreshToken(userId, tokens.refreshToken);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true, barId: true },
+    });
+    if (!user) throw new NotFoundException("User not found");
+
+    const tokens = await this.generateTokens(
+      user.id,
+      user.email,
+      user.role,
+      user.barId,
+    );
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        barId: true,
+        refreshToken: true,
+      },
     });
 
     if (!user || !user.refreshToken) {
@@ -68,8 +116,13 @@ export class AuthService {
       throw new ForbiddenException("Access denied");
     }
 
-    const tokens = await this.generateTokens(userId);
-    await this.updateRefreshToken(userId, tokens.refreshToken);
+    const tokens = await this.generateTokens(
+      user.id,
+      user.email,
+      user.role,
+      user.barId,
+    );
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
@@ -81,8 +134,18 @@ export class AuthService {
     });
   }
 
-  private async generateTokens(userId: string) {
-    const payload = { sub: userId };
+  private async generateTokens(
+    userId: string,
+    email: string,
+    role: UserRole,
+    barId?: string | null,
+  ) {
+    const payload = {
+      sub: userId,
+      email,
+      role,
+      barId: barId || undefined,
+    };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {

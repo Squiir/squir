@@ -7,6 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { PrismaService } from "@prisma/prisma.service";
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({
@@ -23,9 +24,12 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
-  private logger = new Logger("QrcodeGateway");
+  private readonly logger = new Logger(QrcodeGateway.name);
 
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private prisma: PrismaService,
+  ) {}
 
   async handleConnection(client: Socket) {
     try {
@@ -38,7 +42,16 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const payload = await this.jwtService.verifyAsync(token);
       client.data.userId = payload.sub;
-      this.logger.log(`User ${payload.sub} connected: ${client.id}`);
+
+      // Get username for better logs
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+        select: { username: true, role: true },
+      });
+
+      this.logger.log(
+        `👤 ${user?.username || "Unknown"} (${user?.role || "CUSTOMER"}) s'est connecté au serveur`,
+      );
     } catch (error: any) {
       this.logger.error(
         `Authentication failed for ${client.id}: ${error?.message || "Unknown"}`,

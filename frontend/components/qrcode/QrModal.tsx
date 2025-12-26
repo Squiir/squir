@@ -26,19 +26,11 @@ export function QrModal({ qr, onClose }: Props) {
 		<Modal visible transparent animationType="fade">
 			<Pressable
 				onPress={onClose}
-				className="flex-1 items-center justify-center px-6"
-				style={{
-					backgroundColor: "rgba(0, 0, 0, 0.5)",
-				}}
+				className="flex-1 justify-center items-center px-6 bg-black/60"
 			>
 				<Pressable
 					onPress={() => {}}
-					className="w-full max-w-[400px] rounded-3xl overflow-hidden p-6"
-					style={{
-						backgroundColor: "white",
-						backgroundImage:
-							"linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)",
-					}}
+					className="w-full max-w-[400px] bg-gradient-to-br from-white to-blue-50 rounded-3xl overflow-hidden p-6"
 				>
 					{/* Header */}
 					<View className="mb-4">
