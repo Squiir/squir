@@ -50,7 +50,7 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
 
       this.logger.log(
-        `👤 ${user?.username || "Unknown"} (${user?.role || "CUSTOMER"}) s'est connecté au serveur`,
+        `[AUTH] ${user?.username || "Unknown"} (${user?.role || "CUSTOMER"}) connected to server`,
       );
     } catch (error: any) {
       this.logger.error(
@@ -61,7 +61,7 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`);
+    this.logger.log(`[WS] Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage("join-user-room")

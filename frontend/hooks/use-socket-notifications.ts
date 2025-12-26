@@ -18,10 +18,10 @@ export function useSocketNotifications() {
 			label: string;
 			timestamp: string;
 		}) => {
-			console.log("🔔 QR Code consumed notification:", data);
+			console.log("[NOTIFICATION] QR code consumed:", data);
 
 			// Afficher une notification à l'utilisateur
-			Alert.alert("✅ QR Code scanné !", data.message, [
+			Alert.alert("QR Code scanné", data.message, [
 				{
 					text: "OK",
 					style: "default",

@@ -46,5 +46,14 @@ export function ScannerPermission({
 		);
 	}
 
-	return null;
+	return (
+		<LinearGradient colors={["#ffffff", "#60a5fa"]} className="flex-1">
+			<View className="flex-1 items-center justify-center px-6">
+				<Text className="text-gray-800 text-xl font-bold mb-4">Erreur</Text>
+				<Text className="text-gray-600 text-center">
+					Une erreur s'est produite lors du chargement du scanner
+				</Text>
+			</View>
+		</LinearGradient>
+	);
 }
