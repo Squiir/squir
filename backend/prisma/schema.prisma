@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -27,9 +26,10 @@ model User {
   status        String?
   loyaltyPoints Int     @default(0)
 
-  qrCodes QRCode[]
-  friends Friend[]      @relation("UserFriends")
-  groups  GroupMember[]
+  qrCodes       QRCode[]
+  qrCodeHistory QRCodeHistory[]
+  friends       Friend[]        @relation("UserFriends")
+  groups        GroupMember[]
 
   refreshToken String?
 
@@ -51,6 +51,21 @@ model QRCode {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, barId, productId], name: "userId_barId_productId")
+}
+
+model QRCodeHistory {
+  id         String   @id @default(uuid())
+  userId     String
+  barId      String
+  productId  String
+  label      String
+  consumedAt DateTime
+  createdAt  DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bar  Bar  @relation(fields: [barId], references: [id])
+
+  @@map("qr_code_history")
 }
 
 model Friend {
@@ -95,7 +110,8 @@ model Bar {
   longitude      Float
   color          String
 
-  offers Offer[]
+  offers        Offer[]
+  qrCodeHistory QRCodeHistory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

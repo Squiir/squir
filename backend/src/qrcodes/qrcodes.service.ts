@@ -6,10 +6,14 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 import QRCode from "qrcode";
+import { QrcodeGateway } from "./qrcode.gateway";
 
 @Injectable()
 export class QrCodesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private qrcodeGateway: QrcodeGateway,
+  ) {}
 
   private qrValue(qrId: string) {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
@@ -127,5 +131,99 @@ export class QrCodesService {
     });
 
     return png;
+  }
+
+  async consumeQrCode(id: string) {
+    if (!id) throw new BadRequestException("Missing QR code ID");
+
+    const qr = await this.prisma.qRCode.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        barId: true,
+        productId: true,
+        label: true,
+        userId: true,
+        createdAt: true,
+      },
+    });
+
+    if (!qr) throw new NotFoundException("QR code not found");
+
+    // Créer entrée dans l'historique
+    await this.prisma.qRCodeHistory.create({
+      data: {
+        userId: qr.userId,
+        barId: qr.barId,
+        productId: qr.productId,
+        label: qr.label,
+        consumedAt: new Date(),
+        createdAt: qr.createdAt,
+      },
+    });
+
+    // Supprimer le QR code
+    await this.prisma.qRCode.delete({
+      where: { id },
+    });
+
+    // Notifier le propriétaire du QR code via WebSocket
+    this.qrcodeGateway.notifyQrCodeConsumed(qr.userId, {
+      qrCodeId: qr.id,
+      barId: qr.barId,
+      productId: qr.productId,
+      label: qr.label,
+      timestamp: new Date(),
+    });
+
+    return {
+      message: "QR code consumed successfully",
+      qrCode: {
+        id: qr.id,
+        barId: qr.barId,
+        productId: qr.productId,
+        label: qr.label,
+        createdAt: qr.createdAt,
+      },
+    };
+  }
+
+  async getHistory(userId: string) {
+    if (!userId) throw new BadRequestException("Missing userId");
+
+    return this.prisma.qRCodeHistory.findMany({
+      where: { userId },
+      orderBy: { consumedAt: "desc" },
+      take: 50,
+      select: {
+        id: true,
+        barId: true,
+        productId: true,
+        label: true,
+        consumedAt: true,
+        createdAt: true,
+        bar: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async deleteExpiredQrCodes() {
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() - 48);
+
+    const result = await this.prisma.qRCode.deleteMany({
+      where: {
+        createdAt: {
+          lt: expirationDate,
+        },
+      },
+    });
+
+    return { deleted: result.count };
   }
 }

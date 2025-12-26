@@ -1,8 +1,6 @@
-import React from "react";
-import { Modal, Pressable, Text, View, ActivityIndicator } from "react-native";
-import { Image } from "expo-image";
 import { QrCode } from "@app-types/qrcode";
-import { API_URL } from "@constants/api";
+import React from "react";
+import { Modal, Pressable, Text, View } from "react-native";
 
 type ModalQrPreviewProps = {
 	visible: boolean;
@@ -24,36 +22,45 @@ export function ModalQrPreview({
 		>
 			<Pressable
 				onPress={onClose}
-				className="flex-1 bg-black/70 items-center justify-center p-[18px]"
+				className="flex-1 items-center justify-center px-6"
+				style={{
+					backgroundColor: "rgba(0, 0, 0, 0.5)",
+				}}
 			>
-				<Pressable className="w-full max-w-[380px] rounded-[22px] p-4 bg-black/92 border border-white/12">
-					<Text className="text-white text-base font-black">
-						QR code généré
+				<Pressable
+					className="w-full max-w-[380px] rounded-3xl overflow-hidden p-6"
+					style={{
+						backgroundColor: "white",
+						backgroundImage:
+							"linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)",
+					}}
+				>
+					{/* Icône succès */}
+					<View className="items-center mb-4">
+						<View className="w-16 h-16 bg-green-500 rounded-full items-center justify-center">
+							<Text className="text-white text-3xl">✓</Text>
+						</View>
+					</View>
+
+					{/* Message */}
+					<Text className="text-gray-900 text-xl font-bold text-center mb-2">
+						QR Code généré !
 					</Text>
 
-					<Text className="text-white/70 mt-1.5">
+					<Text className="text-gray-600 text-center mb-1">
 						{qrcode?.label ?? "Sans label"}
 					</Text>
 
-					<View className="items-center mt-3.5">
-						{qrcode ? (
-							<Image
-								source={{
-									uri: `${API_URL}${qrcode.url}`,
-								}}
-								style={{ width: 300, height: 300, borderRadius: 18 }}
-								contentFit="contain"
-							/>
-						) : (
-							<ActivityIndicator />
-						)}
-					</View>
+					<Text className="text-gray-500 text-sm text-center mb-6">
+						Retrouvez-le dans votre profil
+					</Text>
 
+					{/* Bouton */}
 					<Pressable
 						onPress={onClose}
-						className="mt-3.5 py-3 rounded-[14px] bg-white/10 items-center"
+						className="py-4 rounded-xl bg-blue-500 items-center"
 					>
-						<Text className="text-white font-extrabold">Fermer</Text>
+						<Text className="text-white font-bold text-base">OK</Text>
 					</Pressable>
 				</Pressable>
 			</Pressable>
