@@ -15,7 +15,9 @@ export const authService = {
 			"/auth/register",
 			registerRequestDto,
 		);
-		useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+		useAuthStore
+			.getState()
+			.setTokens(data.accessToken, data.refreshToken, data.user);
 		return data;
 	},
 
@@ -24,7 +26,9 @@ export const authService = {
 			"/auth/login",
 			loginRequestDto,
 		);
-		useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+		useAuthStore
+			.getState()
+			.setTokens(data.accessToken, data.refreshToken, data.user);
 		return data;
 	},
 

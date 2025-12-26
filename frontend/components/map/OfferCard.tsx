@@ -87,19 +87,9 @@ export function OfferCard({
 		>
 			<Pressable
 				onPress={() => setOfferOpen(false)}
-				className="flex-1 items-center justify-center px-6"
-				style={{
-					backgroundColor: "rgba(0, 0, 0, 0.5)",
-				}}
+				className="flex-1 items-center justify-center px-6 bg-black/50"
 			>
-				<Pressable
-					className="w-full max-w-[380px] rounded-3xl overflow-hidden p-6"
-					style={{
-						backgroundColor: "white",
-						backgroundImage:
-							"linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)",
-					}}
-				>
+				<Pressable className="w-full max-w-[380px] bg-gradient-to-br from-white to-blue-50 rounded-3xl overflow-hidden p-6">
 					<Text className="text-gray-900 text-xl font-bold mb-1">
 						{selectedBar?.name ?? "Offres"}
 					</Text>
