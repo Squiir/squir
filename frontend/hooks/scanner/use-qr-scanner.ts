@@ -57,16 +57,24 @@ export function useQrScanner() {
 					},
 				],
 			);
-		} catch (error: any) {
+		} catch (error: unknown) {
 			let errorMessage = "Impossible de scanner le QR code";
 
-			if (error?.response?.data?.message) {
-				errorMessage = error.response.data.message;
-			} else if (error?.message) {
+			if (error instanceof Error) {
 				errorMessage = error.message;
+			} else if (
+				typeof error === "object" &&
+				error !== null &&
+				"response" in error
+			) {
+				const axiosError = error as {
+					response?: { data?: { message?: string } };
+				};
+				if (axiosError.response?.data?.message) {
+					errorMessage = axiosError.response.data.message;
+				}
 			}
 
-			// Vibration d'erreur
 			await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
 			Alert.alert("❌ Erreur", errorMessage, [

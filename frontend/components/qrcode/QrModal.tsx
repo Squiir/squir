@@ -1,18 +1,12 @@
+import { QrCode } from "@app-types/qrcode";
 import { Badge } from "@components/ui/Badge";
 import { API_URL } from "@constants/api";
 import { parseQrLabel } from "@utils/qrcode";
 import { Image } from "expo-image";
 import { Modal, Pressable, Text, View } from "react-native";
 
-type QrCode = {
-	id: string;
-	label?: string;
-	used?: boolean;
-	barId?: string;
-};
-
 type Props = {
-	qr: QrCode | null;
+	qr?: QrCode;
 	onClose: () => void;
 };
 

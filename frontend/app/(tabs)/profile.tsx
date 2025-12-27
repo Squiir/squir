@@ -28,7 +28,9 @@ export default function ProfileScreen() {
 		error: qrsErr,
 	} = useGetMyQrCodes();
 
-	const [selectedQr, setSelectedQr] = React.useState<null | QrCode>(null);
+	const [selectedQr, setSelectedQr] = React.useState<QrCode | undefined>(
+		undefined,
+	);
 
 	if (!user) return null;
 
@@ -65,7 +67,7 @@ export default function ProfileScreen() {
 			</View>
 
 			{/* Modal QR */}
-			<QrModal qr={selectedQr} onClose={() => setSelectedQr(null)} />
+			<QrModal qr={selectedQr} onClose={() => setSelectedQr(undefined)} />
 
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
@@ -88,7 +90,6 @@ export default function ProfileScreen() {
 				</View>
 			</View>
 
-			{/* Historique */}
 			<QrCodeHistory />
 		</ScrollView>
 	);

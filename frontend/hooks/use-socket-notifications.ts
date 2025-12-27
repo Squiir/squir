@@ -10,29 +10,22 @@ export function useSocketNotifications() {
 	useEffect(() => {
 		if (!socket || !isConnected) return;
 
-		const handleQrConsumed = (data: {
-			message: string;
-			qrCodeId: string;
-			barId: string;
-			productId: string;
-			label: string;
-			timestamp: string;
-		}) => {
-			console.log("🔔 QR Code consumed notification:", data);
+		const handleQrConsumed = (data: { message: string; qrCodeId: string }) => {
+			console.log("[NOTIFICATION] QR code consumed:", data);
 
-			// Afficher une notification à l'utilisateur
-			Alert.alert("✅ QR Code scanné !", data.message, [
+			// Show notification to user
+			Alert.alert("QR Code scanné", data.message, [
 				{
 					text: "OK",
 					style: "default",
 				},
 			]);
 
-			// Invalider le cache pour rafraîchir automatiquement la liste
+			// Invalidate queries to refresh QR codes list
 			queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
 		};
 
-		// Écouter l'événement
+		// Listen to event
 		socket.on("qrcode:consumed", handleQrConsumed);
 
 		// Cleanup

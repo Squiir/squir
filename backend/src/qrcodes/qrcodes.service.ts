@@ -6,15 +6,16 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 import QRCode from "qrcode";
-import { QrcodeGateway } from "./qrcode.gateway";
+import { QrCodeGateway } from "./qrcode.gateway";
 
 const MAX_HISTORY_RECORDS = 50;
+const QR_CODE_EXPIRATION_HOURS = 48;
 
 @Injectable()
 export class QrCodesService {
   constructor(
     private prisma: PrismaService,
-    private qrcodeGateway: QrcodeGateway,
+    private qrCodeGateway: QrCodeGateway,
   ) {}
 
   private qrValue(qrId: string) {
@@ -128,6 +129,13 @@ export class QrCodesService {
     return png;
   }
 
+  /**
+   * Consumes a QR code by marking it as consumed
+   * @param id - QR code ID to consume
+   * @returns Consumption confirmation with QR code details
+   * @throws {NotFoundException} If QR code doesn't exist
+   * @throws {BadRequestException} If QR code is already consumed
+   */
   async consumeQrCode(id: string) {
     if (!id) throw new BadRequestException("Missing QR code ID");
 
@@ -155,13 +163,7 @@ export class QrCodesService {
     });
 
     // Notifier le propriétaire du QR code via WebSocket
-    this.qrcodeGateway.notifyQrCodeConsumed(qr.userId, {
-      qrCodeId: qr.id,
-      barId: qr.barId,
-      productId: qr.productId,
-      label: qr.label,
-      timestamp: new Date(),
-    });
+    this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
 
     return {
       message: "QR code consumed successfully",
@@ -196,9 +198,16 @@ export class QrCodesService {
     });
   }
 
+  /**
+   * Deletes QR codes older than 48 hours
+   * Intended for scheduled cleanup (e.g., cron job)
+   * @returns Object containing the number of deleted QR codes
+   */
   async deleteExpiredQrCodes() {
     const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() - 48);
+    expirationDate.setHours(
+      expirationDate.getHours() - QR_CODE_EXPIRATION_HOURS,
+    );
 
     const result = await this.prisma.qRCode.deleteMany({
       where: {

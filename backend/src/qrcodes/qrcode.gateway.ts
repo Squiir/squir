@@ -1,6 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
+  ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
@@ -19,7 +20,7 @@ import { Server, Socket } from "socket.io";
     credentials: true,
   },
 })
-export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class QrCodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
@@ -51,8 +52,8 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  @SubscribeMessage("join-user-room")
-  handleJoinUserRoom(client: Socket) {
+  @SubscribeMessage("room:join")
+  handleJoinRoom(@ConnectedSocket() client: Socket) {
     const userId = client.data.userId;
     if (!userId) {
       this.logger.warn(
@@ -66,25 +67,16 @@ export class QrcodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.log(
       `User ${userId} (${client.id}) joined own room: ${roomName}`,
     );
-    return { event: "joined-room", data: { room: roomName } };
+    return { event: "room:joined", data: { room: roomName } };
   }
 
-  notifyQrCodeConsumed(
-    userId: string,
-    data: {
-      qrCodeId: string;
-      barId: string;
-      productId: string;
-      label: string;
-      timestamp: Date;
-    },
-  ) {
+  notifyQrCodeConsumed(userId: string, qrCodeId: string) {
     const roomName = `user:${userId}`;
     this.logger.log(`Notifying room ${roomName} of QR code consumption`);
 
     this.server.to(roomName).emit("qrcode:consumed", {
       message: "Votre QR code a été scanné !",
-      ...data,
+      qrCodeId,
     });
   }
 }

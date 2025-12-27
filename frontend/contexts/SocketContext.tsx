@@ -41,8 +41,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 			console.log("✅ WebSocket connected:", newSocket.id);
 			setIsConnected(true);
 
-			// Rejoindre la room de l'utilisateur (serveur utilise le token JWT)
-			newSocket.emit("join-user-room", (response: any) => {
+			// Join user room (server uses JWT token)
+			newSocket.emit("room:join", (response: any) => {
 				console.log("Joined room:", response);
 			});
 		});
@@ -52,8 +52,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 			setIsConnected(false);
 		});
 
-		newSocket.on("connect_error", (error) => {
-			console.error("WebSocket connection error:", error);
+		newSocket.on("connection:error", (error) => {
+			console.error("[WS] Connection error:", error);
 		});
 
 		setSocket(newSocket);
