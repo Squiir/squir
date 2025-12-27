@@ -18,7 +18,7 @@ export function useAddFriend() {
         }),
       ]);
     },
-    onError: async () => {
+    onError: () => {
       toast.error("Impossible d'ajouter cet ami");
     },
   });

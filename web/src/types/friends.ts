@@ -11,6 +11,7 @@ export interface FriendSearchResult extends Friend {
 
 export type FriendRequest = {
   id: string;
+  userId: string;
   username: string;
   avatarUrl?: string;
 };
