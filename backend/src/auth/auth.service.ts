@@ -1,13 +1,13 @@
 import {
-  Injectable,
   ConflictException,
   ForbiddenException,
+  Injectable,
 } from "@nestjs/common";
-import { PrismaService } from "@prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "@prisma/prisma.service";
+import { iso8601ToDateTime } from "@utils/date";
 import * as bcrypt from "bcrypt";
 import { RegisterDto } from "./dto/register.dto";
-import { iso8601ToDateTime } from "@utils/date";
 
 @Injectable()
 export class AuthService {
