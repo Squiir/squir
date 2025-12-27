@@ -13,11 +13,12 @@ import { useCreateGroup } from "@/hooks/groups/use-create-group";
 import { useState } from "react";
 
 export function CreateGroupDialog() {
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
 
   const { data: friends = [] } = useFriends();
-  const { mutate: createGroup } = useCreateGroup();
+  const { mutate: createGroup, isPending } = useCreateGroup();
 
   function toggle(userId: string) {
     setSelected((prev) =>
@@ -25,20 +26,25 @@ export function CreateGroupDialog() {
     );
   }
 
+  function resetForm() {
+    setName("");
+    setSelected([]);
+  }
+
   function submit() {
     createGroup(
       { name, memberIds: selected },
       {
         onSuccess: () => {
-          setName("");
-          setSelected([]);
+          resetForm();
+          setOpen(false);
         },
       },
     );
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full">Créer un groupe</Button>
       </DialogTrigger>
@@ -67,8 +73,8 @@ export function CreateGroupDialog() {
             ))}
           </div>
 
-          <Button onClick={submit} disabled={!name || selected.length === 0}>
-            Créer
+          <Button onClick={submit} disabled={!name || selected.length < 2 || isPending}>
+            {isPending ? "Création…" : "Créer"}
           </Button>
         </div>
       </DialogContent>

@@ -1,21 +1,20 @@
 import { groupsService } from "@/services/groups.service";
-import type { CreateGroupDto } from "@/types/groups";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export function useCreateGroup() {
+export function useLeaveGroup() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: CreateGroupDto) => {
-      return groupsService.create(dto.name, dto.memberIds);
+    mutationFn: async (groupId: string) => {
+      return groupsService.leave(groupId);
     },
     onSuccess: async () => {
-      toast.success("Groupe créé");
+      toast.success("Groupe quitté");
       await qc.invalidateQueries({ queryKey: ["groups"] });
     },
     onError: () => {
-      toast.error("Impossible de créer le groupe");
+      toast.error("Impossible de quitter le groupe");
     },
   });
 }

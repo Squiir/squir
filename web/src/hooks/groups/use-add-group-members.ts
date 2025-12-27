@@ -1,21 +1,21 @@
 import { groupsService } from "@/services/groups.service";
-import type { CreateGroupDto } from "@/types/groups";
+import type { AddGroupMembers } from "@/types/groups";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export function useCreateGroup() {
+export function useAddGroupMembers() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: CreateGroupDto) => {
-      return groupsService.create(dto.name, dto.memberIds);
+    mutationFn: async (dto: AddGroupMembers) => {
+      return groupsService.addMembers(dto.groupId, dto.memberIds);
     },
     onSuccess: async () => {
-      toast.success("Groupe créé");
+      toast.success("Membres ajoutés au groupe");
       await qc.invalidateQueries({ queryKey: ["groups"] });
     },
     onError: () => {
-      toast.error("Impossible de créer le groupe");
+      toast.error("Impossible d'ajouter des membres au groupe");
     },
   });
 }
