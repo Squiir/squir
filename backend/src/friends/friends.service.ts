@@ -87,7 +87,8 @@ export class FriendsService {
     });
 
     return pendingRequests.map((request) => {
-      return { ...request.requester, id: request.id };
+      const { id: userId, username, avatarUrl } = request.requester;
+      return { id: request.id, userId, username, avatarUrl };
     });
   }
 

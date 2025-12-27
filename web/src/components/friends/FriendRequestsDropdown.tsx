@@ -44,9 +44,9 @@ export function FriendRequestsDropdown() {
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">
                 <AvatarImage src={request.avatarUrl ?? undefined} />
-                <AvatarFallback>{request.username?.charAt(0)?.toUpperCase() ?? "?"}</AvatarFallback>
+                <AvatarFallback>{request.username.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium">{request.username ?? "Utilisateur"}</span>
+              <span className="text-sm font-medium">{request.username}</span>
             </div>
 
             <div className="flex gap-1">
