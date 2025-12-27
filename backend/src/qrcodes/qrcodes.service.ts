@@ -8,6 +8,8 @@ import { PrismaService } from "@prisma/prisma.service";
 import QRCode from "qrcode";
 import { QrcodeGateway } from "./qrcode.gateway";
 
+const MAX_HISTORY_RECORDS = 50;
+
 @Injectable()
 export class QrCodesService {
   constructor(
@@ -182,7 +184,7 @@ export class QrCodesService {
         consumedAt: { not: null },
       },
       orderBy: { consumedAt: "desc" },
-      take: 50,
+      take: MAX_HISTORY_RECORDS,
       select: {
         id: true,
         barId: true,
