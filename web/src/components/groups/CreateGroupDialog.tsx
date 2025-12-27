@@ -26,7 +26,15 @@ export function CreateGroupDialog() {
   }
 
   function submit() {
-    createGroup({ name, memberIds: selected });
+    createGroup(
+      { name, memberIds: selected },
+      {
+        onSuccess: () => {
+          setName("");
+          setSelected([]);
+        },
+      },
+    );
   }
 
   return (
