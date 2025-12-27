@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export function FriendSearch() {
   const [query, setQuery] = useState("");
-  const debounced = useDebounce(query, 100);
+  const debounced = useDebounce(query, 400);
 
   const { data = [] } = useSearchFriends(debounced);
   const addFriend = useAddFriend();
