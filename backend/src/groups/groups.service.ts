@@ -20,7 +20,9 @@ export class GroupsService {
         members: {
           create: [
             { userId: userId },
-            ...memberIds.map((id) => ({ userId: id })),
+            ...memberIds
+              .filter((id) => id !== userId)
+              .map((id) => ({ userId: id })),
           ],
         },
       },
