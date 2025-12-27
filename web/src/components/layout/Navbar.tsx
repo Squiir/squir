@@ -1,5 +1,4 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/auth/use-auth";
+import { FriendRequestsDropdown } from "@/components/friends/FriendRequestsDropdown";
 import { UserMenu } from "@/components/layout/UserMenu";
 import {
   NavigationMenu,
@@ -8,6 +7,8 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useAuth } from "@/hooks/auth/use-auth";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 export function Navbar() {
   const { isLoggedIn } = useAuth();
@@ -48,7 +49,10 @@ export function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
         )}
-        <div className="flex justify-end w-12">{!isProfilePage && <UserMenu />}</div>
+        <div className="flex items-center justify-end w-12 gap-4">
+          {isLoggedIn && <FriendRequestsDropdown />}
+          {!isProfilePage && <UserMenu />}
+        </div>
       </div>
     </header>
   );

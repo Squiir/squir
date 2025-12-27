@@ -1,5 +1,5 @@
-import { Outlet } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
+import { Outlet } from "react-router-dom";
 
 export default function AppLayout() {
   return (
@@ -7,7 +7,7 @@ export default function AppLayout() {
       <Navbar />
 
       <main className="flex-1 w-full">
-        <div className="px-4 py-6 mx-auto max-w-7xl">
+        <div className="px-4 py-6 mx-auto">
           <Outlet />
         </div>
       </main>

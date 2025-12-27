@@ -179,8 +179,6 @@ const PARIS_BARS = [
 ];
 
 export async function seedBars(prisma: PrismaClient) {
-  console.log("Seeding bars...");
-
   for (const barData of PARIS_BARS) {
     const { offers, ...bar } = barData;
     await prisma.bar.create({

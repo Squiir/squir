@@ -1,5 +1,5 @@
-import type { LoginResponseDto } from "@/types/auth";
 import { useAuthStore } from "@/store/auth.store";
+import type { LoginResponseDto } from "@/types/auth";
 import axios from "axios";
 
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -7,8 +7,8 @@ export const API_URL = import.meta.env.VITE_API_URL;
 const api = axios.create({ baseURL: API_URL, timeout: 15000 });
 
 export const authService = {
-  async login(username: string, password: string) {
-    const { data } = await api.post<LoginResponseDto>("/auth/login", { username, password });
+  async login(usernameOrEmail: string, password: string) {
+    const { data } = await api.post<LoginResponseDto>("/auth/login", { usernameOrEmail, password });
     useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
     return data;
   },
