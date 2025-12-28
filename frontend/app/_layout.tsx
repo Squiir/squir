@@ -1,5 +1,6 @@
 import { AuthProvider, useAuth } from "@contexts/AuthProvider";
 import { SocketProvider } from "@contexts/SocketContext";
+import { useLoadUserData } from "@hooks/auth/use-load-user-data";
 import { useColorScheme } from "@hooks/color/use-color-scheme";
 import {
 	DarkTheme,
@@ -17,6 +18,9 @@ const queryClient = new QueryClient();
 export function RootNavigator() {
 	const { isLoading, isLoggedIn } = useAuth();
 	const router = useRouter();
+
+	// Load user role and bars when authenticated
+	useLoadUserData();
 
 	useEffect(() => {
 		if (!isLoading) {

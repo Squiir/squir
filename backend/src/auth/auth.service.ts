@@ -1,13 +1,13 @@
 import {
-  Injectable,
   ConflictException,
   ForbiddenException,
+  Injectable,
 } from "@nestjs/common";
-import { PrismaService } from "@prisma/prisma.service";
 import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "@prisma/prisma.service";
+import { iso8601ToDateTime } from "@utils/date";
 import * as bcrypt from "bcrypt";
 import { RegisterDto } from "./dto/register.dto";
-import { iso8601ToDateTime } from "@utils/date";
 
 @Injectable()
 export class AuthService {
@@ -82,7 +82,17 @@ export class AuthService {
   }
 
   private async generateTokens(userId: string) {
-    const payload = { sub: userId };
+    // Fetch user role to include in JWT payload
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    if (!user) {
+      throw new ForbiddenException("User not found");
+    }
+
+    const payload = { sub: userId, role: user.role };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {

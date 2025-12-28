@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  PROFESSIONAL
+  CUSTOMER
+}
+
 model User {
   id       String @id @default(uuid())
   email    String @unique
@@ -25,11 +31,13 @@ model User {
 
   avatarUrl     String?
   status        String?
-  loyaltyPoints Int     @default(0)
+  loyaltyPoints Int      @default(0)
+  role          UserRole @default(CUSTOMER)
 
   qrCodes QRCode[]
   friends Friend[]      @relation("UserFriends")
   groups  GroupMember[]
+  bars    Bar[]         @relation("BarOwner")
 
   refreshToken String?
 
@@ -93,6 +101,9 @@ model Bar {
   latitude       Float
   longitude      Float
   color          String
+
+  ownerId String?
+  owner   User?   @relation("BarOwner", fields: [ownerId], references: [id])
 
   offers Offer[]
 

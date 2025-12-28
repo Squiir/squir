@@ -1,6 +1,6 @@
 import {
-  Injectable,
   ConflictException,
+  Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -13,13 +13,39 @@ export class UsersService {
   async me(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { qrCodes: true, friends: true, groups: true },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        avatarUrl: true,
+        status: true,
+        loyaltyPoints: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        qrCodes: true,
+        friends: true,
+        groups: true,
+        bars: true,
+      },
     });
     if (!user) throw new NotFoundException("User not found");
 
-    const { password: _password, ...userWithoutPassword } = user;
-    void _password;
-    return userWithoutPassword;
+    return user;
+  }
+
+  /**
+   * Get user with their owned bars (for PROFESSIONAL role)
+   * @param userId - User ID
+   * @returns User with bars array
+   */
+  async getUserWithBars(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { bars: true },
+    });
+    if (!user) throw new NotFoundException("User not found");
+    return user;
   }
 
   async deleteMe(userId: string) {

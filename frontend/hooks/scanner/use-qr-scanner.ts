@@ -60,19 +60,36 @@ export function useQrScanner() {
 		} catch (error: unknown) {
 			let errorMessage = "Impossible de scanner le QR code";
 
-			if (error instanceof Error) {
-				errorMessage = error.message;
-			} else if (
-				typeof error === "object" &&
-				error !== null &&
-				"response" in error
-			) {
+			// Check for Axios errors FIRST (before generic Error check)
+			// Because AxiosError extends Error, we need to check it first
+			if (typeof error === "object" && error !== null && "response" in error) {
 				const axiosError = error as {
-					response?: { data?: { message?: string } };
+					response?: {
+						data?: {
+							message?: string | string[];
+							error?: string;
+							statusCode?: number;
+						};
+						status?: number;
+					};
+					message?: string;
 				};
+
+				// Log the error structure for debugging
+				console.log("Axios error response:", axiosError.response);
+
+				// Extract message from various possible locations in NestJS error response
 				if (axiosError.response?.data?.message) {
-					errorMessage = axiosError.response.data.message;
+					// Handle both string and array messages
+					const msg = axiosError.response.data.message;
+					errorMessage = Array.isArray(msg) ? msg[0] : msg;
+				} else if (axiosError.response?.data?.error) {
+					errorMessage = axiosError.response.data.error;
+				} else if (axiosError.message) {
+					errorMessage = axiosError.message;
 				}
+			} else if (error instanceof Error) {
+				errorMessage = error.message;
 			}
 
 			await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);

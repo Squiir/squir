@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
 const PARIS_BARS = [
   {
@@ -7,6 +7,7 @@ const PARIS_BARS = [
     latitude: 48.8626,
     longitude: 2.336,
     color: "#FF4D6D",
+    ownerUsername: "bar1er", // Owner is the PROFESSIONAL user "bar1er"
     offers: [
       { name: "Bière pression 25cl", price: 4.5 },
       { name: "Mojito", price: 9.0 },
@@ -18,6 +19,7 @@ const PARIS_BARS = [
     latitude: 48.8686,
     longitude: 2.342,
     color: "#FF8FAB",
+    ownerUsername: "bar2em", // Owner is the PROFESSIONAL user "bar2em"
     offers: [
       { name: "Verre de vin", price: 6.0 },
       { name: "Spritz", price: 8.5 },
@@ -178,14 +180,22 @@ const PARIS_BARS = [
   },
 ];
 
-export async function seedBars(prisma: PrismaClient) {
+export async function seedBars(prisma: PrismaClient, users: User[]) {
   console.log("Seeding bars...");
 
+  // Create a map of username to userId
+  const userMap = new Map(users.map((u) => [u.username, u.id]));
+
   for (const barData of PARIS_BARS) {
-    const { offers, ...bar } = barData;
+    const { offers, ownerUsername, ...bar } = barData;
+
+    // Find owner by username if specified
+    const ownerId = ownerUsername ? userMap.get(ownerUsername) : undefined;
+
     await prisma.bar.create({
       data: {
         ...bar,
+        ownerId,
         offers: {
           create: offers,
         },

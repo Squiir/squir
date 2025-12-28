@@ -164,12 +164,21 @@ export class QrCodesService {
   /**
    * Consumes a QR code by marking it as consumed
    * @param id - QR code ID to consume
+   * @param currentUserId - ID of the user consuming the QR
+   * @param userRole - Role of the current user
+   * @param userBarIds - Array of bar IDs owned by the user (for PROFESSIONAL)
    * @returns Consumption confirmation with QR code details
    * @throws {NotFoundException} If QR code doesn't exist
-   * @throws {BadRequestException} If QR code is already consumed
+   * @throws {BadRequestException} If QR code is already consumed or user tries to scan own QR
+   * @throws {ForbiddenException} If user doesn't have permission to scan this QR
    */
-  async consumeQrCode(id: string) {
-    if (!id) throw new BadRequestException("Missing QR code ID");
+  async consumeQrCode(
+    id: string,
+    currentUserId: string,
+    userRole: string,
+    userBarIds: string[],
+  ) {
+    if (!id) throw new BadRequestException("ID du QR code manquant");
 
     const qr = await this.prisma.qRCode.findUnique({
       where: { id },
@@ -187,6 +196,27 @@ export class QrCodesService {
     if (!qr) throw new NotFoundException("QR code not found");
     if (qr.consumedAt)
       throw new BadRequestException("QR code already consumed");
+
+    // Check if user is trying to scan their own QR code
+    if (qr.userId === currentUserId) {
+      throw new BadRequestException("Cannot scan your own QR code");
+    }
+
+    // Role-based permissions
+    if (userRole === "CUSTOMER") {
+      throw new ForbiddenException("Customers cannot scan QR codes");
+    }
+
+    if (userRole === "PROFESSIONAL") {
+      // PROFESSIONAL can only scan QR codes from their own bars
+      if (!userBarIds.includes(qr.barId)) {
+        throw new ForbiddenException(
+          "You can only scan QR codes from your bars",
+        );
+      }
+    }
+
+    // ADMIN can scan all QR codes (no additional check needed)
 
     // Marquer comme consommé
     const updatedQr = await this.prisma.qRCode.update({

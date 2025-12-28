@@ -1,11 +1,12 @@
-import React, {
-	useEffect,
-	createContext,
-	useContext,
-	useState,
-	PropsWithChildren,
-} from "react";
+import { useLoadUserData } from "@hooks/auth/use-load-user-data";
 import { useAuthStore } from "@store/auth.store";
+import React, {
+	createContext,
+	PropsWithChildren,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 
 interface AuthContextType {
 	isLoading: boolean;
@@ -30,6 +31,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		};
 		init();
 	}, [loadTokens]);
+
+	// Load user role and bars when authenticated
+	useLoadUserData();
 
 	const value = {
 		isLoading,

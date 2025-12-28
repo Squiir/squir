@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { seedUsers } from "./seed/users.seed";
+import { seedBars } from "./seed/bars.seed";
 import { seedFriends } from "./seed/friends.seed";
 import { seedGroups } from "./seed/groups.seed";
 import { seedPurchases } from "./seed/purchases.seed";
 import { seedQrCodes } from "./seed/qrcodes.seed";
-import { seedBars } from "./seed/bars.seed";
+import { seedUsers } from "./seed/users.seed";
 
 const prisma = new PrismaClient();
 
@@ -26,7 +26,7 @@ async function main() {
   await seedGroups(prisma, users);
   await seedPurchases(prisma, users);
   await seedQrCodes(prisma, users);
-  await seedBars(prisma);
+  await seedBars(prisma, users); // Pass users to assign bar owners
 
   console.log("Seed completed");
 }

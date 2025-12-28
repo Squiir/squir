@@ -2,23 +2,26 @@ import { useCameraPermissions } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { X } from "lucide-react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { ScannerCamera } from "@components/scanner/ScannerCamera";
 import { ScannerInstructions } from "@components/scanner/ScannerInstructions";
 import { ScannerPermission } from "@components/scanner/ScannerPermission";
 import { useQrScanner } from "@hooks/scanner/use-qr-scanner";
+import { useRequestCameraPermission } from "@hooks/scanner/use-request-camera-permission";
+import { useScannerRedirect } from "@hooks/scanner/use-scanner-redirect";
 
 export default function ScannerScreen() {
 	const [permission, requestPermission] = useCameraPermissions();
 	const router = useRouter();
 	const { scanned, isPending, handleBarCodeScanned } = useQrScanner();
 
-	useEffect(() => {
-		if (!permission || permission.granted) return;
-		requestPermission();
-	}, [permission]);
+	// Redirect CUSTOMER users who try to access scanner directly
+	useScannerRedirect();
+
+	// Auto-request camera permission if not granted
+	useRequestCameraPermission(permission, requestPermission);
 
 	// Écrans de permission
 	if (!permission || !permission.granted) {
