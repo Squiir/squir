@@ -1,10 +1,9 @@
-import React from "react";
-import { View } from "react-native";
-import { ControlledInput } from "@components/form/controlled/ControlledInput";
 import { ControlledDatePicker } from "@components/form/controlled/ControlledDatePicker";
-import { useRegistrationForm } from "@hooks/form/use-registration-form";
+import { ControlledInput } from "@components/form/controlled/ControlledInput";
 import { FormStep } from "@components/form/FormStep";
 import { MultiStepSelector } from "@components/form/MultiStepSelector";
+import { useRegistrationForm } from "@hooks/form/use-registration-form";
+import React from "react";
 
 export function RegistrationForm() {
 	const {
@@ -19,7 +18,7 @@ export function RegistrationForm() {
 	} = useRegistrationForm();
 
 	return (
-		<View className="flex-1 bg-white px-6 justify-center">
+		<>
 			{step === 0 && (
 				<FormStep title="Identifiants">
 					<ControlledInput name="username" label="Pseudo" control={control} />
@@ -34,14 +33,14 @@ export function RegistrationForm() {
 			)}
 
 			{step === 1 && (
-				<FormStep title="Identité">
+				<FormStep title="Qui êtes-vous ?">
 					<ControlledInput name="firstName" label="Prénom" control={control} />
 					<ControlledInput name="lastName" label="Nom" control={control} />
 				</FormStep>
 			)}
 
 			{step === 2 && (
-				<FormStep title="Dernière étape">
+				<FormStep title="Vous y êtes presque !">
 					<ControlledDatePicker
 						name="birthDate"
 						label="Date de naissance"
@@ -58,6 +57,6 @@ export function RegistrationForm() {
 				submit={submit}
 				isSubmitting={isSubmitting}
 			/>
-		</View>
+		</>
 	);
 }
