@@ -85,32 +85,13 @@ export class QrCodesService {
   async getMyQrcodes(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
-    const qrCodes = await this.prisma.qRCode.findMany({
+    return this.prisma.qRCode.findMany({
       where: {
         userId,
         consumedAt: null, // Only active QR codes
       },
       orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        used: true,
-        barId: true,
-        productId: true,
-        label: true,
-        createdAt: true,
-      },
     });
-
-    return qrCodes.map((qr) => ({
-      id: qr.id,
-      used: qr.used,
-      createdAt: qr.createdAt,
-      barId: qr.barId,
-      productId: qr.productId,
-      label: qr.label,
-      value: this.qrValue(qr.id),
-      url: `/qrcodes/${qr.id}.png`,
-    }));
   }
 
   /**

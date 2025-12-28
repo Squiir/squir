@@ -1,7 +1,8 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
+import { ThemedText } from "@components/ThemedText";
 import { Input, InputProps } from "@components/ui/Input";
+import React from "react";
+import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
+import { Text, View } from "react-native";
 
 interface ControlledInputProps<T extends FieldValues> extends InputProps {
 	control: Control<T>;
@@ -17,7 +18,7 @@ export const ControlledInput = <T extends FieldValues>({
 }: ControlledInputProps<T>) => {
 	return (
 		<View className="mb-4">
-			<Text className="text-slate-700 font-semibold mb-1 ml-1">{label}</Text>
+			<ThemedText className="font-semibold mb-1 ml-1">{label}</ThemedText>
 
 			<Controller
 				control={control}

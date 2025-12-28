@@ -1,10 +1,10 @@
+import clsx from "clsx";
 import {
 	ActivityIndicator,
 	Pressable,
 	PressableProps,
 	Text,
 } from "react-native";
-import clsx from "clsx";
 
 type ButtonProps = {
 	title: string;
@@ -38,7 +38,7 @@ export function Button({
 
 	return (
 		<Pressable
-			className={clsx("flex-1 rounded-xl py-4 items-center justify-center", bg)}
+			className={clsx("rounded-xl py-4 items-center justify-center", bg)}
 			disabled={isPending}
 			{...props}
 		>
