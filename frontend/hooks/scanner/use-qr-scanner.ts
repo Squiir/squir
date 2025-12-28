@@ -75,9 +75,6 @@ export function useQrScanner() {
 					message?: string;
 				};
 
-				// Log the error structure for debugging
-				console.log("Axios error response:", axiosError.response);
-
 				// Extract message from various possible locations in NestJS error response
 				if (axiosError.response?.data?.message) {
 					// Handle both string and array messages

@@ -42,7 +42,11 @@ export class UsersService {
   async getUserWithBars(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { bars: true },
+      select: {
+        id: true,
+        role: true,
+        bars: { select: { id: true } },
+      },
     });
     if (!user) throw new NotFoundException("User not found");
     return user;

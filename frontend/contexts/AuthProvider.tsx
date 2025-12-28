@@ -1,4 +1,3 @@
-import { useLoadUserData } from "@hooks/auth/use-load-user-data";
 import { useAuthStore } from "@store/auth.store";
 import React, {
 	createContext,
@@ -31,9 +30,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		};
 		init();
 	}, [loadTokens]);
-
-	// Load user role and bars when authenticated
-	useLoadUserData();
 
 	const value = {
 		isLoading,

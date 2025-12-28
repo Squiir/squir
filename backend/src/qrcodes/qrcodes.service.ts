@@ -8,6 +8,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { UserRole } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import { QrCodeGateway } from "@qrcodes/qrcode.gateway";
 import QRCode from "qrcode";
@@ -175,10 +176,10 @@ export class QrCodesService {
   async consumeQrCode(
     id: string,
     currentUserId: string,
-    userRole: string,
+    userRole: UserRole,
     userBarIds: string[],
   ) {
-    if (!id) throw new BadRequestException("ID du QR code manquant");
+    if (!id) throw new BadRequestException("Missing QR code ID");
 
     const qr = await this.prisma.qRCode.findUnique({
       where: { id },
@@ -202,29 +203,35 @@ export class QrCodesService {
       throw new BadRequestException("Cannot scan your own QR code");
     }
 
-    // Role-based permissions
-    if (userRole === "CUSTOMER") {
-      throw new ForbiddenException("Customers cannot scan QR codes");
+    // Role-based permissions using switch for better readability
+    switch (userRole) {
+      case UserRole.CUSTOMER:
+        throw new ForbiddenException("Customers cannot scan QR codes");
+
+      case UserRole.PROFESSIONAL:
+        // PROFESSIONAL can only scan QR codes from their own bars
+        if (!userBarIds.includes(qr.barId)) {
+          throw new ForbiddenException(
+            "You can only scan QR codes from your bars",
+          );
+        }
+        break;
+
+      case UserRole.ADMIN:
+        // ADMIN can scan all QR codes (no restrictions)
+        break;
+
+      default:
+        throw new ForbiddenException("Invalid user role");
     }
 
-    if (userRole === "PROFESSIONAL") {
-      // PROFESSIONAL can only scan QR codes from their own bars
-      if (!userBarIds.includes(qr.barId)) {
-        throw new ForbiddenException(
-          "You can only scan QR codes from your bars",
-        );
-      }
-    }
-
-    // ADMIN can scan all QR codes (no additional check needed)
-
-    // Marquer comme consommé
+    // Mark as consumed
     const updatedQr = await this.prisma.qRCode.update({
       where: { id },
       data: { consumedAt: new Date() },
     });
 
-    // Notifier le propriétaire du QR code via WebSocket
+    // Notify the QR code owner via WebSocket
     this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
 
     return {
