@@ -3,7 +3,7 @@ import { useGetHistory } from "@hooks/qrcode/use-get-history";
 import React from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
-import { QrCodeHistoryCard } from "./QrCodeHistoryCard";
+import { QrCodeHistoryCard } from "@components/qrcode/QrCodeHistoryCard";
 
 export function QrCodeHistory() {
 	const { data: history, isLoading } = useGetHistory();

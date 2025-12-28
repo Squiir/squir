@@ -1,15 +1,16 @@
 import {
+  MAX_HISTORY_RECORDS,
+  QR_CODE_EXPIRATION_HOURS,
+} from "@constants/qrcodes.constants";
+import {
   BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
+import { QrCodeGateway } from "@qrcodes/qrcode.gateway";
 import QRCode from "qrcode";
-import { QrCodeGateway } from "./qrcode.gateway";
-
-const MAX_HISTORY_RECORDS = 50;
-const QR_CODE_EXPIRATION_HOURS = 48;
 
 @Injectable()
 export class QrCodesService {
@@ -22,6 +23,16 @@ export class QrCodesService {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
   }
 
+  /**
+   * Creates a new QR code for a user
+   * @param params - QR code creation parameters
+   * @param params.userId - ID of the user creating the QR code
+   * @param params.barId - ID of the bar
+   * @param params.productId - ID of the product/offer
+   * @param params.label - Optional label for the QR code
+   * @returns Created QR code with value and URL
+   * @throws {BadRequestException} If required parameters are missing
+   */
   async createQrcode(params: {
     userId: string;
     barId: string;
@@ -64,10 +75,16 @@ export class QrCodesService {
     };
   }
 
+  /**
+   * Retrieves all active (non-consumed) QR codes for a user
+   * @param userId - ID of the user
+   * @returns Array of active QR codes with their details
+   * @throws {BadRequestException} If userId is missing
+   */
   async getMyQrcodes(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
-    const items = await this.prisma.qRCode.findMany({
+    const qrCodes = await this.prisma.qRCode.findMany({
       where: {
         userId,
         consumedAt: null, // Only active QR codes
@@ -83,7 +100,7 @@ export class QrCodesService {
       },
     });
 
-    return items.map((qr) => ({
+    return qrCodes.map((qr) => ({
       id: qr.id,
       used: qr.used,
       createdAt: qr.createdAt,
@@ -95,6 +112,15 @@ export class QrCodesService {
     }));
   }
 
+  /**
+   * Removes a QR code (deletes it from the database)
+   * @param userId - ID of the user requesting deletion
+   * @param id - ID of the QR code to delete
+   * @returns Confirmation object
+   * @throws {BadRequestException} If userId is missing
+   * @throws {NotFoundException} If QR code doesn't exist
+   * @throws {ForbiddenException} If user is not the owner of the QR code
+   */
   async removeQrcode(userId: string, id: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
@@ -110,6 +136,12 @@ export class QrCodesService {
     return { ok: true };
   }
 
+  /**
+   * Generates a PNG image of the QR code
+   * @param id - ID of the QR code to render
+   * @returns PNG buffer of the QR code image
+   * @throws {NotFoundException} If QR code doesn't exist
+   */
   async renderPng(id: string) {
     const qr = await this.prisma.qRCode.findUnique({
       where: { id },
@@ -177,6 +209,12 @@ export class QrCodesService {
     };
   }
 
+  /**
+   * Retrieves the history of consumed QR codes for a user
+   * @param userId - ID of the user
+   * @returns Array of consumed QR codes (limited to 50 most recent)
+   * @throws {BadRequestException} If userId is missing
+   */
   async getHistory(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 

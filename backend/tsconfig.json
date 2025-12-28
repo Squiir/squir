@@ -32,7 +32,8 @@
       "@purchases/*": ["src/purchases/*"],
       "@qrcodes/*": ["src/qrcodes/*"],
       "@users/*": ["src/users/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@constants/*": ["src/constants/*"]
     }
   }
 }

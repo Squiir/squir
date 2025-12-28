@@ -1,3 +1,5 @@
+import { CurrentUserId } from "@auth/current-user.decorator";
+import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import { Public } from "@auth/public.decorator";
 import {
   Body,
@@ -9,11 +11,9 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { GenerateQrCodeDto } from "@qrcodes/dto/qrcodes.dto";
+import { QrCodesService } from "@qrcodes/qrcodes.service";
 import type { Response } from "express";
-import { CurrentUserId } from "../auth/current-user.decorator";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { GenerateQrCodeDto } from "./dto/qrcodes.dto";
-import { QrCodesService } from "./qrcodes.service";
 
 @Controller("qrcodes")
 @UseGuards(JwtAuthGuard)

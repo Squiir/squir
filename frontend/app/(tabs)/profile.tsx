@@ -69,6 +69,9 @@ export default function ProfileScreen() {
 			{/* Modal QR */}
 			<QrModal qr={selectedQr} onClose={() => setSelectedQr(undefined)} />
 
+			{/* Historique */}
+			<QrCodeHistory />
+
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
 				<View className="gap-4">
@@ -89,8 +92,6 @@ export default function ProfileScreen() {
 					<Button title="Supprimer le compte" variant="danger" />
 				</View>
 			</View>
-
-			<QrCodeHistory />
 		</ScrollView>
 	);
 }
