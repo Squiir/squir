@@ -41,15 +41,14 @@ model QRCode {
   label String
   used  Boolean @default(false)
 
-  userId    String
-  barId     String
-  productId String
-  user      User   @relation(fields: [userId], references: [id])
+  userId     String
+  barId      String
+  productId  String
+  user       User      @relation(fields: [userId], references: [id])
+  consumedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([userId, barId, productId], name: "userId_barId_productId")
 }
 
 model Friend {

@@ -1,20 +1,38 @@
 import {
+  MAX_HISTORY_RECORDS,
+  QR_CODE_EXPIRATION_HOURS,
+} from "@constants/qrcodes.constants";
+import {
   BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
+import { QrCodeGateway } from "@qrcodes/qrcode.gateway";
 import QRCode from "qrcode";
 
 @Injectable()
 export class QrCodesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private qrCodeGateway: QrCodeGateway,
+  ) {}
 
   private qrValue(qrId: string) {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
   }
 
+  /**
+   * Creates a new QR code for a user
+   * @param params - QR code creation parameters
+   * @param params.userId - ID of the user creating the QR code
+   * @param params.barId - ID of the bar
+   * @param params.productId - ID of the product/offer
+   * @param params.label - Optional label for the QR code
+   * @returns Created QR code with value and URL
+   * @throws {BadRequestException} If required parameters are missing
+   */
   async createQrcode(params: {
     userId: string;
     barId: string;
@@ -27,18 +45,8 @@ export class QrCodesService {
     if (!barId) throw new BadRequestException("Missing barId");
     if (!productId) throw new BadRequestException("Missing productId");
 
-    const qr = await this.prisma.qRCode.upsert({
-      where: {
-        userId_barId_productId: {
-          userId,
-          barId,
-          productId,
-        },
-      },
-      update: {
-        label: label ?? `QR for bar=${barId} product=${productId}`,
-      },
-      create: {
+    const qr = await this.prisma.qRCode.create({
+      data: {
         userId,
         barId,
         productId,
@@ -67,34 +75,33 @@ export class QrCodesService {
     };
   }
 
+  /**
+   * Retrieves all active (non-consumed) QR codes for a user
+   * @param userId - ID of the user
+   * @returns Array of active QR codes with their details
+   * @throws {BadRequestException} If userId is missing
+   */
   async getMyQrcodes(userId: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
-    const items = await this.prisma.qRCode.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        used: true,
-        barId: true,
-        productId: true,
-        label: true,
-        createdAt: true,
+    return this.prisma.qRCode.findMany({
+      where: {
+        userId,
+        consumedAt: null, // Only active QR codes
       },
+      orderBy: { createdAt: "desc" },
     });
-
-    return items.map((qr) => ({
-      id: qr.id,
-      used: qr.used,
-      createdAt: qr.createdAt,
-      barId: qr.barId,
-      productId: qr.productId,
-      label: qr.label,
-      value: this.qrValue(qr.id),
-      url: `/qrcodes/${qr.id}.png`,
-    }));
   }
 
+  /**
+   * Removes a QR code (deletes it from the database)
+   * @param userId - ID of the user requesting deletion
+   * @param id - ID of the QR code to delete
+   * @returns Confirmation object
+   * @throws {BadRequestException} If userId is missing
+   * @throws {NotFoundException} If QR code doesn't exist
+   * @throws {ForbiddenException} If user is not the owner of the QR code
+   */
   async removeQrcode(userId: string, id: string) {
     if (!userId) throw new BadRequestException("Missing userId");
 
@@ -110,6 +117,12 @@ export class QrCodesService {
     return { ok: true };
   }
 
+  /**
+   * Generates a PNG image of the QR code
+   * @param id - ID of the QR code to render
+   * @returns PNG buffer of the QR code image
+   * @throws {NotFoundException} If QR code doesn't exist
+   */
   async renderPng(id: string) {
     const qr = await this.prisma.qRCode.findUnique({
       where: { id },
@@ -127,5 +140,102 @@ export class QrCodesService {
     });
 
     return png;
+  }
+
+  /**
+   * Consumes a QR code by marking it as consumed
+   * @param id - QR code ID to consume
+   * @returns Consumption confirmation with QR code details
+   * @throws {NotFoundException} If QR code doesn't exist
+   * @throws {BadRequestException} If QR code is already consumed
+   */
+  async consumeQrCode(id: string) {
+    if (!id) throw new BadRequestException("Missing QR code ID");
+
+    const qr = await this.prisma.qRCode.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        barId: true,
+        productId: true,
+        label: true,
+        userId: true,
+        createdAt: true,
+        consumedAt: true,
+      },
+    });
+
+    if (!qr) throw new NotFoundException("QR code not found");
+    if (qr.consumedAt)
+      throw new BadRequestException("QR code already consumed");
+
+    // Marquer comme consommé
+    const updatedQr = await this.prisma.qRCode.update({
+      where: { id },
+      data: { consumedAt: new Date() },
+    });
+
+    // Notifier le propriétaire du QR code via WebSocket
+    this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
+
+    return {
+      message: "QR code consumed successfully",
+      qrCode: {
+        id: qr.id,
+        barId: qr.barId,
+        productId: qr.productId,
+        label: qr.label,
+        createdAt: qr.createdAt,
+      },
+    };
+  }
+
+  /**
+   * Retrieves the history of consumed QR codes for a user
+   * @param userId - ID of the user
+   * @returns Array of consumed QR codes (limited to 50 most recent)
+   * @throws {BadRequestException} If userId is missing
+   */
+  async getHistory(userId: string) {
+    if (!userId) throw new BadRequestException("Missing userId");
+
+    return this.prisma.qRCode.findMany({
+      where: {
+        userId,
+        consumedAt: { not: null },
+      },
+      orderBy: { consumedAt: "desc" },
+      take: MAX_HISTORY_RECORDS,
+      select: {
+        id: true,
+        barId: true,
+        productId: true,
+        label: true,
+        consumedAt: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  /**
+   * Deletes QR codes older than 48 hours
+   * Intended for scheduled cleanup (e.g., cron job)
+   * @returns Object containing the number of deleted QR codes
+   */
+  async deleteExpiredQrCodes() {
+    const expirationDate = new Date();
+    expirationDate.setHours(
+      expirationDate.getHours() - QR_CODE_EXPIRATION_HOURS,
+    );
+
+    const result = await this.prisma.qRCode.deleteMany({
+      where: {
+        createdAt: {
+          lt: expirationDate,
+        },
+      },
+    });
+
+    return { deleted: result.count };
   }
 }
