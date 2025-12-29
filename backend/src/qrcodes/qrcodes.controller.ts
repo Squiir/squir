@@ -56,11 +56,7 @@ export class QrCodesController {
     @Param("id") id: string,
     @CurrentUserId() userId: string,
   ) {
-    // Get user with their bars
-    const user = await this.users.getUserWithBars(userId);
-    const barIds = user.bar ? [user.bar.id] : [];
-
-    return this.qr.consumeQrCode(id, userId, user.role, barIds);
+    return this.qr.consumeQrCode(id, userId);
   }
 
   @Public()

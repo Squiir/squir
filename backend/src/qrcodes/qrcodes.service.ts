@@ -153,33 +153,35 @@ export class QrCodesService {
    * Consumes a QR code by marking it as consumed
    * @param id - QR code ID to consume
    * @param currentUserId - ID of the user consuming the QR
-   * @param userRole - Role of the current user
-   * @param userBarIds - Array of bar IDs owned by the user (for PROFESSIONAL)
    * @returns Consumption confirmation with QR code details
    * @throws {NotFoundException} If QR code doesn't exist
    * @throws {BadRequestException} If QR code is already consumed or user tries to scan own QR
    * @throws {ForbiddenException} If user doesn't have permission to scan this QR
    */
-  async consumeQrCode(
-    id: string,
-    currentUserId: string,
-    userRole: UserRole,
-    userBarIds: string[],
-  ) {
+  async consumeQrCode(id: string, currentUserId: string) {
     if (!id) throw new BadRequestException("Missing QR code ID");
 
-    const qr = await this.prisma.qRCode.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        barId: true,
-        offerId: true,
-        label: true,
-        userId: true,
-        createdAt: true,
-        consumedAt: true,
-      },
-    });
+    // Get QR code and user info in parallel
+    const [qr, user] = await Promise.all([
+      this.prisma.qRCode.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          barId: true,
+          offerId: true,
+          label: true,
+          userId: true,
+          createdAt: true,
+          consumedAt: true,
+        },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: currentUserId },
+        select: { role: true, barId: true },
+      }),
+    ]);
+
+    if (!user) throw new NotFoundException("User not found");
 
     if (!qr) throw new NotFoundException("QR code not found");
     if (qr.consumedAt)
@@ -190,16 +192,16 @@ export class QrCodesService {
       throw new BadRequestException("Cannot scan your own QR code");
     }
 
-    // Role-based permissions using switch for better readability
-    switch (userRole) {
+    // Role-based permissions
+    switch (user.role) {
       case UserRole.CUSTOMER:
         throw new ForbiddenException("Customers cannot scan QR codes");
 
       case UserRole.PROFESSIONAL:
-        // PROFESSIONAL can only scan QR codes from their own bars
-        if (!userBarIds.includes(qr.barId)) {
+        // PROFESSIONAL can only scan QR codes from their own bar
+        if (!user.barId || user.barId !== qr.barId) {
           throw new ForbiddenException(
-            "You can only scan QR codes from your bars",
+            "You can only scan QR codes from your bar",
           );
         }
         break;

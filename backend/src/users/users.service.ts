@@ -27,7 +27,7 @@ export class UsersService {
     });
     if (!user) throw new NotFoundException("User not found");
 
-    const { password, ...userWithoutPassword } = user;
+    const { password: _password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 

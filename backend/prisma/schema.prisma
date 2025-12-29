@@ -107,7 +107,7 @@ model Bar {
   users          User[]   @relation("BarUsers")
   offers         Offer[]
   createdAt      DateTime @default(now())
-  offersUpdated  DateTime @updatedAt
+  updatedAt      DateTime @updatedAt
   qrCodes        QRCode[]
 }
 
