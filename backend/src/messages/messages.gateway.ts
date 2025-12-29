@@ -40,14 +40,14 @@ export class MessagesGateway
 
       socket.join(payload.sub);
 
-      console.log("🟢 WS connected:", payload.sub);
+      console.log("WS connected:", payload.sub);
     } catch {
       socket.disconnect();
     }
   }
 
   handleDisconnect(socket: Socket) {
-    console.log("🔴 WS disconnected:", socket.data.userId);
+    console.log("WS disconnected:", socket.data.userId);
   }
 
   @SubscribeMessage("message:send")

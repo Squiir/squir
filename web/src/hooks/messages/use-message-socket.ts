@@ -1,4 +1,4 @@
-import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
+import { useMyId } from "@/hooks/user/use-my-id";
 import { useAuthStore } from "@/store/auth.store";
 import type { Message } from "@/types/messages";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ let socket: Socket | null = null;
 
 export function useMessageSocket(selectedFriendId?: string) {
   const qc = useQueryClient();
-  const { data: me } = useGetCurrentUserId();
+  const { data: me } = useMyId();
   const myId = me?.id;
 
   useEffect(() => {

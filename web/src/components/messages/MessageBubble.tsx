@@ -1,9 +1,9 @@
-import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
+import { useMyId } from "@/hooks/user/use-my-id";
 import type { Message } from "@/types/messages";
 import clsx from "clsx";
 
 export function MessageBubble({ message, showRead }: { message: Message; showRead: boolean }) {
-  const { data: me } = useGetCurrentUserId();
+  const { data: me } = useMyId();
   const myId = me?.id;
   const isMine = message.senderId === myId;
 

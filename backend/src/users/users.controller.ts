@@ -26,6 +26,12 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get("id")
+  myId(@CurrentUserId() userId: string) {
+    return { id: userId };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete("me")
   deleteMe(@CurrentUserId() userId: string) {
     return this.users.deleteMe(userId);
