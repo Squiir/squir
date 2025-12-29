@@ -9,7 +9,7 @@ export class GenerateQrCodeDto {
   @IsString()
   @MinLength(2)
   @MaxLength(80)
-  productId!: string;
+  offerId!: string;
 
   @IsString()
   @MinLength(0)

@@ -16,6 +16,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  /**
+   * Register a new user account
+   * @param dto - Registration data including email, username, password, and birthdate
+   * @returns Access and refresh tokens
+   * @throws ConflictException if email or username already exists
+   */
   async register(dto: RegisterDto) {
     const existingEmail = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -44,12 +50,24 @@ export class AuthService {
     return tokens;
   }
 
+  /**
+   * Log in an existing user
+   * @param userId - User ID
+   * @returns Access and refresh tokens
+   */
   async login(userId: string) {
     const tokens = await this.generateTokens(userId);
     await this.updateRefreshToken(userId, tokens.refreshToken);
     return tokens;
   }
 
+  /**
+   * Refresh access and refresh tokens
+   * @param userId - User ID from JWT payload
+   * @param refreshToken - Current refresh token
+   * @returns New access and refresh tokens
+   * @throws ForbiddenException if refresh token is invalid or doesn't match
+   */
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -74,6 +92,10 @@ export class AuthService {
     return tokens;
   }
 
+  /**
+   * Log out user by clearing refresh token
+   * @param userId - User ID
+   */
   async logout(userId: string) {
     await this.prisma.user.update({
       where: { id: userId },
@@ -81,6 +103,12 @@ export class AuthService {
     });
   }
 
+  /**
+   * Generate access and refresh tokens for a user
+   * @param userId - User ID
+   * @returns Access and refresh tokens
+   * @private
+   */
   private async generateTokens(userId: string) {
     const payload = { sub: userId };
 
@@ -101,6 +129,12 @@ export class AuthService {
     };
   }
 
+  /**
+   * Hash and store refresh token in database
+   * @param userId - User ID
+   * @param refreshToken - Refresh token to hash and store
+   * @private
+   */
   private async updateRefreshToken(userId: string, refreshToken: string) {
     const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
 

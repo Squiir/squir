@@ -32,7 +32,7 @@ async function main() {
   await seedGroups(prisma, users);
   await seedPurchases(prisma, users);
   await seedQrCodes(prisma, users);
-  await seedBars(prisma);
+  await seedBars(prisma, users); // Pass users to assign bar owners
 
   console.log("Seed completed");
 }

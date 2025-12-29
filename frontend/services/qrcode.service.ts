@@ -3,7 +3,7 @@ import { api } from "@services/api.service";
 
 export interface QrCodeDto {
 	barId: string;
-	productId: string;
+	offerId: string;
 	label?: string;
 }
 
