@@ -1,18 +1,30 @@
-import { useFriends } from "@/hooks/friends/use-friends";
-import { FriendItem } from "./FriendItem";
+import { FriendItem } from "@/components/friends/FriendItem";
+import { AppSkeleton } from "@/components/ui/skeletons/AppSkeleton";
+import { useConversations } from "@/hooks/messages/use-conversations";
 
-export function FriendsList() {
-  const { data = [], isLoading } = useFriends();
+export function FriendsList({
+  selectedFriendId,
+  onSelectFriend,
+}: {
+  selectedFriendId?: string;
+  onSelectFriend: (id: string) => void;
+}) {
+  const { data = [], isLoading } = useConversations();
 
   return (
     <div className="flex-1 overflow-auto">
-      <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Amis</h3>
+      <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Conversations</h3>
 
-      {isLoading && <div className="text-sm">Chargement…</div>}
+      {isLoading && <AppSkeleton />}
 
-      <div className="space-y-1">
-        {data.map((friend) => (
-          <FriendItem key={friend.id} friend={friend} />
+      <div className="flex-1 space-y-1 overflow-auto">
+        {data.map((conversation) => (
+          <FriendItem
+            key={conversation.friend.id}
+            conversation={conversation}
+            active={conversation.friend.id === selectedFriendId}
+            onClick={() => onSelectFriend(conversation.friend.id)}
+          />
         ))}
       </div>
     </div>

@@ -1,8 +1,8 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CurrentUserId } from "../auth/current-user.decorator";
-import { PurchasesService } from "./purchases.service";
+import { CurrentUserId } from "../utils/decorators/current-user.decorator";
 import { AddPointsDto } from "./dto/purchases.dto";
+import { PurchasesService } from "./purchases.service";
 
 @Controller("purchases")
 @UseGuards(JwtAuthGuard)

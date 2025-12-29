@@ -1,4 +1,3 @@
-import { CurrentUserId } from "@auth/current-user.decorator";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import {
   AddGroupMembersDto,
@@ -16,6 +15,7 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 
 @Controller("groups")
 @UseGuards(JwtAuthGuard)

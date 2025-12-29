@@ -9,12 +9,12 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { Public } from "@utils/decorators/public.decorator";
 import type { Response } from "express";
-import { QrCodesService } from "./qrcodes.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CurrentUserId } from "../auth/current-user.decorator";
+import { CurrentUserId } from "../utils/decorators/current-user.decorator";
 import { GenerateQrCodeDto } from "./dto/qrcodes.dto";
-import { Public } from "@auth/public.decorator";
+import { QrCodesService } from "./qrcodes.service";
 
 @Controller("qrcodes")
 @UseGuards(JwtAuthGuard)

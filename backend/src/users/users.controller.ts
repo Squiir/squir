@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import {
   Body,
   Controller,
@@ -7,13 +8,12 @@ import {
   Patch,
   UseGuards,
 } from "@nestjs/common";
-import { UsersService } from "@users/users.service";
-import { JwtAuthGuard } from "@auth/jwt-auth.guard";
-import { CurrentUserId } from "@auth/current-user.decorator";
 import { UpdateAvatarDto } from "@users/dto/update-avatar.dto";
+import { UpdatePasswordDto } from "@users/dto/update-password.dto";
 import { UpdateStatusDto } from "@users/dto/update-status.dto";
 import { UpdateUsernameDto } from "@users/dto/update-username.dto";
-import { UpdatePasswordDto } from "@users/dto/update-password.dto";
+import { UsersService } from "@users/users.service";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 
 @Controller("users")
 export class UsersController {
