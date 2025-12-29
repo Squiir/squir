@@ -1,3 +1,4 @@
+import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
 import { useAuthStore } from "@/store/auth.store";
 import type { Message } from "@/types/messages";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,10 +9,11 @@ let socket: Socket | null = null;
 
 export function useMessageSocket(selectedFriendId?: string) {
   const qc = useQueryClient();
+  const { data: me } = useGetCurrentUserId();
+  const myId = me?.id;
 
   useEffect(() => {
     const token = useAuthStore.getState().accessToken;
-    const myId = useAuthStore.getState().userId;
 
     if (!token || !myId) return;
 
@@ -58,9 +60,7 @@ export function useMessageSocket(selectedFriendId?: string) {
         if (!old) return old;
 
         return old.map((m) =>
-          m.senderId === useAuthStore.getState().userId
-            ? { ...m, readAt: new Date().toISOString() }
-            : m,
+          m.senderId === myId ? { ...m, readAt: new Date().toISOString() } : m,
         );
       });
     });

@@ -1,10 +1,11 @@
-import { useAuthStore } from "@/store/auth.store";
+import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
 import type { Message } from "@/types/messages";
 import clsx from "clsx";
 
 export function MessageBubble({ message, showRead }: { message: Message; showRead: boolean }) {
-  const userId = useAuthStore.getState().userId;
-  const isMine = message.senderId === userId;
+  const { data: me } = useGetCurrentUserId();
+  const myId = me?.id;
+  const isMine = message.senderId === myId;
 
   return (
     <div>

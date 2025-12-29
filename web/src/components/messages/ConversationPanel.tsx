@@ -1,25 +1,27 @@
 import { MessageBubble } from "@/components/messages/MessageBubble";
 import { MessageComposer } from "@/components/messages/MessageComposer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useFriends } from "@/hooks/friends/use-friends";
+import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
+import { useGetFriends } from "@/hooks/friends/use-friends";
 import { useConversation } from "@/hooks/messages/use-conversation";
 import { markConversationRead } from "@/hooks/messages/use-message-socket";
 import { useTyping } from "@/hooks/messages/use-typing";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/auth.store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
 
 export function ConversationPanel({ friendId }: { friendId?: string }) {
   const qc = useQueryClient();
-  const { data: friends = [] } = useFriends();
+  const { data: friends = [] } = useGetFriends();
 
   const friend = useMemo(() => friends.find((f) => f.id === friendId), [friends, friendId]);
 
   const { data = [], isLoading } = useConversation(friendId);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  const myId = useAuthStore.getState().userId;
+  const { data: me } = useGetCurrentUserId();
+  const myId = me?.id;
+
   const lastMyMessageId = [...data].reverse().find((m) => m.senderId === myId)?.id;
   const { data: isTyping = false } = useTyping(friendId);
 

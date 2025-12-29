@@ -25,4 +25,9 @@ export const authService = {
   async logout() {
     await useAuthStore.getState().clearTokens();
   },
+
+  async getCurrentUserId() {
+    const { data } = await api.get("/auth/id");
+    return data;
+  },
 };

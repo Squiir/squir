@@ -4,7 +4,7 @@ import { RegisterDto } from "@auth/dto/register.dto";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import { JwtRefreshTokenGuard } from "@auth/jwt-refresh-token.guard";
 import { LocalAuthGuard } from "@auth/local-auth.guard";
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 
 @Controller("auth")
@@ -35,5 +35,13 @@ export class AuthController {
   @Post("logout")
   logout(@CurrentUserId() userId: string) {
     return this.auth.logout(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("id")
+  me(@Req() req: AuthDto) {
+    return {
+      id: req.user.id,
+    };
   }
 }

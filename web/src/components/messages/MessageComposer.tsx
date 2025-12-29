@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useGetCurrentUserId } from "@/hooks/auth/use-get-current-user-id";
 import {
   emitTypingStart,
   emitTypingStop,
   sendSocketMessage,
 } from "@/hooks/messages/use-message-socket";
-import { useAuthStore } from "@/store/auth.store";
 import type { Message } from "@/types/messages";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -15,7 +15,8 @@ export function MessageComposer({ friendId }: { friendId: string }) {
   const typingTimeout = useRef<number | null>(null);
 
   const qc = useQueryClient();
-  const myId = useAuthStore.getState().userId;
+  const { data: me } = useGetCurrentUserId();
+  const myId = me?.id;
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setText(e.target.value);
