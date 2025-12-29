@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useFriends } from "@/hooks/friends/use-friends";
+import { useGetFriends } from "@/hooks/friends/use-friends";
 
 export function FriendsList() {
-  const { data = [], isLoading } = useFriends();
+  const { data = [], isLoading } = useGetFriends();
 
   return (
     <div className="flex-1 overflow-auto">

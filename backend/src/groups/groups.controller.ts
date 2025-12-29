@@ -22,27 +22,27 @@ export class GroupsController {
     return this.groups.create(userId, dto.name, dto.memberIds);
   }
 
-  @Patch(":groupId")
+  @Patch(":id")
   update(
     @CurrentUserId() userId: string,
-    @Param("groupId") groupId: string,
+    @Param("id") groupId: string,
     @Body() dto: UpdateGroupDto,
   ) {
     return this.groups.updateName(userId, groupId, dto.name);
   }
 
-  @Post(":groupId/join")
-  join(@CurrentUserId() userId: string, @Param("groupId") groupId: string) {
+  @Post(":id/join")
+  join(@CurrentUserId() userId: string, @Param("id") groupId: string) {
     return this.groups.join(userId, groupId);
   }
 
-  @Post(":groupId/leave")
-  leave(@CurrentUserId() userId: string, @Param("groupId") groupId: string) {
+  @Post(":id/leave")
+  leave(@CurrentUserId() userId: string, @Param("id") groupId: string) {
     return this.groups.leave(userId, groupId);
   }
 
-  @Get(":groupId/share")
-  share(@Param("groupId") groupId: string) {
+  @Get(":id/share")
+  share(@Param("id") groupId: string) {
     return this.groups.share(groupId);
   }
 }

@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useFriends } from "@/hooks/friends/use-friends";
+import { useGetFriends } from "@/hooks/friends/use-friends";
 import { useCreateGroup } from "@/hooks/groups/use-create-group";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ export function CreateGroupDialog() {
   const [name, setName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
 
-  const { data: friends = [] } = useFriends();
+  const { data: friends = [] } = useGetFriends();
   const { mutate: createGroup } = useCreateGroup();
 
   function toggle(userId: string) {

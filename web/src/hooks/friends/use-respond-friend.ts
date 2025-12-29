@@ -1,4 +1,4 @@
-import { api } from "@/services/api.service";
+import { friendsService } from "@/services/friends.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -7,7 +7,7 @@ export function useRespondFriend() {
 
   return useMutation({
     mutationFn: async (payload: { requestId: string; accept: boolean }) => {
-      await api.post(`/friends/${payload.requestId}/respond`, {
+      return friendsService.respondRequest(payload.requestId, {
         accept: payload.accept,
       });
     },
