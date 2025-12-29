@@ -17,7 +17,9 @@ export function useMessageSocket(selectedFriendId?: string) {
 
     if (!token || !myId) return;
 
-    socket = io(import.meta.env.VITE_API_URL + "/ws", {
+    const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, "");
+
+    socket = io(`${baseUrl}/ws`, {
       auth: { token },
     });
 
@@ -77,7 +79,7 @@ export function useMessageSocket(selectedFriendId?: string) {
       socket?.disconnect();
       socket = null;
     };
-  }, [qc, selectedFriendId]);
+  }, [qc, selectedFriendId, myId]);
 }
 
 function isSocketReady(): socket is Socket {
