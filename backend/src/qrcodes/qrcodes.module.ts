@@ -1,11 +1,13 @@
+import { AuthModule } from "@auth/auth.module";
 import { Module } from "@nestjs/common";
+import { PrismaModule } from "@prisma/prisma.module";
+import { QrCodeGateway } from "./qrcode.gateway";
 import { QrCodesController } from "./qrcodes.controller";
 import { QrCodesService } from "./qrcodes.service";
-import { PrismaModule } from "@prisma/prisma.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   controllers: [QrCodesController],
-  providers: [QrCodesService],
+  providers: [QrCodesService, QrCodeGateway],
 })
 export class QrCodesModule {}

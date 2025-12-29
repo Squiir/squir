@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useCreateGroup() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (dto: CreateGroupDto) => {
@@ -12,7 +12,7 @@ export function useCreateGroup() {
     },
     onSuccess: async () => {
       toast.success("Groupe créé");
-      await qc.invalidateQueries({ queryKey: ["groups"] });
+      await queryClient.invalidateQueries({ queryKey: ["groups"] });
     },
     onError: () => {
       toast.error("Impossible de créer le groupe");

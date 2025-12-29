@@ -5,14 +5,10 @@ import {
 } from "@nestjs/common";
 import { FriendStatus } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
-// import { SocialGateway } from "@social/social.gateway";
 
 @Injectable()
 export class FriendsService {
-  constructor(
-    private prisma: PrismaService,
-    // private socket: SocialGateway,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async sendRequest(requesterId: string, receiverId: string) {
     if (requesterId === receiverId) {
@@ -37,7 +33,6 @@ export class FriendsService {
     }
 
     if (existing?.status === FriendStatus.REJECTED) {
-      // this.socket.notifyFriendRequest(receiverId, request.requester);
       return this.prisma.friend.update({
         where: { id: existing.id },
         data: {
@@ -53,7 +48,6 @@ export class FriendsService {
       });
     }
 
-    // this.socket.notifyFriendRequest(receiverId, request.requester);
     return this.prisma.friend.create({
       data: {
         requesterId,
@@ -89,13 +83,6 @@ export class FriendsService {
         receiver: { select: { id: true, username: true, avatarUrl: true } },
       },
     });
-
-    if (status === FriendStatus.ACCEPTED) {
-      // this.socket.notifyFriendAccepted(
-      //   updatedRequest.requesterId,
-      //   updatedRequest.receiver,
-      // );
-    }
 
     return updatedRequest;
   }

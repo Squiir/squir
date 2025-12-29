@@ -1,8 +1,8 @@
-import { useFriends } from "@/hooks/friends/use-friends";
+import { useGetFriends } from "@/hooks/friends/use-friends";
 import { FriendItem } from "./FriendItem";
 
 export function FriendsList() {
-  const { data = [], isLoading } = useFriends();
+  const { data = [], isLoading } = useGetFriends();
 
   return (
     <div className="flex-1 overflow-auto">

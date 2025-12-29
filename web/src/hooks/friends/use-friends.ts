@@ -3,7 +3,7 @@ import { friendsService } from "@/services/friends.service";
 import type { Friend } from "@/types/friends";
 import { useQuery } from "@tanstack/react-query";
 
-export function useFriends() {
+export function useGetFriends() {
   const { isLoggedIn } = useAuth();
 
   return useQuery<Friend[]>({

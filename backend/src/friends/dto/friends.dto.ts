@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-  IsUUID,
-  MinLength,
-} from "class-validator";
+import { IsBoolean, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class AddFriendDto {
   @IsUUID()
@@ -19,6 +13,5 @@ export class RespondFriendDto {
 export class SearchFriendsDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
   query!: string;
 }
