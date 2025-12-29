@@ -1,16 +1,16 @@
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { useLogin } from "@/hooks/auth/use-login";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Navigate } from "react-router";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/auth/use-auth";
+import { useLogin } from "@/hooks/auth/use-login";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Navigate } from "react-router";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const schema = z.object({
-  username: z.string().min(1, "Username requis"),
+  usernameOrEmail: z.string().min(1, "Username ou email requis"),
   password: z.string().min(1, "Mot de passe requis"),
 });
 
@@ -46,7 +46,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <Input placeholder="Username" {...form.register("username")} />
+            <Input placeholder="Username ou email" {...form.register("usernameOrEmail")} />
             <Input type="password" placeholder="Mot de passe" {...form.register("password")} />
 
             <Button className="w-full" disabled={isPending}>
