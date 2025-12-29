@@ -1,6 +1,11 @@
 import { CurrentUserId } from "@auth/current-user.decorator";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
-import { CreateGroupDto, UpdateGroupDto } from "@groups/dto/groups.dto";
+import {
+  AddGroupMembersDto,
+  CreateGroupDto,
+  GroupListItem,
+  UpdateGroupDto,
+} from "@groups/dto/groups.dto";
 import { GroupsService } from "@groups/groups.service";
 import {
   Body,
@@ -19,7 +24,7 @@ export class GroupsController {
 
   @Post()
   create(@CurrentUserId() userId: string, @Body() dto: CreateGroupDto) {
-    return this.groups.create(userId, dto.name, dto.memberIds);
+    return this.groups.create(userId, dto);
   }
 
   @Patch(":id")
@@ -31,9 +36,13 @@ export class GroupsController {
     return this.groups.updateName(userId, groupId, dto.name);
   }
 
-  @Post(":id/join")
-  join(@CurrentUserId() userId: string, @Param("id") groupId: string) {
-    return this.groups.join(userId, groupId);
+  @Post(":id/members")
+  addMember(
+    @CurrentUserId() userId: string,
+    @Param("id") groupId: string,
+    @Body() dto: AddGroupMembersDto,
+  ) {
+    return this.groups.addMember(userId, groupId, dto.memberIds);
   }
 
   @Post(":id/leave")
@@ -44,5 +53,10 @@ export class GroupsController {
   @Get(":id/share")
   share(@Param("id") groupId: string) {
     return this.groups.share(groupId);
+  }
+
+  @Get()
+  list(@CurrentUserId() userId: string): Promise<GroupListItem[]> {
+    return this.groups.listUserGroups(userId);
   }
 }

@@ -15,7 +15,40 @@ export class FriendsService {
       throw new BadRequestException("Cannot add yourself");
     }
 
-    const request = await this.prisma.friend.create({
+    const existing = await this.prisma.friend.findFirst({
+      where: {
+        OR: [
+          { requesterId, receiverId },
+          { requesterId: receiverId, receiverId: requesterId },
+        ],
+      },
+    });
+
+    if (existing?.status === FriendStatus.ACCEPTED) {
+      throw new BadRequestException("Already friends");
+    }
+
+    if (existing?.status === FriendStatus.PENDING) {
+      throw new BadRequestException("Request already pending");
+    }
+
+    if (existing?.status === FriendStatus.REJECTED) {
+      return this.prisma.friend.update({
+        where: { id: existing.id },
+        data: {
+          status: FriendStatus.PENDING,
+          requesterId,
+          receiverId,
+        },
+        include: {
+          requester: {
+            select: { id: true, username: true, avatarUrl: true },
+          },
+        },
+      });
+    }
+
+    return this.prisma.friend.create({
       data: {
         requesterId,
         receiverId,
@@ -27,8 +60,6 @@ export class FriendsService {
         },
       },
     });
-
-    return request;
   }
 
   async respondToRequest(

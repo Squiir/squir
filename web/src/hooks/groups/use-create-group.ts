@@ -8,8 +8,7 @@ export function useCreateGroup() {
 
   return useMutation({
     mutationFn: async (dto: CreateGroupDto) => {
-      const group = await groupsService.create(dto.name, dto.memberIds);
-      return group;
+      return groupsService.create(dto.name, dto.memberIds);
     },
     onSuccess: async () => {
       toast.success("Groupe créé");

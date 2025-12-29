@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetFriends } from "@/hooks/friends/use-friends";
+import { FriendItem } from "./FriendItem";
 
 export function FriendsList() {
   const { data = [], isLoading } = useGetFriends();
@@ -12,16 +12,7 @@ export function FriendsList() {
 
       <div className="space-y-1">
         {data.map((friend) => (
-          <button
-            key={friend.id}
-            className="flex items-center w-full gap-2 px-2 py-2 rounded-md hover:bg-muted"
-          >
-            <Avatar className="w-8 h-8">
-              <AvatarImage src={friend.avatarUrl ?? undefined} />
-              <AvatarFallback>{friend.username[0].toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-medium">{friend.username}</span>
-          </button>
+          <FriendItem key={friend.id} friend={friend} />
         ))}
       </div>
     </div>
