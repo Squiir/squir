@@ -1,21 +1,16 @@
-import * as React from "react";
-import { Pressable, Text, View } from "react-native";
+import { QrCode } from "@app-types/qrcode";
 import { Badge } from "@components/ui/Badge";
 import { parseQrLabel } from "@utils/qrcode";
+import * as React from "react";
+import { Pressable, Text, View } from "react-native";
 
 type Props = {
-	qr: {
-		id: string;
-		label?: string;
-		used?: boolean;
-		barId?: string;
-		productId?: string;
-	};
+	qr: QrCode;
 	onPress: () => void;
 };
 
 export function QrCard({ qr, onPress }: Props) {
-	const { barName, offerName, priceText } = parseQrLabel(qr.label);
+	const { barName, offerName, priceText } = parseQrLabel(qr);
 
 	return (
 		<Pressable
