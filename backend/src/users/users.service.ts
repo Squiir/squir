@@ -10,34 +10,31 @@ import * as bcrypt from "bcrypt";
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Get current user profile with related data
+   * @param userId - User ID
+   * @returns User profile with QR codes, friends, groups, and bar
+   */
   async me(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        avatarUrl: true,
-        status: true,
-        loyaltyPoints: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
         qrCodes: true,
         friends: true,
         groups: true,
-        bars: true,
+        bar: true, // Formerly bars
       },
     });
     if (!user) throw new NotFoundException("User not found");
 
-    return user;
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   /**
-   * Get user with their owned bars (for PROFESSIONAL role)
+   * Get user with their owned bar (for PROFESSIONAL role)
    * @param userId - User ID
-   * @returns User with bars array
+   * @returns User with bar
    */
   async getUserWithBars(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -45,13 +42,18 @@ export class UsersService {
       select: {
         id: true,
         role: true,
-        bars: { select: { id: true } },
+        bar: { select: { id: true } },
       },
     });
     if (!user) throw new NotFoundException("User not found");
     return user;
   }
 
+  /**
+   * Delete current user account and all related data
+   * @param userId - User ID
+   * @returns Confirmation of deletion
+   */
   async deleteMe(userId: string) {
     await this.prisma.qRCode.deleteMany({ where: { userId } });
     await this.prisma.friend.deleteMany({
@@ -63,6 +65,12 @@ export class UsersService {
     return { ok: true };
   }
 
+  /**
+   * Update user avatar URL
+   * @param userId - User ID
+   * @param avatarUrl - New avatar URL
+   * @returns Updated user profile
+   */
   async updateAvatar(userId: string, avatarUrl: string) {
     return this.prisma.user.update({
       where: { id: userId },
@@ -78,6 +86,12 @@ export class UsersService {
     });
   }
 
+  /**
+   * Update user status message
+   * @param userId - User ID
+   * @param status - New status message
+   * @returns Updated user profile
+   */
   async updateStatus(userId: string, status: string) {
     return this.prisma.user.update({
       where: { id: userId },
@@ -93,6 +107,13 @@ export class UsersService {
     });
   }
 
+  /**
+   * Update username (must be unique)
+   * @param userId - User ID
+   * @param username - New username
+   * @returns Updated user profile
+   * @throws ConflictException if username already exists
+   */
   async updateUsername(userId: string, username: string) {
     const existing = await this.prisma.user.findUnique({ where: { username } });
     if (existing) throw new ConflictException("Username already used");
@@ -111,6 +132,14 @@ export class UsersService {
     });
   }
 
+  /**
+   * Update user password
+   * @param userId - User ID
+   * @param oldPassword - Current password for verification
+   * @param newPassword - New password to set
+   * @returns Confirmation of password change
+   * @throws UnauthorizedException if old password is incorrect
+   */
   async updatePassword(
     userId: string,
     oldPassword: string,
@@ -132,6 +161,12 @@ export class UsersService {
     return { ok: true };
   }
 
+  /**
+   * Get user profile by username for sharing
+   * @param username - Username to look up
+   * @returns User public profile with share URL
+   * @throws NotFoundException if user not found
+   */
   async shareByUsername(username: string) {
     const user = await this.prisma.user.findUnique({
       where: { username },

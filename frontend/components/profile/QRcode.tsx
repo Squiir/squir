@@ -1,5 +1,5 @@
+import type { QRCodeCarouselProps } from "@app-types/profile";
 import { ScrollView, Text, View } from "react-native";
-import type { QRCodeCarouselProps } from "./types";
 
 export function QRCodeCarousel({ qrCodes }: QRCodeCarouselProps) {
 	return (

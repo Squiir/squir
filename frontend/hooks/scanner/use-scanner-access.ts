@@ -1,5 +1,5 @@
 import { UserRole } from "@app-types/user";
-import { useAuthStore } from "@store/auth.store";
+import { useMe } from "@hooks/use-me";
 
 /**
  * Hook to determine if the current user can access the scanner
@@ -8,13 +8,20 @@ import { useAuthStore } from "@store/auth.store";
  * @returns userBarIds - array of bar IDs owned by the user (for PROFESSIONAL)
  */
 export function useScannerAccess() {
-	const userRole = useAuthStore((state) => state.userRole);
-	const userBars = useAuthStore((state) => state.userBars);
+	const { data: user, isLoading } = useMe();
 
-	// Return null until role is loaded to prevent premature decisions
-	const canAccessScanner =
-		userRole === null ? null : userRole !== UserRole.CUSTOMER;
-	const userBarIds = userBars?.map((b) => b.id) || [];
+	// Return null until user is loaded to prevent premature decisions
+	if (isLoading || !user) {
+		return {
+			canAccessScanner: null,
+			userRole: null,
+			userBarIds: [],
+		};
+	}
+
+	const userRole = user.role;
+	const canAccessScanner = userRole !== UserRole.CUSTOMER;
+	const userBarIds = user.bars?.map((b) => b.id) || [];
 
 	return {
 		canAccessScanner,

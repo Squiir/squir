@@ -3,6 +3,7 @@ import { PrismaClient, User } from "@prisma/client";
 const PARIS_BARS = [
   {
     name: "Bar 1er",
+    address: "1er Arrondissement, Paris",
     arrondissement: 1,
     latitude: 48.8626,
     longitude: 2.336,
@@ -15,6 +16,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 2e",
+    address: "2e Arrondissement, Paris",
     arrondissement: 2,
     latitude: 48.8686,
     longitude: 2.342,
@@ -27,6 +29,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 3e",
+    address: "3e Arrondissement, Paris",
     arrondissement: 3,
     latitude: 48.8635,
     longitude: 2.3615,
@@ -38,6 +41,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 4e",
+    address: "4e Arrondissement, Paris",
     arrondissement: 4,
     latitude: 48.8557,
     longitude: 2.3622,
@@ -49,6 +53,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 5e",
+    address: "5e Arrondissement, Paris",
     arrondissement: 5,
     latitude: 48.8449,
     longitude: 2.347,
@@ -60,6 +65,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 6e",
+    address: "6e Arrondissement, Paris",
     arrondissement: 6,
     latitude: 48.8508,
     longitude: 2.332,
@@ -68,6 +74,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 7e",
+    address: "7e Arrondissement, Paris",
     arrondissement: 7,
     latitude: 48.8566,
     longitude: 2.3126,
@@ -76,6 +83,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 8e",
+    address: "8e Arrondissement, Paris",
     arrondissement: 8,
     latitude: 48.872,
     longitude: 2.3126,
@@ -84,6 +92,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 9e",
+    address: "9e Arrondissement, Paris",
     arrondissement: 9,
     latitude: 48.876,
     longitude: 2.3372,
@@ -92,6 +101,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 10e",
+    address: "10e Arrondissement, Paris",
     arrondissement: 10,
     latitude: 48.8722,
     longitude: 2.36,
@@ -100,6 +110,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 11e",
+    address: "11e Arrondissement, Paris",
     arrondissement: 11,
     latitude: 48.8579,
     longitude: 2.38,
@@ -108,6 +119,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 12e",
+    address: "12e Arrondissement, Paris",
     arrondissement: 12,
     latitude: 48.84,
     longitude: 2.395,
@@ -116,6 +128,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 13e",
+    address: "13e Arrondissement, Paris",
     arrondissement: 13,
     latitude: 48.8322,
     longitude: 2.356,
@@ -124,6 +137,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 14e",
+    address: "14e Arrondissement, Paris",
     arrondissement: 14,
     latitude: 48.8329,
     longitude: 2.326,
@@ -132,6 +146,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 15e",
+    address: "15e Arrondissement, Paris",
     arrondissement: 15,
     latitude: 48.8422,
     longitude: 2.3,
@@ -140,6 +155,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 16e",
+    address: "16e Arrondissement, Paris",
     arrondissement: 16,
     latitude: 48.8632,
     longitude: 2.275,
@@ -148,6 +164,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 17e",
+    address: "17e Arrondissement, Paris",
     arrondissement: 17,
     latitude: 48.884,
     longitude: 2.314,
@@ -156,6 +173,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 18e",
+    address: "18e Arrondissement, Paris",
     arrondissement: 18,
     latitude: 48.8925,
     longitude: 2.344,
@@ -164,6 +182,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 19e",
+    address: "19e Arrondissement, Paris",
     arrondissement: 19,
     latitude: 48.882,
     longitude: 2.384,
@@ -172,6 +191,7 @@ const PARIS_BARS = [
   },
   {
     name: "Bar 20e",
+    address: "20e Arrondissement, Paris",
     arrondissement: 20,
     latitude: 48.864,
     longitude: 2.401,
@@ -189,13 +209,15 @@ export async function seedBars(prisma: PrismaClient, users: User[]) {
   for (const barData of PARIS_BARS) {
     const { offers, ownerUsername, ...bar } = barData;
 
-    // Find owner by username if specified
-    const ownerId = ownerUsername ? userMap.get(ownerUsername) : undefined;
+    // Connect owner if specified
+    const usersConnect = ownerUsername
+      ? { connect: { username: ownerUsername } }
+      : undefined;
 
     await prisma.bar.create({
       data: {
         ...bar,
-        ownerId,
+        users: usersConnect,
         offers: {
           create: offers,
         },

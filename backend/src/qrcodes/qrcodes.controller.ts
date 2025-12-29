@@ -35,7 +35,7 @@ export class QrCodesController {
     return this.qr.createQrcode({
       userId,
       barId: dto.barId,
-      productId: dto.productId,
+      offerId: dto.offerId,
       label: dto.label,
     });
   }
@@ -58,7 +58,7 @@ export class QrCodesController {
   ) {
     // Get user with their bars
     const user = await this.users.getUserWithBars(userId);
-    const barIds = user.bars?.map((b) => b.id) || [];
+    const barIds = user.bar ? [user.bar.id] : [];
 
     return this.qr.consumeQrCode(id, userId, user.role, barIds);
   }

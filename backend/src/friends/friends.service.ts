@@ -5,6 +5,13 @@ import { PrismaService } from "@prisma/prisma.service";
 export class FriendsService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Add a friend connection (bidirectional)
+   * @param userId - User ID
+   * @param friendId - Friend's user ID
+   * @returns Confirmation of friend addition
+   * @throws BadRequestException if trying to add yourself as friend
+   */
   async add(userId: string, friendId: string) {
     if (userId === friendId)
       throw new BadRequestException("Cannot add yourself");
@@ -20,6 +27,12 @@ export class FriendsService {
     return { ok: true };
   }
 
+  /**
+   * Remove a friend connection (bidirectional)
+   * @param userId - User ID
+   * @param friendId - Friend's user ID
+   * @returns Confirmation of friend removal
+   */
   async remove(userId: string, friendId: string) {
     await this.prisma.friend.deleteMany({
       where: {
