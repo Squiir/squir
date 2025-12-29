@@ -12,12 +12,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(usernameOrEmail: string, password: string) {
-    const query = isEmail(usernameOrEmail)
+    const where = isEmail(usernameOrEmail)
       ? { email: usernameOrEmail }
       : { username: usernameOrEmail };
 
     const user = await this.prisma.user.findUnique({
-      where: query,
+      where,
     });
 
     if (!user) {

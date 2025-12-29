@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,24 +7,31 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  username String @unique
-  password String
+  id        String  @id @default(uuid())
+  email     String  @unique
+  username  String  @unique
+  password  String
+  avatarUrl String?
+  status    String?
 
   birthDate DateTime
   firstName String?
   lastName  String?
 
-  avatarUrl     String?
-  status        String?
-  loyaltyPoints Int     @default(0)
-
-  qrCodes QRCode[]
-  friends Friend[]      @relation("UserFriends")
-  groups  GroupMember[]
+  loyaltyPoints Int @default(0)
 
   refreshToken String?
+
+  qrCodes QRCode[]
+
+  sentFriendRequests     Friend[] @relation("FriendRequester")
+  receivedFriendRequests Friend[] @relation("FriendReceiver")
+
+  groupMemberships  GroupMember[]
+  sentGroupMessages GroupMessage[]     @relation("UserSentGroupMessages")
+  groupMessageReads GroupMessageRead[]
+
+  pollVotes PollVote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,36 +42,52 @@ model QRCode {
   label String
   used  Boolean @default(false)
 
-  userId     String
-  barId      String
-  productId  String
-  user       User      @relation(fields: [userId], references: [id])
-  consumedAt DateTime?
+  userId    String
+  barId     String
+  productId String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model Friend {
   id String @id @default(uuid())
 
-  userId   String
-  friendId String
+  requesterId String
+  receiverId  String
 
-  user User @relation("UserFriends", fields: [userId], references: [id])
+  status FriendStatus @default(PENDING)
+
+  requester User @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  receiver  User @relation("FriendReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@unique([userId, friendId])
+  @@unique([requesterId, receiverId])
+  @@index([receiverId])
 }
 
 model Group {
   id   String @id @default(uuid())
   name String
 
-  members GroupMember[]
+  members  GroupMember[]
+  messages GroupMessage[]
+
+  events GroupEvent[]
+  polls  Poll[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model GroupMember {
@@ -79,10 +96,93 @@ model GroupMember {
   userId  String
   groupId String
 
-  user  User  @relation(fields: [userId], references: [id])
-  group Group @relation(fields: [groupId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  lastReadAt DateTime?
+
+  joinedAt DateTime @default(now())
 
   @@unique([userId, groupId])
+  @@index([groupId])
+}
+
+model GroupMessage {
+  id String @id @default(uuid())
+
+  groupId  String
+  authorId String
+  text     String
+
+  group  Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author User  @relation("UserSentGroupMessages", fields: [authorId], references: [id], onDelete: Cascade)
+
+  reads GroupMessageRead[]
+
+  createdAt DateTime @default(now())
+
+  @@index([groupId, createdAt])
+}
+
+model GroupMessageRead {
+  id String @id @default(uuid())
+
+  messageId String
+  userId    String
+
+  message GroupMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, userId])
+  @@index([userId])
+}
+
+model GroupEvent {
+  id String @id @default(uuid())
+
+  groupId  String
+  title    String?
+  location String?
+  startAt  DateTime?
+  endAt    DateTime?
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Poll {
+  id       String @id @default(uuid())
+  groupId  String
+  question String
+
+  group   Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  options PollOption[]
+
+  createdAt DateTime @default(now())
+}
+
+model PollOption {
+  id     String @id @default(uuid())
+  pollId String
+  label  String
+
+  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes PollVote[]
+}
+
+model PollVote {
+  id String @id @default(uuid())
+
+  optionId String
+  userId   String
+
+  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, userId])
 }
 
 model Bar {
