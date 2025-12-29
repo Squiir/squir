@@ -80,18 +80,46 @@ export function useMessageSocket(selectedFriendId?: string) {
   }, [qc, selectedFriendId]);
 }
 
-export function sendSocketMessage(receiverId: string, content: string) {
-  socket?.emit("message:send", { receiverId, content });
+function isSocketReady(): socket is Socket {
+  return !!socket && socket.connected;
 }
 
-export function markConversationRead(friendId: string) {
-  socket?.emit("conversation:read", { friendId });
+export function sendSocketMessage(receiverId: string, content: string): boolean {
+  if (!isSocketReady()) {
+    console.warn("sendSocketMessage called but socket is not connected");
+    return false;
+  }
+
+  socket.emit("message:send", { receiverId, content });
+  return true;
 }
 
-export function emitTypingStart(friendId: string) {
-  socket?.emit("typing:start", { friendId });
+export function markConversationRead(friendId: string): boolean {
+  if (!isSocketReady()) {
+    console.warn("markConversationRead called but socket is not connected");
+    return false;
+  }
+
+  socket.emit("conversation:read", { friendId });
+  return true;
 }
 
-export function emitTypingStop(friendId: string) {
-  socket?.emit("typing:stop", { friendId });
+export function emitTypingStart(friendId: string): boolean {
+  if (!isSocketReady()) {
+    console.warn("emitTypingStart called but socket is not connected");
+    return false;
+  }
+
+  socket.emit("typing:start", { friendId });
+  return true;
+}
+
+export function emitTypingStop(friendId: string): boolean {
+  if (!isSocketReady()) {
+    console.warn("emitTypingStop called but socket is not connected");
+    return false;
+  }
+
+  socket.emit("typing:stop", { friendId });
+  return true;
 }
