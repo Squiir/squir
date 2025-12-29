@@ -18,10 +18,6 @@ export default function SocialPage() {
         <main className="grow-7">
           <ConversationPanel friendId={selectedFriendId} />
         </main>
-
-        <aside className="hidden border-l grow-3 w-80 bg-background xl:block">
-          <div className="p-4 text-muted-foreground">Détails de la conversation</div>
-        </aside>
       </div>
     </RequireAuth>
   );

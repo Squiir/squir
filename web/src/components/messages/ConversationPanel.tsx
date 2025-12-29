@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useFriends } from "@/hooks/friends/use-friends";
 import { useConversation } from "@/hooks/messages/use-conversation";
 import { markConversationRead } from "@/hooks/messages/use-message-socket";
+import { useTyping } from "@/hooks/messages/use-typing";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,7 +21,7 @@ export function ConversationPanel({ friendId }: { friendId?: string }) {
 
   const myId = useAuthStore.getState().userId;
   const lastMyMessageId = [...data].reverse().find((m) => m.senderId === myId)?.id;
-  const isTyping = qc.getQueryData<boolean>(["typing", friendId]) ?? false;
+  const { data: isTyping = false } = useTyping(friendId);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,13 +49,13 @@ export function ConversationPanel({ friendId }: { friendId?: string }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 p-4 border-b bg-background">
-        <Avatar className="w-10 h-10">
+        <Avatar className="w-12 h-12">
           <AvatarImage src={friend?.avatarUrl ?? undefined} />
           <AvatarFallback>{friend?.username?.[0]?.toUpperCase() ?? "?"}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0">
-          <div className="text-sm font-semibold truncate">{friend?.username ?? "Utilisateur"}</div>
+          <div className="font-semibold truncate">{friend?.username ?? "Utilisateur"}</div>
           <div className="text-xs text-muted-foreground">{friend?.status ?? "offline"}</div>
         </div>
       </div>

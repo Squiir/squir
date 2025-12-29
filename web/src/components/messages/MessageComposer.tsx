@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { sendSocketMessage } from "@/hooks/messages/use-message-socket";
+import {
+  emitTypingStart,
+  emitTypingStop,
+  sendSocketMessage,
+} from "@/hooks/messages/use-message-socket";
 import { useAuthStore } from "@/store/auth.store";
 import type { Message } from "@/types/messages";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 
 export function MessageComposer({ friendId }: { friendId: string }) {
   const [text, setText] = useState("");
-  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeout = useRef<number | null>(null);
 
   const qc = useQueryClient();
   const myId = useAuthStore.getState().userId;
@@ -16,15 +20,15 @@ export function MessageComposer({ friendId }: { friendId: string }) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setText(e.target.value);
 
-    window.socket?.emit("typing:start", { friendId });
+    emitTypingStart(friendId);
 
     if (typingTimeout.current) {
       clearTimeout(typingTimeout.current);
     }
 
-    typingTimeout.current = setTimeout(() => {
-      window.socket?.emit("typing:stop", { friendId });
-    }, 800);
+    typingTimeout.current = window.setTimeout(() => {
+      emitTypingStop(friendId);
+    }, 2000);
   }
 
   function send() {
@@ -44,19 +48,22 @@ export function MessageComposer({ friendId }: { friendId: string }) {
       old ? [...old, optimistic] : [optimistic],
     );
 
-    qc.setQueryData<any[]>(["messages", "conversations"], (old) => {
-      if (!old) return old;
-      return old.map((c) =>
+    qc.setQueryData<any[]>(["messages", "conversations"], (old) =>
+      old?.map((c) =>
         c.friend.id === friendId
-          ? { ...c, lastMessage: content, createdAt: optimistic.createdAt, isSender: true }
+          ? {
+              ...c,
+              lastMessage: content,
+              createdAt: optimistic.createdAt,
+              isSender: true,
+            }
           : c,
-      );
-    });
+      ),
+    );
 
     setText("");
+    emitTypingStop(friendId);
     sendSocketMessage(friendId, content);
-
-    window.socket?.emit("typing:stop", { friendId });
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -75,7 +82,7 @@ export function MessageComposer({ friendId }: { friendId: string }) {
   }, []);
 
   return (
-    <div className="flex gap-2 p-3 border-t bg-background">
+    <div className="flex gap-2 p-3">
       <Input
         placeholder="Écrire un message…"
         value={text}

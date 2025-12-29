@@ -87,3 +87,11 @@ export function sendSocketMessage(receiverId: string, content: string) {
 export function markConversationRead(friendId: string) {
   socket?.emit("conversation:read", { friendId });
 }
+
+export function emitTypingStart(friendId: string) {
+  socket?.emit("typing:start", { friendId });
+}
+
+export function emitTypingStop(friendId: string) {
+  socket?.emit("typing:stop", { friendId });
+}
