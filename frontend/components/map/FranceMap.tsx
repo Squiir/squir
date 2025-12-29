@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
+import { Bar } from "@app-types/bar";
+import { QrCode } from "@app-types/qrcode";
+import { useGetBars } from "@hooks/bars/use-get-bars";
 import { useCreateQrCode } from "@hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
-import { useGetBars } from "@hooks/bars/use-get-bars";
-import { QrCode } from "@app-types/qrcode";
-import { Bar } from "@app-types/bar";
 import { QrCodeDto } from "@services/qrcode.service";
-import { OfferCard } from "./OfferCard";
-import { ModalQrPreview } from "./ModalQrPreview";
 import { MapMarker } from "./MapMarker";
+import { ModalQrPreview } from "./ModalQrPreview";
+import { OfferCardFromMap } from "./OfferCardFromMap";
 
 export type Coordinate = {
 	latitude?: number;
@@ -88,7 +88,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 			)}
 
 			{/* ✅ Modal : Choix d'offre */}
-			<OfferCard
+			<OfferCardFromMap
 				offerOpen={offerOpen}
 				setOfferOpen={setOfferOpen}
 				selectedBar={selectedBar}
