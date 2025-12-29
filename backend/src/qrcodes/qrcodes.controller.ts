@@ -1,7 +1,7 @@
+import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Header,
   Param,
@@ -9,12 +9,11 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { GenerateQrCodeDto } from "@qrcodes/dto/qrcodes.dto";
+import { QrCodesService } from "@qrcodes/qrcodes.service";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 import { Public } from "@utils/decorators/public.decorator";
 import type { Response } from "express";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { CurrentUserId } from "../utils/decorators/current-user.decorator";
-import { GenerateQrCodeDto } from "./dto/qrcodes.dto";
-import { QrCodesService } from "./qrcodes.service";
 
 @Controller("qrcodes")
 @UseGuards(JwtAuthGuard)
@@ -39,9 +38,14 @@ export class QrCodesController {
     return this.qr.getMyQrcodes(userId);
   }
 
-  @Delete(":id")
-  removeQrcode(@CurrentUserId() userId: string, @Param("id") id: string) {
-    return this.qr.removeQrcode(userId, id);
+  @Get("history")
+  getHistory(@CurrentUserId() userId: string) {
+    return this.qr.getHistory(userId);
+  }
+
+  @Post(":id/consume")
+  consumeQrcode(@Param("id") id: string) {
+    return this.qr.consumeQrCode(id);
   }
 
   @Public()

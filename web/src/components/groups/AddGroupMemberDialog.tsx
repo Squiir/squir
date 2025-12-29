@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useFriends } from "@/hooks/friends/use-friends";
+import { useGetFriends } from "@/hooks/friends/use-friends";
 import { useAddGroupMembers } from "@/hooks/groups/use-add-group-members";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export function AddGroupMemberDialog({
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
 
-  const { data: friends = [] } = useFriends();
+  const { data: friends = [] } = useGetFriends();
   const addMembers = useAddGroupMembers();
 
   const availableFriends = friends.filter((f) => !existingMemberIds.includes(f.id));

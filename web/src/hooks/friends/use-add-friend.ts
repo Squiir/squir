@@ -4,15 +4,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useAddFriend() {
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (dto: AddFriendDto) => friendsService.addFriend(dto),
     onSuccess: async () => {
       toast.success("Demande envoyée");
       await Promise.all([
-        qc.invalidateQueries({ queryKey: ["friends", "pending"] }),
-        qc.invalidateQueries({
+        queryClient.invalidateQueries({ queryKey: ["friends", "pending"] }),
+        queryClient.invalidateQueries({
           queryKey: ["friends", "search"],
           exact: false,
         }),

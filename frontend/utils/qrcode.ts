@@ -1,11 +1,21 @@
+import type { QrCode } from "@app-types/qrcode";
+
 export type ParsedQrLabel = {
 	barName?: string;
 	offerName?: string;
 	priceText?: string;
 };
 
-export function parseQrLabel(label?: string): ParsedQrLabel {
-	if (!label) return {};
+/**
+ * Parse QR code information from QrCode object
+ * Extracts bar name, offer name, and price from the label
+ * @param qrCode - QR code object to parse
+ * @returns Parsed QR code information
+ */
+export function parseQrLabel(qrCode?: QrCode): ParsedQrLabel {
+	if (!qrCode?.label) return {};
+
+	const label = qrCode.label;
 
 	const parts = label
 		.split("•")
