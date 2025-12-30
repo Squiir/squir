@@ -26,8 +26,8 @@ export function FriendItem({
       <button
         onClick={onClick}
         className={clsx(
-          "flex justify-between items-center w-full gap-2 text-left",
-          "w-full px-3 py-2 rounded-md text-left hover:bg-muted",
+          "flex justify-between items-center w-full gap-2 text-left overflow-auto",
+          "px-3 py-2 rounded-md hover:bg-muted",
           active && "bg-muted",
         )}
       >
@@ -42,7 +42,7 @@ export function FriendItem({
           {conversation.lastMessage && (
             <div
               className={clsx(
-                "text-xs truncate",
+                "text-xs truncate mx-2",
                 isUnread ? "font-semibold text-foreground" : "text-muted-foreground",
               )}
             >
@@ -53,7 +53,7 @@ export function FriendItem({
 
         <div>
           {conversation.unreadCount > 0 && (
-            <span className="px-2 py-0.5 text-xs rounded-full bg-primary text-primary-foreground">
+            <span className="px-3 py-0.5 text-xs rounded-full bg-primary text-primary-foreground">
               {conversation.unreadCount}
             </span>
           )}

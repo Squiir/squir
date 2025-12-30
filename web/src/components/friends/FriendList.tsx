@@ -2,7 +2,7 @@ import { FriendItem } from "@/components/friends/FriendItem";
 import { AppSkeleton } from "@/components/ui/skeletons/AppSkeleton";
 import { useConversations } from "@/hooks/messages/use-conversations";
 
-export function FriendsList({
+export function FriendList({
   selectedFriendId,
   onSelectFriend,
 }: {
@@ -12,12 +12,12 @@ export function FriendsList({
   const { data = [], isLoading } = useConversations();
 
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="flex flex-col h-full">
       <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Conversations</h3>
 
       {isLoading && <AppSkeleton />}
 
-      <div className="flex-1 space-y-1 overflow-auto">
+      <div className="space-y-1">
         {data.map((conversation) => (
           <FriendItem
             key={conversation.friend.id}

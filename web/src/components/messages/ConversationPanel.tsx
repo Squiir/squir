@@ -3,7 +3,7 @@ import { MessageComposer } from "@/components/messages/MessageComposer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetFriends } from "@/hooks/friends/use-friends";
 import { useConversation } from "@/hooks/messages/use-conversation";
-import { markConversationRead } from "@/hooks/messages/use-message-socket";
+import { markConversationRead, setActiveConversation } from "@/hooks/messages/use-message-socket";
 import { useTyping } from "@/hooks/messages/use-typing";
 import { useMyId } from "@/hooks/user/use-my-id";
 import { cn } from "@/lib/utils";
@@ -32,12 +32,14 @@ export function ConversationPanel({ friendId }: { friendId?: string }) {
   useEffect(() => {
     if (!friendId) return;
 
+    setActiveConversation(friendId);
     markConversationRead(friendId);
 
-    qc.setQueryData<any[]>(["messages", "conversations"], (old) => {
-      if (!old) return old;
-      return old.map((c) => (c.friend.id === friendId ? { ...c, unreadCount: 0 } : c));
-    });
+    qc.invalidateQueries({ queryKey: ["messages", "conversations"] });
+
+    return () => {
+      setActiveConversation(null);
+    };
   }, [friendId, qc]);
 
   if (!friendId) {

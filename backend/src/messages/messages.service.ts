@@ -5,21 +5,47 @@ import { PrismaService } from "@prisma/prisma.service";
 export class MessagesService {
   constructor(private prisma: PrismaService) {}
 
-  async sendMessage(senderId: string, receiverId: string, content: string) {
+  async verifyFriendship(userId: string, friendId: string): Promise<void> {
+    const friendship = await this.prisma.friend.findFirst({
+      where: {
+        status: "ACCEPTED",
+        OR: [
+          { requesterId: userId, receiverId: friendId },
+          { requesterId: friendId, receiverId: userId },
+        ],
+      },
+    });
+
+    if (!friendship) {
+      throw new ForbiddenException("You are not friends with this user");
+    }
+  }
+
+  async sendMessage(
+    senderId: string,
+    receiverId: string,
+    content: string,
+    options?: { read?: boolean },
+  ) {
     if (senderId === receiverId) {
       throw new ForbiddenException("Cannot message yourself");
     }
+
+    await this.verifyFriendship(senderId, receiverId);
 
     return this.prisma.message.create({
       data: {
         senderId,
         receiverId,
         content,
+        readAt: options?.read ? new Date() : null,
       },
     });
   }
 
   async getConversation(userId: string, friendId: string) {
+    await this.verifyFriendship(userId, friendId);
+
     return this.prisma.message.findMany({
       where: {
         OR: [
@@ -32,6 +58,8 @@ export class MessagesService {
   }
 
   async markAsRead(userId: string, friendId: string) {
+    await this.verifyFriendship(userId, friendId);
+
     return this.prisma.message.updateMany({
       where: {
         senderId: friendId,

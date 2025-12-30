@@ -11,11 +11,11 @@ export default function SocialPage() {
   return (
     <RequireAuth>
       <div className="flex h-[calc(90vh)] w-full">
-        <aside className="border-r grow-3 bg-background">
+        <aside className="border-r bg-background">
           <SocialPanel selectedFriendId={selectedFriendId} onSelectFriend={setSelectedFriendId} />
         </aside>
 
-        <main className="grow-7">
+        <main className="grow">
           <ConversationPanel friendId={selectedFriendId} />
         </main>
       </div>
