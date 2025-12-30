@@ -1,7 +1,8 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { API_URL } from "@constants/api";
 import { authService } from "@services/auth.service";
 import { useAuthStore } from "@store/auth.store";
-import { API_URL } from "@constants/api";
+import { interceptDatesFromResponse } from "@utils/format";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 export const api = axios.create({ baseURL: API_URL, timeout: 15000 });
 
@@ -66,3 +67,8 @@ api.interceptors.response.use(
 		return Promise.reject(error);
 	},
 );
+
+api.interceptors.response.use((response) => {
+	response.data = interceptDatesFromResponse(response.data);
+	return response;
+});

@@ -8,6 +8,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { UserRole } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import { QrCodeGateway } from "@qrcodes/qrcode.gateway";
 import QRCode from "qrcode";
@@ -19,6 +20,12 @@ export class QrCodesService {
     private qrCodeGateway: QrCodeGateway,
   ) {}
 
+  /**
+   * Generates the QR code value string
+   * @param qrId - QR code ID
+   * @returns Formatted QR value URL
+   * @private
+   */
   private qrValue(qrId: string) {
     return `squir://redeem?qr=${encodeURIComponent(qrId)}`;
   }
@@ -28,7 +35,7 @@ export class QrCodesService {
    * @param params - QR code creation parameters
    * @param params.userId - ID of the user creating the QR code
    * @param params.barId - ID of the bar
-   * @param params.productId - ID of the product/offer
+   * @param params.offerId - ID of the product/offer
    * @param params.label - Optional label for the QR code
    * @returns Created QR code with value and URL
    * @throws {BadRequestException} If required parameters are missing
@@ -36,28 +43,28 @@ export class QrCodesService {
   async createQrcode(params: {
     userId: string;
     barId: string;
-    productId: string;
+    offerId: string;
     label?: string;
   }) {
-    const { userId, barId, productId, label } = params;
+    const { userId, barId, offerId, label } = params;
 
     if (!userId) throw new BadRequestException("Missing userId");
     if (!barId) throw new BadRequestException("Missing barId");
-    if (!productId) throw new BadRequestException("Missing productId");
+    if (!offerId) throw new BadRequestException("Missing offerId");
 
     const qr = await this.prisma.qRCode.create({
       data: {
         userId,
         barId,
-        productId,
-        label: label ?? `QR for bar=${barId} product=${productId}`,
+        offerId,
+        label: label ?? `QR for bar=${barId} product=${offerId}`,
       },
       select: {
         id: true,
         used: true,
         userId: true,
         barId: true,
-        productId: true,
+        offerId: true,
         label: true,
         createdAt: true,
       },
@@ -68,7 +75,7 @@ export class QrCodesService {
       used: qr.used,
       createdAt: qr.createdAt,
       barId: qr.barId,
-      productId: qr.productId,
+      offerId: qr.offerId,
       label: qr.label,
       value: this.qrValue(qr.id),
       url: `/qrcodes/${qr.id}.png`,
@@ -145,37 +152,75 @@ export class QrCodesService {
   /**
    * Consumes a QR code by marking it as consumed
    * @param id - QR code ID to consume
+   * @param currentUserId - ID of the user consuming the QR
    * @returns Consumption confirmation with QR code details
    * @throws {NotFoundException} If QR code doesn't exist
-   * @throws {BadRequestException} If QR code is already consumed
+   * @throws {BadRequestException} If QR code is already consumed or user tries to scan own QR
+   * @throws {ForbiddenException} If user doesn't have permission to scan this QR
    */
-  async consumeQrCode(id: string) {
+  async consumeQrCode(id: string, currentUserId: string) {
     if (!id) throw new BadRequestException("Missing QR code ID");
 
-    const qr = await this.prisma.qRCode.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        barId: true,
-        productId: true,
-        label: true,
-        userId: true,
-        createdAt: true,
-        consumedAt: true,
-      },
-    });
+    // Get QR code and user info in parallel
+    const [qr, user] = await Promise.all([
+      this.prisma.qRCode.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          barId: true,
+          offerId: true,
+          label: true,
+          userId: true,
+          createdAt: true,
+          consumedAt: true,
+        },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: currentUserId },
+        select: { role: true, barId: true },
+      }),
+    ]);
+
+    if (!user) throw new NotFoundException("User not found");
 
     if (!qr) throw new NotFoundException("QR code not found");
     if (qr.consumedAt)
       throw new BadRequestException("QR code already consumed");
 
-    // Marquer comme consommé
+    // Check if user is trying to scan their own QR code
+    if (qr.userId === currentUserId) {
+      throw new BadRequestException("Cannot scan your own QR code");
+    }
+
+    // Role-based permissions
+    switch (user.role) {
+      case UserRole.CUSTOMER:
+        throw new ForbiddenException("Customers cannot scan QR codes");
+
+      case UserRole.PROFESSIONAL:
+        // PROFESSIONAL can only scan QR codes from their own bar
+        if (!user.barId || user.barId !== qr.barId) {
+          throw new ForbiddenException(
+            "You can only scan QR codes from your bar",
+          );
+        }
+        break;
+
+      case UserRole.ADMIN:
+        // ADMIN can scan all QR codes (no restrictions)
+        break;
+
+      default:
+        throw new ForbiddenException("Invalid user role");
+    }
+
+    // Mark as consumed
     const updatedQr = await this.prisma.qRCode.update({
       where: { id },
       data: { consumedAt: new Date() },
     });
 
-    // Notifier le propriétaire du QR code via WebSocket
+    // Notify the QR code owner via WebSocket
     this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
 
     return {
@@ -183,7 +228,7 @@ export class QrCodesService {
       qrCode: {
         id: qr.id,
         barId: qr.barId,
-        productId: qr.productId,
+        offerId: qr.offerId,
         label: qr.label,
         createdAt: qr.createdAt,
       },
@@ -209,7 +254,7 @@ export class QrCodesService {
       select: {
         id: true,
         barId: true,
-        productId: true,
+        offerId: true,
         label: true,
         consumedAt: true,
         createdAt: true,

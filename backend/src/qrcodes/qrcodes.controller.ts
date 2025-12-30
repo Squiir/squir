@@ -1,6 +1,8 @@
 import { CurrentUserId } from "@auth/current-user.decorator";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import { Public } from "@auth/public.decorator";
+import { Roles } from "@auth/roles.decorator";
+import { RolesGuard } from "@auth/roles.guard";
 import {
   Body,
   Controller,
@@ -11,14 +13,19 @@ import {
   Res,
   UseGuards,
 } from "@nestjs/common";
+import { UserRole } from "@prisma/client";
 import { GenerateQrCodeDto } from "@qrcodes/dto/qrcodes.dto";
 import { QrCodesService } from "@qrcodes/qrcodes.service";
+import { UsersService } from "@users/users.service";
 import type { Response } from "express";
 
 @Controller("qrcodes")
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class QrCodesController {
-  constructor(private readonly qr: QrCodesService) {}
+  constructor(
+    private readonly qr: QrCodesService,
+    private readonly users: UsersService,
+  ) {}
 
   @Post()
   createQrcode(
@@ -28,7 +35,7 @@ export class QrCodesController {
     return this.qr.createQrcode({
       userId,
       barId: dto.barId,
-      productId: dto.productId,
+      offerId: dto.offerId,
       label: dto.label,
     });
   }
@@ -44,8 +51,12 @@ export class QrCodesController {
   }
 
   @Post(":id/consume")
-  consumeQrcode(@Param("id") id: string) {
-    return this.qr.consumeQrCode(id);
+  @Roles(UserRole.ADMIN, UserRole.PROFESSIONAL)
+  async consumeQrcode(
+    @Param("id") id: string,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.qr.consumeQrCode(id, userId);
   }
 
   @Public()

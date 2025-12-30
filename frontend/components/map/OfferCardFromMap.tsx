@@ -27,7 +27,7 @@ function OfferItem({
 	const handlePress = () => {
 		onCreateQrCode({
 			barId: selectedBar.id,
-			productId: offer.id,
+			offerId: offer.id,
 			label: `${selectedBar.name} • ${offer.name}${typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""}`,
 		});
 	};
@@ -113,8 +113,7 @@ export function OfferCardFromMap({
 									alreadyHas={
 										qrcodes?.some(
 											(qr) =>
-												qr.barId === selectedBar!.id &&
-												qr.productId === offer.id,
+												qr.barId === selectedBar!.id && qr.offerId === offer.id,
 										) ?? false
 									}
 									disabled={isCreateQrCodePending}

@@ -10,6 +10,7 @@ import { QrModal } from "@components/qrcode/QrModal";
 import { Button } from "@components/ui/Button";
 import { useLogout } from "@hooks/auth/use-logout";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
+import { useScannerAccess } from "@hooks/scanner/use-scanner-access";
 import { useMe } from "@hooks/use-me";
 import { useSocketNotifications } from "@hooks/use-socket-notifications";
 
@@ -17,6 +18,7 @@ export default function ProfileScreen() {
 	const { data: user } = useMe();
 	const { mutate: logout } = useLogout();
 	const router = useRouter();
+	const { canAccessScanner } = useScannerAccess();
 
 	// Activer les notifications temps réel
 	useSocketNotifications();
@@ -54,7 +56,7 @@ export default function ProfileScreen() {
 						{qrsErr instanceof Error ? qrsErr.message : "Erreur de chargement"}
 					</Text>
 				) : !qrcodes || qrcodes.length === 0 ? (
-					<Text className="text-white/70">Aucun QR code pour l’instant.</Text>
+					<Text className="text-white/70">Aucun QR code pour l'instant.</Text>
 				) : (
 					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 						<View className="flex-row gap-4 pr-4">
@@ -75,11 +77,13 @@ export default function ProfileScreen() {
 			{/* Actions */}
 			<View className="px-6 pt-16 pb-6">
 				<View className="gap-4">
-					<Button
-						title="📷 Scanner un QR code"
-						variant="primary"
-						onPress={() => router.push("/scanner")}
-					/>
+					{canAccessScanner && (
+						<Button
+							title="📷 Scanner un QR code"
+							variant="primary"
+							onPress={() => router.push("/scanner")}
+						/>
+					)}
 
 					<Button
 						title="Se déconnecter"

@@ -1,3 +1,4 @@
+import type { JwtPayload } from "@auth/jwt-payload";
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
@@ -14,7 +15,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
     });
   }
 
-  validate(payload: { sub: string }) {
+  validate(payload: JwtPayload) {
     return { id: payload.sub };
   }
 }

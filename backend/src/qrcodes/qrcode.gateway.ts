@@ -1,4 +1,5 @@
 import { Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import {
   ConnectedSocket,
@@ -26,7 +27,10 @@ export class QrCodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private logger = new Logger("QrcodeGateway");
 
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
 
   async handleConnection(client: Socket) {
     try {
@@ -37,7 +41,9 @@ export class QrCodeGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>("ACCESS_TOKEN_SECRET"),
+      });
       client.data.userId = payload.sub;
       this.logger.log(`User ${payload.sub} connected: ${client.id}`);
     } catch (error: any) {

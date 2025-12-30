@@ -6,6 +6,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  ADMIN
+  PROFESSIONAL
+  CUSTOMER
+}
+
 model User {
   id        String  @id @default(uuid())
   email     String  @unique
@@ -18,11 +24,13 @@ model User {
   firstName String?
   lastName  String?
 
-  loyaltyPoints Int @default(0)
-
-  refreshToken String?
+  loyaltyPoints Int      @default(0)
+  role          UserRole @default(CUSTOMER)
+  refreshToken  String?
 
   qrCodes QRCode[]
+  barId   String?
+  bar     Bar?     @relation("BarUsers", fields: [barId], references: [id])
 
   sentFriendRequests     Friend[] @relation("FriendRequester")
   receivedFriendRequests Friend[] @relation("FriendReceiver")
@@ -38,18 +46,17 @@ model User {
 }
 
 model QRCode {
-  id    String  @id @default(uuid())
-  label String
-  used  Boolean @default(false)
-
-  userId    String
-  barId     String
-  productId String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id         String    @id @default(uuid())
+  userId     String
+  barId      String
+  offerId    String
+  label      String?
+  used       Boolean   @default(false)
   consumedAt DateTime?
   createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id])
+  bar        Bar       @relation(fields: [barId], references: [id])
+  offer      Offer     @relation(fields: [offerId], references: [id])
 }
 
 enum FriendStatus {
@@ -91,17 +98,15 @@ model Group {
 }
 
 model GroupMember {
-  id String @id @default(uuid())
-
-  userId  String
+  id      String @id @default(uuid())
   groupId String
+  userId  String
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   lastReadAt DateTime?
-
-  joinedAt DateTime @default(now())
+  joinedAt   DateTime  @default(now())
 
   @@unique([userId, groupId])
   @@index([groupId])
@@ -186,23 +191,25 @@ model PollVote {
 }
 
 model Bar {
-  id             String @id @default(uuid())
+  id             String   @id @default(uuid())
   name           String
+  address        String
   arrondissement Int
   latitude       Float
   longitude      Float
   color          String
-
-  offers Offer[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  users          User[]   @relation("BarUsers")
+  offers         Offer[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  qrCodes        QRCode[]
 }
 
 model Offer {
-  id    String @id @default(uuid())
-  name  String
-  price Float
+  id      String   @id @default(uuid())
+  name    String
+  price   Float
+  qrCodes QRCode[]
 
   barId String
   bar   Bar    @relation(fields: [barId], references: [id], onDelete: Cascade)
