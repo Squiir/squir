@@ -1,15 +1,13 @@
+import type { IconSymbolName } from "@components/ui/IconSymbol";
+import { IconSymbol } from "@components/ui/IconSymbol";
+import { Pressable } from "react-native";
 import Animated, {
-	useSharedValue,
+	Easing,
 	useAnimatedStyle,
+	useSharedValue,
 	withSequence,
 	withTiming,
-	Easing,
 } from "react-native-reanimated";
-import { Pressable } from "react-native";
-import { IconSymbol } from "@components/ui/IconSymbol";
-import type { IconSymbolName } from "@components/ui/IconSymbol";
-
-const AnimatedIcon = Animated.createAnimatedComponent(IconSymbol);
 
 type Props = {
 	name: IconSymbolName;
@@ -33,12 +31,9 @@ export function BounceIcon({ name, size = 24, color }: Props) {
 
 	return (
 		<Pressable onPress={bounce}>
-			<AnimatedIcon
-				name={name}
-				size={size}
-				color={color}
-				style={animatedStyle}
-			/>
+			<Animated.View style={animatedStyle}>
+				<IconSymbol name={name} size={size} color={color} />
+			</Animated.View>
 		</Pressable>
 	);
 }

@@ -1,9 +1,9 @@
 import { CreateGroupDto } from "@groups/dto/groups.dto";
 import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 // import { SocialGateway } from "@social/social.gateway";
@@ -119,9 +119,17 @@ export class GroupsService {
     };
   }
 
+  /**
+   * Update group name (member only)
+   * @param userId - User ID
+   * @param groupId - Group ID
+   * @param name - New group name
+   * @returns Updated group
+   * @throws ForbiddenException if user is not a member
+   */
   async updateName(userId: string, groupId: string, name: string) {
     const member = await this.prisma.groupMember.findUnique({
-      where: { userId_groupId: { userId, groupId } },
+      where: { userId_groupId: { groupId, userId } },
     });
     if (!member) throw new ForbiddenException("Not a member");
 
@@ -147,6 +155,12 @@ export class GroupsService {
     }
   }
 
+  /**
+   * Get shareable group information
+   * @param groupId - Group ID
+   * @returns Group info with share URL
+   * @throws NotFoundException if group not found
+   */
   async share(groupId: string) {
     const group = await this.prisma.group.findUnique({
       where: { id: groupId },

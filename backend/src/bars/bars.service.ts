@@ -5,6 +5,10 @@ import { PrismaService } from "@prisma/prisma.service";
 export class BarsService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Get all bars with their offers
+   * @returns List of all bars ordered by arrondissement
+   */
   async findAll() {
     return await this.prisma.bar.findMany({
       include: { offers: true },
@@ -12,6 +16,12 @@ export class BarsService {
     });
   }
 
+  /**
+   * Get a specific bar by ID with its offers
+   * @param id - Bar ID
+   * @returns Bar with offers
+   * @throws NotFoundException if bar not found
+   */
   async findOne(id: string) {
     const bar = await this.prisma.bar.findUnique({
       where: { id },
