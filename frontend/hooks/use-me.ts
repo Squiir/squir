@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { userService } from "@services/user.service";
 import { User } from "@app-types/user";
+import { userService } from "@services/user.service";
+import { useQuery } from "@tanstack/react-query";
 
 export function useMe() {
 	return useQuery<User>({
-		queryKey: ["me"],
+		queryKey: ["users", "me"],
 		queryFn: userService.getCurrentUser,
 	});
 }
