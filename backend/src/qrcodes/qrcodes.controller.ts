@@ -1,6 +1,4 @@
-import { CurrentUserId } from "@auth/current-user.decorator";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
-import { Public } from "@auth/public.decorator";
 import { Roles } from "@auth/roles.decorator";
 import { RolesGuard } from "@auth/roles.guard";
 import {
@@ -17,6 +15,8 @@ import { UserRole } from "@prisma/client";
 import { GenerateQrCodeDto } from "@qrcodes/dto/qrcodes.dto";
 import { QrCodesService } from "@qrcodes/qrcodes.service";
 import { UsersService } from "@users/users.service";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
+import { Public } from "@utils/decorators/public.decorator";
 import type { Response } from "express";
 
 @Controller("qrcodes")

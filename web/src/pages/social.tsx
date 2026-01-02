@@ -1,21 +1,23 @@
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { SocialPanel } from "@/components/layout/SocialPanel";
+import { ConversationPanel } from "@/components/messages/ConversationPanel";
+import { useMessageSocket } from "@/hooks/messages/use-message-socket";
+import { useState } from "react";
 
 export default function SocialPage() {
+  const [selectedFriendId, setSelectedFriendId] = useState<string | undefined>();
+  useMessageSocket();
+
   return (
     <RequireAuth>
       <div className="flex h-[calc(90vh)] w-full">
-        <aside className="border-r grow-3 bg-background">
-          <SocialPanel />
+        <aside className="border-r bg-background">
+          <SocialPanel selectedFriendId={selectedFriendId} onSelectFriend={setSelectedFriendId} />
         </aside>
 
-        <main className="flex items-center justify-center grow-7 text-muted-foreground">
-          Sélectionne une conversation
+        <main className="grow">
+          <ConversationPanel friendId={selectedFriendId} />
         </main>
-
-        <aside className="hidden border-l grow-3 w-80 bg-background xl:block">
-          <div className="p-4 text-muted-foreground">Détails du groupe</div>
-        </aside>
       </div>
     </RequireAuth>
   );

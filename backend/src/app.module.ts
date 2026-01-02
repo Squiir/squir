@@ -2,6 +2,7 @@ import { AuthModule } from "@auth/auth.module";
 import { BarsModule } from "@bars/bars.module";
 import { FriendsModule } from "@friends/friends.module";
 import { GroupsModule } from "@groups/groups.module";
+import { MessagesModule } from "@messages/messages.module";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "@prisma/prisma.module";
@@ -25,6 +26,7 @@ import { AppService } from "./app.service";
     PurchasesModule,
     QrCodesModule,
     BarsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,3 @@
-import { CurrentUserId } from "@auth/current-user.decorator";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import {
   AddFriendDto,
@@ -17,6 +16,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { FriendStatus } from "@prisma/client";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 
 @Controller("friends")
 @UseGuards(JwtAuthGuard)
