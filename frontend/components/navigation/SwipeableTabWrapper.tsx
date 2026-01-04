@@ -18,10 +18,6 @@ interface SwipeableTabWrapperProps {
 // Define the order of tabs to enable sequential navigation
 const TAB_ORDER = ["index", "map", "social", "profile"] as const;
 
-// Distance from edge of screen to trigger edge swipe (in pixels)
-// Increased for map screen to have a more generous edge zone
-const EDGE_SWIPE_WIDTH = 80;
-
 export function SwipeableTabWrapper({
 	children,
 	currentRoute,
@@ -59,8 +55,9 @@ export function SwipeableTabWrapper({
 
 			// Check if gesture started from screen edge
 			if (edgeSwipeOnly) {
-				const isFromLeftEdge = event.x < EDGE_SWIPE_WIDTH;
-				const isFromRightEdge = event.x > screenWidth - EDGE_SWIPE_WIDTH;
+				const isFromLeftEdge = event.x < SWIPE_GESTURE.EDGE_SWIPE_WIDTH;
+				const isFromRightEdge =
+					event.x > screenWidth - SWIPE_GESTURE.EDGE_SWIPE_WIDTH;
 				isFromEdge.value = isFromLeftEdge || isFromRightEdge;
 			} else {
 				isFromEdge.value = true;
@@ -89,7 +86,8 @@ export function SwipeableTabWrapper({
 
 			// For edge swipes, use a lower threshold to make it easier
 			const effectiveThreshold = edgeSwipeOnly
-				? SWIPE_GESTURE.SWIPE_THRESHOLD * 0.7
+				? SWIPE_GESTURE.SWIPE_THRESHOLD *
+					SWIPE_GESTURE.SWIPE_THRESHOLD_EDGE_MULTIPLIER
 				: SWIPE_GESTURE.SWIPE_THRESHOLD;
 
 			// Swipe left (negative translationX) -> next tab
