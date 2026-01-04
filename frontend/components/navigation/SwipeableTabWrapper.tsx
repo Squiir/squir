@@ -1,6 +1,7 @@
 import { SWIPE_GESTURE } from "@constants/swipe-gesture";
-import { Href, useRouter } from "expo-router";
-import React, { useCallback } from "react";
+import { TAB_ORDER } from "@constants/tabs";
+import { useTabNavigation } from "@hooks/navigation/useTabNavigation";
+import React from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS, useSharedValue } from "react-native-reanimated";
@@ -15,39 +16,15 @@ interface SwipeableTabWrapperProps {
 	edgeSwipeOnly?: boolean;
 }
 
-// Define the order of tabs to enable sequential navigation
-const TAB_ORDER = ["index", "map", "social", "profile"] as const;
-
 export function SwipeableTabWrapper({
 	children,
 	currentRoute,
 	edgeSwipeOnly = false,
 }: SwipeableTabWrapperProps) {
-	const router = useRouter();
+	const { navigateToTab } = useTabNavigation();
 	const { width: screenWidth } = useWindowDimensions();
 	const gestureStartX = useSharedValue(0);
 	const isFromEdge = useSharedValue(true);
-
-	// Create a JS thread function for navigation
-	const navigateToTab = useCallback(
-		(targetRoute: string) => {
-			switch (targetRoute) {
-				case "index":
-					router.push("/(tabs)/" as Href);
-					break;
-				case "map":
-					router.push("/(tabs)/map" as Href);
-					break;
-				case "social":
-					router.push("/(tabs)/social" as Href);
-					break;
-				case "profile":
-					router.push("/(tabs)/profile" as Href);
-					break;
-			}
-		},
-		[router],
-	);
 
 	const panGesture = Gesture.Pan()
 		.onBegin((event) => {
