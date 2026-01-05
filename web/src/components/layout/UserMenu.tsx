@@ -1,17 +1,17 @@
-import { LogOut, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/auth/use-auth";
 import { useLogout } from "@/hooks/auth/use-logout";
 import { useMe } from "@/hooks/user/use-me";
-import { useAuth } from "@/hooks/auth/use-auth";
+import { LogOut, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export function UserMenu() {
   const { isLoggedIn } = useAuth();

@@ -1,21 +1,56 @@
-// import { PrismaClient, User } from "@prisma/client";
+import { FriendStatus, PrismaClient, User } from "@prisma/client";
 
-// export async function seedFriends(prisma: PrismaClient, users: User[]) {
-//   const [a, b, c, d] = users;
+export async function seedFriends(prisma: PrismaClient, users: User[]) {
+  if (users.length < 4) {
+    throw new Error("At least 4 users are required to seed friends");
+  }
 
-//   await prisma.friend.createMany({
-//     data: [
-//       { userId: a.id, friendId: b.id },
-//       { userId: b.id, friendId: a.id },
-//       { userId: a.id, friendId: c.id },
-//       { userId: c.id, friendId: a.id },
-//       { userId: d.id, friendId: a.id },
-//       { userId: a.id, friendId: d.id },
-//       { userId: d.id, friendId: b.id },
-//       { userId: b.id, friendId: d.id },
-//       { userId: d.id, friendId: c.id },
-//       { userId: c.id, friendId: d.id },
-//     ],
-//     skipDuplicates: true,
-//   });
-// }
+  const [a, b, c, d] = users;
+
+  await prisma.friend.createMany({
+    data: [
+      // A ↔ B
+      {
+        requesterId: a.id,
+        receiverId: b.id,
+        status: FriendStatus.ACCEPTED,
+      },
+
+      // A ↔ C
+      {
+        requesterId: a.id,
+        receiverId: c.id,
+        status: FriendStatus.ACCEPTED,
+      },
+
+      // B ↔ D
+      {
+        requesterId: b.id,
+        receiverId: d.id,
+        status: FriendStatus.ACCEPTED,
+      },
+
+      // C ↔ D
+      {
+        requesterId: c.id,
+        receiverId: d.id,
+        status: FriendStatus.ACCEPTED,
+      },
+
+      // D → A
+      {
+        requesterId: d.id,
+        receiverId: a.id,
+        status: FriendStatus.PENDING,
+      },
+
+      // C → B
+      {
+        requesterId: c.id,
+        receiverId: b.id,
+        status: FriendStatus.PENDING,
+      },
+    ],
+    skipDuplicates: true,
+  });
+}
