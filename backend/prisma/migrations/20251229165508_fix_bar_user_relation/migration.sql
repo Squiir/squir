@@ -13,34 +13,70 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "Bar" DROP CONSTRAINT "Bar_ownerId_fkey";
+ALTER TABLE "Bar" DROP CONSTRAINT IF EXISTS "Bar_ownerId_fkey";
 
 -- DropIndex
-DROP INDEX "GroupMember_userId_groupId_key";
+DROP INDEX IF EXISTS "GroupMember_userId_groupId_key";
 
--- AlterTable
-ALTER TABLE "Bar" DROP COLUMN "arrondissement",
-DROP COLUMN "ownerId",
-DROP COLUMN "updatedAt",
-ADD COLUMN     "address" TEXT NOT NULL,
-ADD COLUMN     "offersUpdated" TIMESTAMP(3) NOT NULL;
+-- AlterTable Bar
+DO $$
+BEGIN
+    ALTER TABLE "Bar" DROP COLUMN IF EXISTS "arrondissement";
+    ALTER TABLE "Bar" DROP COLUMN IF EXISTS "ownerId";
+    ALTER TABLE "Bar" DROP COLUMN IF EXISTS "updatedAt";
 
--- AlterTable
-ALTER TABLE "Group" ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'Bar' AND column_name = 'address') THEN
+        ALTER TABLE "Bar" ADD COLUMN "address" TEXT NOT NULL DEFAULT '';
+    END IF;
 
--- AlterTable
-ALTER TABLE "GroupMember" ADD COLUMN     "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'Bar' AND column_name = 'offersUpdated') THEN
+        ALTER TABLE "Bar" ADD COLUMN "offersUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+END $$;
 
--- AlterTable
-ALTER TABLE "QRCode" DROP COLUMN "productId",
-DROP COLUMN "updatedAt",
-ALTER COLUMN "label" DROP NOT NULL;
+-- AlterTable Group (conditional add for updatedAt)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'Group' AND column_name = 'updatedAt'
+    ) THEN
+        ALTER TABLE "Group" ADD COLUMN "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+END $$;
 
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "barId" TEXT;
+-- AlterTable GroupMember (conditional add for joinedAt)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'GroupMember' AND column_name = 'joinedAt'
+    ) THEN
+        ALTER TABLE "GroupMember" ADD COLUMN "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+END $$;
 
--- CreateTable
-CREATE TABLE "Purchase" (
+-- AlterTable QRCode
+DO $$
+BEGIN
+    ALTER TABLE "QRCode" DROP COLUMN IF EXISTS "productId";
+    ALTER TABLE "QRCode" DROP COLUMN IF EXISTS "updatedAt";
+    ALTER TABLE "QRCode" ALTER COLUMN "label" DROP NOT NULL;
+END $$;
+
+-- AlterTable User (conditional add for barId)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'User' AND column_name = 'barId'
+    ) THEN
+        ALTER TABLE "User" ADD COLUMN "barId" TEXT;
+    END IF;
+END $$;
+
+-- CreateTable Purchase (only if it doesn't exist)
+CREATE TABLE IF NOT EXISTS "Purchase" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
@@ -50,11 +86,31 @@ CREATE TABLE "Purchase" (
     CONSTRAINT "Purchase_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "GroupMember_groupId_userId_key" ON "GroupMember"("groupId", "userId");
+-- CreateIndex (only if it doesn't exist)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE indexname = 'GroupMember_groupId_userId_key'
+    ) THEN
+        CREATE UNIQUE INDEX "GroupMember_groupId_userId_key" ON "GroupMember"("groupId", "userId");
+    END IF;
+END $$;
 
--- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_barId_fkey" FOREIGN KEY ("barId") REFERENCES "Bar"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+-- AddForeignKey (only if it doesn't exist)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_name = 'User_barId_fkey'
+    ) THEN
+        ALTER TABLE "User" ADD CONSTRAINT "User_barId_fkey" FOREIGN KEY ("barId") REFERENCES "Bar"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+    END IF;
 
--- AddForeignKey
-ALTER TABLE "QRCode" ADD CONSTRAINT "QRCode_barId_fkey" FOREIGN KEY ("barId") REFERENCES "Bar"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_name = 'QRCode_barId_fkey'
+    ) THEN
+        ALTER TABLE "QRCode" ADD CONSTRAINT "QRCode_barId_fkey" FOREIGN KEY ("barId") REFERENCES "Bar"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+    END IF;
+END $$;
