@@ -17,14 +17,15 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Seeding database...");
 
+  // Delete in reverse order of dependencies (children before parents)
   await prisma.$transaction([
-    prisma.offer.deleteMany(),
-    prisma.bar.deleteMany(),
-    prisma.qRCode.deleteMany(),
-    prisma.friend.deleteMany(),
-    prisma.groupMember.deleteMany(),
-    prisma.group.deleteMany(),
-    prisma.user.deleteMany(),
+    prisma.qRCode.deleteMany(), // Has FK to Offer and Bar
+    prisma.offer.deleteMany(), // Has FK to Bar
+    prisma.bar.deleteMany(), // Has FK to User
+    prisma.friend.deleteMany(), // Has FK to User
+    prisma.groupMember.deleteMany(), // Has FK to Group and User
+    prisma.group.deleteMany(), // Has FK to User
+    prisma.user.deleteMany(), // Base table
   ]);
 
   const users = await seedUsers(prisma);

@@ -1,10 +1,17 @@
 import { SWIPE_GESTURE } from "@constants/swipe-gesture";
-import { TAB_ORDER } from "@constants/tabs";
 import { useTabNavigation } from "@hooks/navigation/useTabNavigation";
+import {
+	NavigateTo,
+	getCurrentTabIndex,
+	isLeftSwipe,
+	isRightSwipe,
+	isValidEdgeGesture,
+	isVerticalScroll,
+} from "@utils/swipe";
 import React from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { runOnJS, useSharedValue } from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 
 interface SwipeableTabWrapperProps {
 	children: React.ReactNode;
@@ -43,20 +50,12 @@ export function SwipeableTabWrapper({
 		.onEnd((event) => {
 			const { translationX, velocityX, translationY } = event;
 
-			// Check if vertical movement is too large (likely a scroll gesture)
-			if (Math.abs(translationY) > SWIPE_GESTURE.VERTICAL_THRESHOLD) {
-				return;
-			}
+			// Early returns for invalid gestures
+			if (isVerticalScroll(translationY)) return;
+			if (!isValidEdgeGesture(edgeSwipeOnly, isFromEdge.value)) return;
 
-			// If edgeSwipeOnly is true, check if gesture started from screen edge
-			if (edgeSwipeOnly && !isFromEdge.value) {
-				return; // Gesture didn't start from edge, ignore it
-			}
-
-			const currentIndex = TAB_ORDER.indexOf(currentRoute as any);
-			if (currentIndex === -1) {
-				return;
-			}
+			const currentIndex = getCurrentTabIndex(currentRoute);
+			if (currentIndex === -1) return;
 
 			let shouldNavigate = false;
 			let targetIndex = currentIndex;
@@ -69,31 +68,29 @@ export function SwipeableTabWrapper({
 
 			// Swipe left (negative translationX) -> next tab
 			if (
-				translationX < -effectiveThreshold ||
-				velocityX < -SWIPE_GESTURE.SWIPE_VELOCITY_THRESHOLD
+				isLeftSwipe({
+					translationX,
+					velocityX,
+					threshold: effectiveThreshold,
+				})
 			) {
 				targetIndex = currentIndex + 1;
 				shouldNavigate = true;
 			}
 			// Swipe right (positive translationX) -> previous tab
 			else if (
-				translationX > effectiveThreshold ||
-				velocityX > SWIPE_GESTURE.SWIPE_VELOCITY_THRESHOLD
+				isRightSwipe({
+					translationX,
+					velocityX,
+					threshold: effectiveThreshold,
+				})
 			) {
 				targetIndex = currentIndex - 1;
 				shouldNavigate = true;
 			}
 
-			// Check boundaries and navigate
-			if (
-				shouldNavigate &&
-				targetIndex >= 0 &&
-				targetIndex < TAB_ORDER.length
-			) {
-				const targetRoute = TAB_ORDER[targetIndex];
-				// Use runOnJS to call the navigation function on the JS thread
-				runOnJS(navigateToTab)(targetRoute);
-			}
+			// Navigate if valid
+			NavigateTo(shouldNavigate, targetIndex, navigateToTab);
 		})
 		.activeOffsetX([-5, 5]) // Lower threshold (5px instead of 10px) for quicker response on edges
 		.failOffsetY(edgeSwipeOnly ? [-30, 30] : [-20, 20]); // More tolerance for vertical movement on map
