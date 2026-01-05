@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { BarsListScreen } from "@components/map/BarsListScreen";
+import FranceMap from "@components/map/FranceMap";
+import { ViewMode, ViewToggle } from "@components/map/ViewToggle";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
-import FranceMap from "@components/map/FranceMap";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, View } from "react-native";
 
 export default function MapScreen() {
 	const [coords, setCoords] = useState<{
@@ -10,6 +12,7 @@ export default function MapScreen() {
 		longitude: number;
 	} | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [viewMode, setViewMode] = useState<ViewMode>("map");
 
 	useEffect(() => {
 		(async () => {
@@ -51,7 +54,17 @@ export default function MapScreen() {
 					<ActivityIndicator />
 				</View>
 			) : (
-				<FranceMap latitude={latitude} longitude={longitude} />
+				<>
+					{/* Toggle View */}
+					<ViewToggle mode={viewMode} onChange={setViewMode} />
+
+					{/* Conditional rendering based on view mode */}
+					{viewMode === "map" ? (
+						<FranceMap latitude={latitude} longitude={longitude} />
+					) : (
+						<BarsListScreen latitude={latitude} longitude={longitude} />
+					)}
+				</>
 			)}
 		</View>
 	);

@@ -1,8 +1,8 @@
 // Fallback for using MaterialIcons on Android and web.
 
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { SymbolWeight, SymbolViewProps } from "expo-symbols";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { SymbolViewProps, SymbolWeight } from "expo-symbols";
 import { ComponentProps } from "react";
 import { OpaqueColorValue } from "react-native";
 
@@ -23,6 +23,8 @@ const MAPPING = {
 	"bubble.left.and.bubble.right.fill": "chat",
 	gear: "settings",
 	"square.and.arrow.up": "share",
+	"map.fill": "map",
+	"list.bullet": "list",
 } as IconMapping;
 
 /**
