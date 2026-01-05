@@ -8,13 +8,12 @@ import {
 	isValidEdgeGesture,
 	isVerticalScroll,
 } from "@utils/swipe";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 
-interface SwipeableTabWrapperProps {
-	children: React.ReactNode;
+interface SwipeableTabWrapperProps extends PropsWithChildren {
 	currentRoute: string;
 	/**
 	 * If true, swipe gestures will only work from the edges of the screen.

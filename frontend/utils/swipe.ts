@@ -2,7 +2,7 @@ import { SWIPE_GESTURE } from "@constants/swipe-gesture";
 import { TAB_ORDER, TabName } from "@constants/tabs";
 import { scheduleOnRN } from "react-native-worklets";
 
-interface SwipeParams {
+interface SwipeProps {
 	translationX: number;
 	velocityX: number;
 	threshold: number;
@@ -19,7 +19,7 @@ export function isLeftSwipe({
 	translationX,
 	velocityX,
 	threshold,
-}: SwipeParams): boolean {
+}: SwipeProps): boolean {
 	"worklet";
 	return (
 		translationX < -threshold ||
@@ -38,7 +38,7 @@ export function isRightSwipe({
 	translationX,
 	velocityX,
 	threshold,
-}: SwipeParams): boolean {
+}: SwipeProps): boolean {
 	"worklet";
 	return (
 		translationX > threshold ||
