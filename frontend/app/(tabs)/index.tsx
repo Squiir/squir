@@ -1,14 +1,11 @@
-import { Carousel } from "@components/ui/Carousel";
-import { useGetOffers } from "@hooks/offer/use-get-offers";
+import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
 import { Text, View } from "react-native";
 
 export default function HomeScreen() {
-	const { data: offers } = useGetOffers();
-
 	return (
 		<View>
 			<Text>Home</Text>
-			<Carousel title="Tendances"></Carousel>
+			<NearbyOffersCarousel />
 		</View>
 	);
 }

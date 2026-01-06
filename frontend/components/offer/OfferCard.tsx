@@ -46,7 +46,7 @@ function Price({ style }: TextProps) {
 	);
 }
 
-function DateInfo({ style }: TextProps) {
+function CreatedAt({ style }: TextProps) {
 	const { offer } = useOfferContext();
 	return (
 		<Text style={[styles.date, style]}>
@@ -57,7 +57,7 @@ function DateInfo({ style }: TextProps) {
 
 OfferCard.Name = Name;
 OfferCard.Price = Price;
-OfferCard.DateInfo = DateInfo;
+OfferCard.CreatedAt = CreatedAt;
 
 const styles = StyleSheet.create({
 	card: {

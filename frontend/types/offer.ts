@@ -1,4 +1,5 @@
-import { Range } from "@app-types/location";
+import { DefaultFilter } from "@app-types/filter";
+import { Range } from "@app-types/range";
 
 export interface Offer {
 	id: string;
@@ -7,7 +8,9 @@ export interface Offer {
 	createdAt: Date;
 }
 
-export type OfferFilters = Partial<Offer> & {
-	category?: string;
-	range?: Range;
+type OfferRangeParams = {
+	distance?: Range<number>;
 };
+
+export type OfferParams = Partial<DefaultFilter<Offer & OfferRangeParams>> &
+	Partial<OfferRangeParams>;
