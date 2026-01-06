@@ -18,8 +18,8 @@ export class OffersService {
       orderBy = "asc",
       minDistance,
       maxDistance,
-      userLatitude,
-      userLongitude,
+      latitude,
+      longitude,
     } = params;
 
     // 1. Récupération DB (Sans filtres de prix)
@@ -32,14 +32,14 @@ export class OffersService {
       let distance: number | undefined;
 
       if (
-        userLatitude !== undefined &&
-        userLongitude !== undefined &&
+        latitude !== undefined &&
+        longitude !== undefined &&
         offer.bar.latitude !== undefined &&
         offer.bar.longitude !== undefined
       ) {
         distance = haversineDistance(
-          userLatitude,
-          userLongitude,
+          latitude,
+          longitude,
           offer.bar.latitude,
           offer.bar.longitude,
         );

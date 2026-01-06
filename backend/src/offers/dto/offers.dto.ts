@@ -34,12 +34,12 @@ export class OfferParamsDto {
   @IsNumber()
   @Min(-90)
   @Max(90)
-  userLatitude?: number;
+  latitude?: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(-180)
   @Max(180)
-  userLongitude?: number;
+  longitude?: number;
 }

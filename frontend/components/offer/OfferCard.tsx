@@ -41,9 +41,7 @@ function Name({ style }: TextProps) {
 
 function Price({ style }: TextProps) {
 	const { offer } = useOfferContext();
-	return (
-		<Text style={[styles.price, style]}>{formatPrice(offer.price)} €</Text>
-	);
+	return <Text style={[styles.price, style]}>{formatPrice(offer.price)}</Text>;
 }
 
 function CreatedAt({ style }: TextProps) {
