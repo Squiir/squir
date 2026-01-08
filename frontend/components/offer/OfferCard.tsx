@@ -13,14 +13,16 @@ import {
 	ViewProps,
 } from "react-native";
 
-interface OfferContextProps {
+interface OfferCardContextProps {
 	offer: Offer;
 }
 
-const OfferContext = createContext<OfferContextProps | undefined>(undefined);
+const OfferCardContext = createContext<OfferCardContextProps | undefined>(
+	undefined,
+);
 
-function useOfferContext() {
-	const context = useContext(OfferContext);
+function useOfferCardContext() {
+	const context = useContext(OfferCardContext);
 	if (!context) {
 		throw new ContextError("OfferCard sub-components", "OfferCard");
 	}
@@ -36,26 +38,26 @@ export function OfferCard({ offer, children, ...props }: OfferCardProps) {
 	const offerMemo = useMemo(() => ({ offer }), [offer]);
 
 	return (
-		<OfferContext.Provider value={offerMemo}>
+		<OfferCardContext.Provider value={offerMemo}>
 			<View {...props} style={[props.style, styles.card]}>
 				{children}
 			</View>
-		</OfferContext.Provider>
+		</OfferCardContext.Provider>
 	);
 }
 
 function Name({ style }: TextProps) {
-	const { offer } = useOfferContext();
+	const { offer } = useOfferCardContext();
 	return <Text style={[styles.name, style]}>{offer.name}</Text>;
 }
 
 function Price({ style }: TextProps) {
-	const { offer } = useOfferContext();
+	const { offer } = useOfferCardContext();
 	return <Text style={[styles.price, style]}>{formatPrice(offer.price)}</Text>;
 }
 
 function CreatedAt({ style }: TextProps) {
-	const { offer } = useOfferContext();
+	const { offer } = useOfferCardContext();
 	const formattedDate = useLocaleDateString(offer.createdAt);
 	return <Text style={[styles.date, style]}>Ajouté le {formattedDate}</Text>;
 }
