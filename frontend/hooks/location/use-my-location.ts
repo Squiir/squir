@@ -15,7 +15,7 @@ export function useMyLocation(defaultLocation?: Coordinates) {
 			if (status !== "granted") {
 				setLocation({
 					coordinates: defaultLocation,
-					errorMsg: "Permission de localisation refusée",
+					error: "Permission de localisation refusée",
 					loading: false,
 				});
 				return;
@@ -30,12 +30,12 @@ export function useMyLocation(defaultLocation?: Coordinates) {
 			} catch (error) {
 				setLocation((prev) => ({
 					...prev,
-					errorMsg: "Impossible de récupérer la position",
+					error: "Impossible de récupérer la position",
 					loading: false,
 				}));
 			}
 		})();
-	}, []);
+	}, [defaultLocation]);
 
 	return location;
 }

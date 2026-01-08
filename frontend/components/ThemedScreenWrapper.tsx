@@ -1,6 +1,5 @@
 import { PropsWithChildren } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedView } from "./ThemedView";
 
 interface ThemedScreenWrapperProps extends PropsWithChildren {
@@ -15,11 +14,10 @@ export const ThemedScreenWrapper = ({
 	lightColor,
 	darkColor,
 }: ThemedScreenWrapperProps) => {
-	const insets = useSafeAreaInsets();
 	const Content = scrollable ? ScrollView : View;
 
 	return (
-		<ThemedView className="flex-1" style={{ paddingTop: insets.top }}>
+		<ThemedView className="flex-1">
 			<KeyboardAvoidingView
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 				className="flex-1"

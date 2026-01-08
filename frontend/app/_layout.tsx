@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from "@contexts/AuthProvider";
+import { LocationProvider } from "@contexts/LocationContext";
 import { SocketProvider } from "@contexts/SocketContext";
 import { useColorScheme } from "@hooks/color/use-color-scheme";
 import {
@@ -11,10 +12,12 @@ import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
 
 export function RootNavigator() {
+	const insets = useSafeAreaInsets();
 	const { isLoading, isLoggedIn } = useAuth();
 	const router = useRouter();
 
@@ -27,7 +30,12 @@ export function RootNavigator() {
 	if (isLoading) return null;
 
 	return (
-		<Stack screenOptions={{ headerShown: false }}>
+		<Stack
+			screenOptions={{
+				headerShown: false,
+				contentStyle: { paddingTop: insets.top },
+			}}
+		>
 			<Stack.Screen name="(tabs)" />
 			<Stack.Screen name="login" />
 			<Stack.Screen name="register" />
@@ -45,8 +53,10 @@ export default function RootLayout() {
 					<ThemeProvider
 						value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
 					>
-						<RootNavigator />
-						<StatusBar style="auto" />
+						<LocationProvider>
+							<RootNavigator />
+							<StatusBar style="auto" />
+						</LocationProvider>
 					</ThemeProvider>
 				</SocketProvider>
 			</AuthProvider>

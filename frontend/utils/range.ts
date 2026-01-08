@@ -12,14 +12,12 @@ export function flattenRangeParams<
 
 		const value = obj[key];
 
-		// Vérification : est-ce un objet de type Range ?
 		if (
 			value !== null &&
 			typeof value === "object" &&
 			!Array.isArray(value) &&
 			("min" in value || "max" in value)
 		) {
-			// On traite l'objet comme un Range pour accéder à min/max
 			const range = value as Range<unknown>;
 			const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
 
@@ -30,7 +28,6 @@ export function flattenRangeParams<
 				result[`max${capitalizedKey}`] = range.max;
 			}
 		} else {
-			// Pour les types simples (string, number, etc.), on garde tel quel
 			result[key] = value;
 		}
 	}

@@ -20,14 +20,16 @@ export class OffersService {
       maxDistance,
       latitude,
       longitude,
+      limit,
     } = params;
 
-    // 1. Récupération DB (Sans filtres de prix)
+    // DB query
     const offers = await this.prisma.offer.findMany({
       include: { bar: true },
+      take: limit,
     });
 
-    // 2. Calcul des distances
+    // Distance calculation
     let results: OfferWithDistance[] = offers.map((offer) => {
       let distance: number | undefined;
 
@@ -48,9 +50,9 @@ export class OffersService {
       return { ...offer, distance };
     });
 
-    // 3. Filtrage par distance
+    // Distance filtering
     if (minDistance !== undefined || maxDistance !== undefined) {
-      results = results.filter((o): o is OfferWithDistance => {
+      results = results.filter((o) => {
         if (o.distance === undefined) return false;
         const minOk =
           minDistance !== undefined ? o.distance >= minDistance : true;
@@ -60,7 +62,7 @@ export class OffersService {
       });
     }
 
-    // 4. Tri final
+    // Final sorting
     if (sortBy) {
       results.sort((a, b) => {
         const valA = a[sortBy as keyof OfferWithDistance];

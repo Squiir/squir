@@ -5,6 +5,6 @@ export interface Coordinates {
 
 export interface LocationState {
 	coordinates?: Coordinates;
-	errorMsg?: string;
+	error?: string;
 	loading: boolean;
 }

@@ -3,10 +3,16 @@ export interface Range<T = number> {
 	max?: T;
 }
 
+type RangeValue<T> = NonNullable<T> extends Range<infer V> ? V : never;
+
 export type FlattenedRange<T> = {
-	[K in keyof T as T[K] extends Range<any> | undefined ? never : K]: T[K];
+	// si RangeValue n'est pas une range, on garde la clé K
+	[K in keyof T as RangeValue<T[K]> extends never ? K : never]: T[K];
 } & {
-	[K in keyof T as T[K] extends Range<infer V> | undefined
-		? `min${Capitalize<K & string>}` | `max${Capitalize<K & string>}`
-		: never]?: T[K] extends Range<infer V> | undefined ? V : never;
+	// si RangeValue est une range, on génère min/max
+	[K in keyof T as RangeValue<T[K]> extends never
+		? never
+		:
+				| `min${Capitalize<K & string>}`
+				| `max${Capitalize<K & string>}`]?: RangeValue<T[K]>;
 };

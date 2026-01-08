@@ -1,31 +1,24 @@
 import { Type } from "class-transformer";
-import {
-  IsIn,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-} from "class-validator";
+import { IsIn, IsNumber, IsOptional, Max, Min } from "class-validator";
 
 export class OfferParamsDto {
   @IsOptional()
-  @IsString()
-  sortBy?: string;
+  @IsIn(["distance", "price", "name", "createdAt"])
+  sortBy?: "distance" | "price" | "name" | "createdAt";
 
   @IsOptional()
   @IsIn(["asc", "desc"])
   orderBy?: "asc" | "desc" = "asc";
 
   @IsOptional()
-  @IsNumber()
   @Type(() => Number)
+  @IsNumber()
   @Min(0)
   minDistance?: number;
 
   @IsOptional()
-  @IsNumber()
   @Type(() => Number)
+  @IsNumber()
   @Min(0)
   maxDistance?: number;
 
@@ -42,4 +35,11 @@ export class OfferParamsDto {
   @Min(-180)
   @Max(180)
   longitude?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  limit?: number = 10;
 }
