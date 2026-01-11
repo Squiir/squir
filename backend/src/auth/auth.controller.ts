@@ -1,11 +1,11 @@
 import { AuthService } from "@auth/auth.service";
-import { CurrentUserId } from "@auth/current-user.decorator";
 import type { AuthDto } from "@auth/dto/auth.dto";
 import { RegisterDto } from "@auth/dto/register.dto";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import { JwtRefreshTokenGuard } from "@auth/jwt-refresh-token.guard";
 import { LocalAuthGuard } from "@auth/local-auth.guard";
 import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { CurrentUserId } from "@utils/decorators/current-user.decorator";
 
 @Controller("auth")
 export class AuthController {

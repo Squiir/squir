@@ -1,7 +1,7 @@
 import { useGroups } from "@/hooks/groups/use-group";
 import { GroupItem } from "./GroupItem";
 
-export function GroupsList() {
+export function GroupList() {
   const { data = [], isLoading } = useGroups();
 
   if (data.length === 0) {
