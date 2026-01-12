@@ -1,17 +1,19 @@
-import React, { useState } from "react";
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	Platform,
-	Modal,
-	Pressable,
-} from "react-native";
-import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
+import { Tokens } from "@constants/tokens";
 import DateTimePicker, {
 	DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { CalendarDays } from "lucide-react-native";
+import React, { useState } from "react";
+import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
+import {
+	Modal,
+	Platform,
+	Pressable,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 
 interface ControlledDatePickerProps<T extends FieldValues> {
 	control: Control<T>;
@@ -27,8 +29,8 @@ export const ControlledDatePicker = <T extends FieldValues>({
 	const [show, setShow] = useState(false);
 
 	return (
-		<View className="mb-4">
-			<Text className="text-slate-700 font-semibold mb-1 ml-1">{label}</Text>
+		<View style={styles.container}>
+			<Text style={styles.label}>{label}</Text>
 
 			<Controller
 				control={control}
@@ -53,43 +55,45 @@ export const ControlledDatePicker = <T extends FieldValues>({
 							<TouchableOpacity
 								onPress={() => setShow(true)}
 								activeOpacity={0.7}
-								className={`flex-row items-center justify-between border rounded-xl px-4 h-14 bg-slate-50 ${error ? "border-red-500" : "border-slate-200"}`}
+								style={[
+									styles.input,
+									error ? styles.inputError : styles.inputNormal,
+								]}
 							>
 								<Text
-									className={`text-base ${value ? "text-slate-900" : "text-slate-400"}`}
+									style={[
+										styles.inputText,
+										value
+											? styles.inputTextFilled
+											: styles.inputTextPlaceholder,
+									]}
 								>
 									{value ? dateValue.toLocaleDateString("fr-FR") : "JJ/MM/AAAA"}
 								</Text>
-								<View className="bg-indigo-100 p-2 rounded-lg">
-									<CalendarDays size={20} color="#4f46e5" />
+								<View style={styles.iconContainer}>
+									<CalendarDays size={20} color={Tokens.colors.primary[600]} />
 								</View>
 							</TouchableOpacity>
 
 							{Platform.OS === "ios" ? (
 								<Modal visible={show} transparent animationType="slide">
 									<Pressable
-										className="flex-1 bg-black/40"
+										style={styles.overlay}
 										onPress={() => setShow(false)}
 									/>
 
-									<View className="bg-white rounded-t-3xl pb-10">
-										<View className="flex-row justify-between items-center p-4 border-b border-slate-100">
+									<View style={styles.modal}>
+										<View style={styles.modalHeader}>
 											<TouchableOpacity onPress={() => setShow(false)}>
-												<Text className="text-red-500 font-semibold text-base">
-													Annuler
-												</Text>
+												<Text style={styles.cancelButton}>Annuler</Text>
 											</TouchableOpacity>
-											<Text className="font-bold text-lg text-slate-900">
-												Choisir une date
-											</Text>
+											<Text style={styles.modalTitle}>Choisir une date</Text>
 											<TouchableOpacity onPress={() => setShow(false)}>
-												<Text className="text-indigo-600 font-bold text-base">
-													OK
-												</Text>
+												<Text style={styles.okButton}>OK</Text>
 											</TouchableOpacity>
 										</View>
 
-										<View className="h-[250px] justify-center bg-white">
+										<View style={styles.pickerContainer}>
 											<DateTimePicker
 												value={dateValue}
 												mode="date"
@@ -114,11 +118,7 @@ export const ControlledDatePicker = <T extends FieldValues>({
 								)
 							)}
 
-							{error && (
-								<Text className="text-red-500 text-xs mt-1 ml-1 font-medium">
-									{error.message}
-								</Text>
-							)}
+							{error && <Text style={styles.error}>{error.message}</Text>}
 						</>
 					);
 				}}
@@ -126,3 +126,90 @@ export const ControlledDatePicker = <T extends FieldValues>({
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		marginBottom: Tokens.spacing[4],
+	},
+	label: {
+		color: Tokens.colors.gray[700],
+		fontWeight: Tokens.typography.weights.semibold,
+		marginBottom: Tokens.spacing[1],
+		marginLeft: Tokens.spacing[1],
+	},
+	input: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		borderWidth: 1,
+		borderRadius: Tokens.borderRadius.xl,
+		paddingHorizontal: Tokens.spacing[4],
+		height: 56,
+		backgroundColor: Tokens.colors.gray[50],
+	},
+	inputNormal: {
+		borderColor: Tokens.colors.gray[200],
+	},
+	inputError: {
+		borderColor: Tokens.colors.red[500],
+	},
+	inputText: {
+		fontSize: Tokens.typography.sizes.base,
+	},
+	inputTextFilled: {
+		color: Tokens.colors.gray[900],
+	},
+	inputTextPlaceholder: {
+		color: Tokens.colors.gray[400],
+	},
+	iconContainer: {
+		backgroundColor: Tokens.colors.primary[100],
+		padding: Tokens.spacing[2],
+		borderRadius: Tokens.borderRadius.lg,
+	},
+	overlay: {
+		flex: 1,
+		backgroundColor: "rgba(0, 0, 0, 0.4)",
+	},
+	modal: {
+		backgroundColor: Tokens.colors.white,
+		borderTopLeftRadius: Tokens.borderRadius["3xl"],
+		borderTopRightRadius: Tokens.borderRadius["3xl"],
+		paddingBottom: Tokens.spacing[10],
+	},
+	modalHeader: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		padding: Tokens.spacing[4],
+		borderBottomWidth: 1,
+		borderBottomColor: Tokens.colors.gray[100],
+	},
+	cancelButton: {
+		color: Tokens.colors.red[500],
+		fontWeight: Tokens.typography.weights.semibold,
+		fontSize: Tokens.typography.sizes.base,
+	},
+	modalTitle: {
+		fontWeight: Tokens.typography.weights.bold,
+		fontSize: Tokens.typography.sizes.lg,
+		color: Tokens.colors.gray[900],
+	},
+	okButton: {
+		color: Tokens.colors.primary[600],
+		fontWeight: Tokens.typography.weights.bold,
+		fontSize: Tokens.typography.sizes.base,
+	},
+	pickerContainer: {
+		height: 250,
+		justifyContent: "center",
+		backgroundColor: Tokens.colors.white,
+	},
+	error: {
+		color: Tokens.colors.red[500],
+		fontSize: Tokens.typography.sizes.xs,
+		marginTop: Tokens.spacing[1],
+		marginLeft: Tokens.spacing[1],
+		fontWeight: Tokens.typography.weights.medium,
+	},
+});

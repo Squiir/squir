@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import { Bar } from "@app-types/bar";
 import { QrCode } from "@app-types/qrcode";
+import { Tokens } from "@constants/tokens";
 import { useGetBars } from "@hooks/bars/use-get-bars";
 import { useCreateQrCode } from "@hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
@@ -59,8 +60,8 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 	);
 
 	return (
-		<View className="flex-1">
-			<MapView className="flex-1" initialRegion={initialRegion}>
+		<View style={styles.container}>
+			<MapView style={styles.map} initialRegion={initialRegion}>
 				{!!latitude && !!longitude && (
 					<Marker
 						coordinate={{ latitude, longitude }}
@@ -82,8 +83,8 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 			</MapView>
 
 			{isGetBarsPending && (
-				<View className="absolute inset-0 items-center justify-center">
-					<ActivityIndicator size="large" color="#fff" />
+				<View style={styles.loading}>
+					<ActivityIndicator size="large" color={Tokens.colors.white} />
 				</View>
 			)}
 
@@ -107,3 +108,21 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	map: {
+		flex: 1,
+	},
+	loading: {
+		position: "absolute",
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});

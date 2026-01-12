@@ -1,7 +1,9 @@
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
 import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
-import { Text, View } from "react-native";
+import { Tokens } from "@constants/tokens";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {
 	return (
@@ -15,3 +17,16 @@ export default function HomeScreen() {
 		</SwipeableTabWrapper>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	welcomeText: {
+		fontSize: Tokens.typography.sizes["4xl"],
+		fontWeight: Tokens.typography.weights.bold,
+		color: Tokens.colors.white,
+	},
+});

@@ -1,8 +1,8 @@
+import { SCAN_AREA_SIZE } from "@constants/scanner";
+import { Tokens } from "@constants/tokens";
 import { BarcodeScanningResult, CameraView } from "expo-camera";
 import React from "react";
-import { View } from "react-native";
-
-import { SCAN_AREA_SIZE } from "@constants/scanner";
+import { StyleSheet, View } from "react-native";
 
 type ScannerCameraProps = {
 	scanned: boolean;
@@ -14,19 +14,9 @@ export function ScannerCamera({
 	onBarCodeScanned,
 }: ScannerCameraProps) {
 	return (
-		<View
-			className="rounded-3xl overflow-hidden border-4 border-blue-500 bg-white shadow-lg"
-			style={{
-				width: SCAN_AREA_SIZE + 8,
-				height: SCAN_AREA_SIZE + 8,
-				elevation: 8,
-			}}
-		>
+		<View style={styles.container}>
 			<CameraView
-				style={{
-					width: SCAN_AREA_SIZE,
-					height: SCAN_AREA_SIZE,
-				}}
+				style={styles.camera}
 				facing="back"
 				onBarcodeScanned={scanned ? undefined : onBarCodeScanned}
 				barcodeScannerSettings={{
@@ -36,3 +26,20 @@ export function ScannerCamera({
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		width: SCAN_AREA_SIZE + 8,
+		height: SCAN_AREA_SIZE + 8,
+		borderRadius: Tokens.borderRadius["3xl"],
+		overflow: "hidden",
+		borderWidth: 4,
+		borderColor: Tokens.colors.primary[500],
+		backgroundColor: Tokens.colors.white,
+		...Tokens.shadows.lg,
+	},
+	camera: {
+		width: SCAN_AREA_SIZE,
+		height: SCAN_AREA_SIZE,
+	},
+});

@@ -1,9 +1,10 @@
 import FranceMap from "@components/map/FranceMap";
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
+import { Tokens } from "@constants/tokens";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 
 export default function MapScreen() {
 	const [coords, setCoords] = useState<{
@@ -45,12 +46,12 @@ export default function MapScreen() {
 
 	return (
 		<SwipeableTabWrapper currentRoute="map" edgeSwipeOnly>
-			<View className="flex-1">
+			<View style={styles.container}>
 				<Stack.Screen options={{ title: "Ma localisation" }} />
 
 				{loading ? (
-					<View className="items-center justify-center flex-1">
-						<ActivityIndicator />
+					<View style={styles.loadingContainer}>
+						<ActivityIndicator color={Tokens.colors.primary[600]} />
 					</View>
 				) : (
 					<FranceMap latitude={latitude} longitude={longitude} />
@@ -59,3 +60,14 @@ export default function MapScreen() {
 		</SwipeableTabWrapper>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	loadingContainer: {
+		alignItems: "center",
+		justifyContent: "center",
+		flex: 1,
+	},
+});

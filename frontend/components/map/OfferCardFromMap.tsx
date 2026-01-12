@@ -1,15 +1,21 @@
 import { Bar } from "@app-types/bar";
 import { Offer } from "@app-types/offer";
 import { QrCode } from "@app-types/qrcode";
+import { Tokens } from "@constants/tokens";
 import { QrCodeDto } from "@services/qrcode.service";
 import { formatPrice } from "@utils/format";
-import clsx from "clsx";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	Modal,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 
 interface OfferItemProps {
-	key?: string;
 	offer: Offer;
 	selectedBar: Bar;
 	alreadyHas: boolean;
@@ -28,7 +34,9 @@ function OfferItem({
 		onCreateQrCode({
 			barId: selectedBar.id,
 			offerId: offer.id,
-			label: `${selectedBar.name} • ${offer.name}${typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""}`,
+			label: `${selectedBar.name} • ${offer.name}${
+				typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""
+			}`,
 		});
 	};
 
@@ -36,24 +44,18 @@ function OfferItem({
 		<Pressable
 			onPress={handlePress}
 			disabled={disabled}
-			className={clsx(
-				"py-3 px-4 rounded-xl border-2",
-				alreadyHas
-					? "bg-gray-100 border-gray-300"
-					: "bg-blue-50 border-blue-200",
-				disabled && "opacity-50",
-			)}
+			style={[
+				styles.offerItem,
+				alreadyHas ? styles.offerDisabled : styles.offerActive,
+				disabled && styles.offerOpacity,
+			]}
 		>
-			<View className="flex-row justify-between items-center">
-				<Text className="text-gray-900 font-bold">{offer.name}</Text>
-				{alreadyHas && (
-					<Text className="text-gray-500 font-semibold text-sm">
-						Déjà en stock
-					</Text>
-				)}
+			<View style={styles.offerRow}>
+				<Text style={styles.offerName}>{offer.name}</Text>
+				{alreadyHas && <Text style={styles.offerStock}>Déjà en stock</Text>}
 			</View>
 			{typeof offer.price === "number" && (
-				<Text className="text-gray-600 mt-1">{formatPrice(offer.price)}</Text>
+				<Text style={styles.offerPrice}>{formatPrice(offer.price)}</Text>
 			)}
 		</Pressable>
 	);
@@ -86,25 +88,20 @@ export function OfferCardFromMap({
 			animationType="fade"
 			onRequestClose={() => setOfferOpen(false)}
 		>
-			<Pressable
-				onPress={() => setOfferOpen(false)}
-				className="flex-1 items-center justify-center px-6 bg-black/50"
-			>
+			<Pressable onPress={() => setOfferOpen(false)} style={styles.overlay}>
 				<Pressable onPress={() => {}}>
 					<LinearGradient
 						colors={["#ffffff", "#1e4e71ff"]}
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
-						className="w-full max-w-[380px] rounded-3xl overflow-hidden p-6"
+						style={styles.modal}
 					>
-						<Text className="text-gray-900 text-xl font-bold mb-1">
-							{selectedBar?.name ?? "Offres"}
-						</Text>
-						<Text className="text-gray-600 text-sm mb-4">
+						<Text style={styles.title}>{selectedBar?.name ?? "Offres"}</Text>
+						<Text style={styles.subtitle}>
 							Choisis une offre pour générer le QR code
 						</Text>
 
-						<View className="gap-2.5 mb-4">
+						<View style={styles.offersList}>
 							{offers.map((offer) => (
 								<OfferItem
 									key={offer.id}
@@ -122,15 +119,15 @@ export function OfferCardFromMap({
 							))}
 
 							{offers.length === 0 && (
-								<Text className="text-gray-500">Aucune offre disponible.</Text>
+								<Text style={styles.empty}>Aucune offre disponible.</Text>
 							)}
 						</View>
 
-						<View className="flex-row items-center mb-4 min-h-[24px]">
+						<View style={styles.loadingRow}>
 							{(isCreateQrCodePending || isGetMyQrCodesPending) && (
 								<>
-									<ActivityIndicator color="#3b82f6" />
-									<Text className="text-gray-600 ml-2">
+									<ActivityIndicator color={Tokens.colors.primary[600]} />
+									<Text style={styles.loadingText}>
 										{isCreateQrCodePending
 											? "Génération…"
 											: "Chargement du stock…"}
@@ -141,9 +138,9 @@ export function OfferCardFromMap({
 
 						<Pressable
 							onPress={() => setOfferOpen(false)}
-							className="py-4 rounded-xl bg-blue-500 items-center"
+							style={styles.closeButton}
 						>
-							<Text className="text-white font-bold text-base">Fermer</Text>
+							<Text style={styles.closeButtonText}>Fermer</Text>
 						</Pressable>
 					</LinearGradient>
 				</Pressable>
@@ -151,3 +148,94 @@ export function OfferCardFromMap({
 		</Modal>
 	);
 }
+
+const styles = StyleSheet.create({
+	overlay: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		paddingHorizontal: Tokens.spacing[6],
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modal: {
+		width: "100%",
+		maxWidth: 380,
+		borderRadius: Tokens.borderRadius["3xl"],
+		overflow: "hidden",
+		padding: Tokens.spacing[6],
+	},
+	title: {
+		color: Tokens.colors.gray[900],
+		fontSize: Tokens.typography.sizes.xl,
+		fontWeight: Tokens.typography.weights.bold,
+		marginBottom: Tokens.spacing[1],
+	},
+	subtitle: {
+		color: Tokens.colors.gray[600],
+		fontSize: Tokens.typography.sizes.sm,
+		marginBottom: Tokens.spacing[4],
+	},
+	offersList: {
+		gap: 10,
+		marginBottom: Tokens.spacing[4],
+	},
+	offerItem: {
+		paddingVertical: Tokens.spacing[3],
+		paddingHorizontal: Tokens.spacing[4],
+		borderRadius: Tokens.borderRadius.xl,
+		borderWidth: 2,
+	},
+	offerActive: {
+		backgroundColor: Tokens.colors.primary[50],
+		borderColor: Tokens.colors.primary[200],
+	},
+	offerDisabled: {
+		backgroundColor: Tokens.colors.gray[100],
+		borderColor: Tokens.colors.gray[300],
+	},
+	offerOpacity: {
+		opacity: 0.5,
+	},
+	offerRow: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+	},
+	offerName: {
+		color: Tokens.colors.gray[900],
+		fontWeight: Tokens.typography.weights.bold,
+	},
+	offerStock: {
+		color: Tokens.colors.gray[500],
+		fontWeight: Tokens.typography.weights.semibold,
+		fontSize: Tokens.typography.sizes.sm,
+	},
+	offerPrice: {
+		color: Tokens.colors.gray[600],
+		marginTop: Tokens.spacing[1],
+	},
+	empty: {
+		color: Tokens.colors.gray[500],
+	},
+	loadingRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: Tokens.spacing[4],
+		minHeight: 24,
+	},
+	loadingText: {
+		color: Tokens.colors.gray[600],
+		marginLeft: Tokens.spacing[2],
+	},
+	closeButton: {
+		paddingVertical: Tokens.spacing[4],
+		borderRadius: Tokens.borderRadius.xl,
+		backgroundColor: Tokens.colors.primary[500],
+		alignItems: "center",
+	},
+	closeButtonText: {
+		color: Tokens.colors.white,
+		fontWeight: Tokens.typography.weights.bold,
+		fontSize: Tokens.typography.sizes.base,
+	},
+});

@@ -1,10 +1,11 @@
 import { PropsWithChildren, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { ThemedText } from "@components/ThemedText";
 import { ThemedView } from "@components/ThemedView";
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { Colors } from "@constants/theme";
+import { Tokens } from "@constants/tokens";
 import { useColorScheme } from "@hooks/color/use-color-scheme";
 
 export function Collapsible({
@@ -17,7 +18,7 @@ export function Collapsible({
 	return (
 		<ThemedView>
 			<TouchableOpacity
-				className="flex-row items-center gap-1.5"
+				style={styles.header}
 				onPress={() => setIsOpen((value) => !value)}
 				activeOpacity={0.8}
 			>
@@ -31,7 +32,19 @@ export function Collapsible({
 
 				<ThemedText type="defaultSemiBold">{title}</ThemedText>
 			</TouchableOpacity>
-			{isOpen && <ThemedView className="mt-1.5 ml-6">{children}</ThemedView>}
+			{isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
 		</ThemedView>
 	);
 }
+
+const styles = StyleSheet.create({
+	header: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 6,
+	},
+	content: {
+		marginTop: 6,
+		marginLeft: Tokens.spacing[6],
+	},
+});

@@ -1,6 +1,6 @@
-import { Text, type TextProps } from "react-native";
-
+import { Tokens } from "@constants/tokens";
 import { useThemeColor } from "@hooks/color/use-theme-color";
+import { StyleSheet, Text, type TextProps } from "react-native";
 
 export type ThemedTextProps = TextProps & {
 	lightColor?: string;
@@ -20,21 +20,32 @@ export function ThemedText({
 		"textPrimary",
 	);
 
-	return (
-		<Text
-			style={[{ color }, style]}
-			className={
-				type === "default"
-					? "text-[16px] leading-[24px]"
-					: type === "title"
-						? "text-[32px] leading-[32px] font-bold"
-						: type === "defaultSemiBold"
-							? "text-[16px] leading-[24px] font-semibold"
-							: type === "subtitle"
-								? "text-[20px] font-bold"
-								: "text-[16px] leading-[30px] text-[#0a7ea4]"
-			}
-			{...rest}
-		/>
-	);
+	return <Text style={[{ color }, styles[type], style]} {...rest} />;
 }
+
+const styles = StyleSheet.create({
+	default: {
+		fontSize: Tokens.typography.sizes.base,
+		lineHeight: Tokens.typography.lineHeights.normal,
+		fontWeight: Tokens.typography.weights.normal,
+	},
+	title: {
+		fontSize: Tokens.typography.sizes["4xl"],
+		lineHeight: Tokens.typography.lineHeights.loose,
+		fontWeight: Tokens.typography.weights.bold,
+	},
+	defaultSemiBold: {
+		fontSize: Tokens.typography.sizes.base,
+		lineHeight: Tokens.typography.lineHeights.normal,
+		fontWeight: Tokens.typography.weights.semibold,
+	},
+	subtitle: {
+		fontSize: Tokens.typography.sizes.xl,
+		fontWeight: Tokens.typography.weights.bold,
+	},
+	link: {
+		fontSize: Tokens.typography.sizes.base,
+		lineHeight: Tokens.typography.lineHeights.relaxed,
+		color: Tokens.colors.link,
+	},
+});

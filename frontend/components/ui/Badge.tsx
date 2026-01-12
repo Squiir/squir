@@ -1,36 +1,52 @@
-import { View, Text } from "react-native";
+import { Tokens } from "@constants/tokens";
+import { StyleSheet, Text, View } from "react-native";
 
-export function Badge({
-	text,
-	variant,
-}: {
+type BadgeVariant = "ok" | "warn";
+
+type BadgeProps = {
 	text: string;
-	variant?: "ok" | "warn";
-}) {
-	const bg =
-		variant === "warn" ? "rgba(255, 200, 0, 0.18)" : "rgba(90, 200, 120, 0.18)";
-	const border =
-		variant === "warn" ? "rgba(255, 200, 0, 0.35)" : "rgba(90, 200, 120, 0.35)";
-	const color =
-		variant === "warn" ? "rgba(255, 220, 120, 1)" : "rgba(170, 255, 200, 1)";
+	variant?: BadgeVariant;
+};
 
+export function Badge({ text, variant = "ok" }: BadgeProps) {
 	return (
-		<View
-			style={{
-				minWidth: 40,
-				height: 24,
-				paddingHorizontal: 10,
-				borderRadius: 999,
-				backgroundColor: bg,
-				borderWidth: 1,
-				borderColor: border,
-				alignItems: "center",
-				justifyContent: "center",
-			}}
-		>
-			<Text style={{ color, fontSize: 11, fontWeight: "900", lineHeight: 12 }}>
-				{text}
-			</Text>
+		<View style={[styles.base, styles[variant]]}>
+			<Text style={[styles.text, styles[`${variant}Text`]]}>{text}</Text>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	base: {
+		minWidth: 40,
+		height: 24,
+		paddingHorizontal: 10,
+		borderRadius: Tokens.borderRadius.full,
+		borderWidth: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+
+	// Variants
+	ok: {
+		backgroundColor: "rgba(90, 200, 120, 0.18)",
+		borderColor: "rgba(90, 200, 120, 0.35)",
+	},
+	warn: {
+		backgroundColor: "rgba(255, 200, 0, 0.18)",
+		borderColor: "rgba(255, 200, 0, 0.35)",
+	},
+
+	// Text
+	text: {
+		fontSize: 11,
+		fontWeight: "900",
+		lineHeight: 12,
+	},
+	okText: {
+		color: "rgba(170, 255, 200, 1)",
+	},
+	warnText: {
+		color: "rgba(255, 220, 120, 1)",
+	},
+});

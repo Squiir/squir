@@ -1,6 +1,7 @@
 import { Button } from "@components/ui/Button";
+import { Tokens } from "@constants/tokens";
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export type MultiStepSelectorProps = {
 	isSubmitting: boolean;
@@ -20,20 +21,32 @@ export function MultiStepSelector({
 	isLastStep,
 }: MultiStepSelectorProps) {
 	return (
-		<View className="flex-row mt-8 items-center space-x-3">
+		<View style={styles.container}>
 			<Button
 				title="Retour"
 				onPress={prevStep}
 				variant="outline"
 				disabled={isFirstStep}
-				className="flex-1"
+				style={styles.button}
 			/>
 			<Button
 				title={isLastStep ? "Terminer" : "Suivant"}
 				onPress={isLastStep ? submit : nextStep}
 				isPending={isSubmitting}
-				className="flex-1"
+				style={styles.button}
 			/>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: "row",
+		marginTop: Tokens.spacing[8],
+		alignItems: "center",
+		gap: Tokens.spacing[3],
+	},
+	button: {
+		flex: 1,
+	},
+});
