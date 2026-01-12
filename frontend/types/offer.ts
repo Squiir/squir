@@ -14,7 +14,13 @@ type OfferRangeParams = {
 	coordinates: Coordinates;
 };
 
-export type OfferParams = Partial<DefaultFilter<Offer & OfferRangeParams>> &
+type AdditionalSortingOfferParams = {
+	numberOfQrCodes: number;
+};
+
+export type OfferParams = Partial<
+	DefaultFilter<Offer & OfferRangeParams & AdditionalSortingOfferParams>
+> &
 	(
 		| OfferRangeParams
 		| {

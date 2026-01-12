@@ -1,5 +1,7 @@
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
+import { BestSellingOffersCarousel } from "@components/offer/BestSellingOffersCarousel";
 import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
+import { RecentOffersCarousel } from "@components/offer/RecentOffersCarousel";
 import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
 import { Tokens } from "@constants/tokens";
 import React from "react";
@@ -9,9 +11,11 @@ export default function HomeScreen() {
 	return (
 		<SwipeableTabWrapper currentRoute="index">
 			<ThemedScreenWrapper>
-				<View>
+				<View style={styles.container}>
 					<Text>Home</Text>
 					<NearbyOffersCarousel />
+					<BestSellingOffersCarousel />
+					<RecentOffersCarousel />
 				</View>
 			</ThemedScreenWrapper>
 		</SwipeableTabWrapper>
@@ -21,8 +25,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
 	},
 	welcomeText: {
 		fontSize: Tokens.typography.sizes["4xl"],

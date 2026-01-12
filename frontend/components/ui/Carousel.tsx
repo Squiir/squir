@@ -31,13 +31,29 @@ function useCarouselContext() {
 
 interface CarouselProps extends ScrollViewProps {
 	title: string;
+	isLoading?: boolean;
+	isError?: boolean;
+	onRetry?: () => void;
 }
 
-export function Carousel({ title, children, ...props }: CarouselProps) {
+export function Carousel({
+	title,
+	isLoading,
+	isError,
+	onRetry,
+	children,
+	...props
+}: CarouselProps) {
 	return (
 		<CarouselContext.Provider value={{ title }}>
 			<View style={styles.container} {...props}>
-				{children}
+				{isLoading ? (
+					<Carousel.Skeleton />
+				) : isError ? (
+					<Carousel.Error onPress={onRetry} />
+				) : (
+					children
+				)}
 			</View>
 		</CarouselContext.Provider>
 	);
