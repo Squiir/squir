@@ -1,5 +1,6 @@
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
+import { Tokens } from "@constants/tokens";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -22,8 +23,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	welcomeText: {
-		fontSize: 32,
-		fontWeight: "bold",
-		color: "#FFFFFF",
+		fontSize: Tokens.typography.sizes["4xl"],
+		fontWeight: Tokens.typography.weights.bold,
+		color: Tokens.colors.white,
 	},
 });

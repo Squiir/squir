@@ -1,10 +1,10 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { Marker, Callout } from "react-native-maps";
 import { Bar } from "@app-types/bar";
+import { Tokens } from "@constants/tokens";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Callout, Marker } from "react-native-maps";
 
 type MapMarkerProps = {
-	key?: string;
 	bar: Bar;
 	onSelect: (bar: Bar) => void;
 };
@@ -16,18 +16,39 @@ export function MapMarker({ bar, onSelect }: MapMarkerProps) {
 			pinColor={bar.color}
 		>
 			<Callout tooltip onPress={() => onSelect(bar)}>
-				<View className="rounded-2xl border border-white/15 bg-black/95 px-3 py-2 min-w-[170px]">
-					<Text className="text-white font-extrabold text-[14px]">
-						{bar.name}
-					</Text>
-					<Text className="text-white/75 mt-1 text-[12px]">
-						Paris {bar.arrondissement}e
-					</Text>
-					<Text className="text-white/60 mt-2 text-[11px]">
-						Voir les offres
-					</Text>
+				<View style={styles.callout}>
+					<Text style={styles.name}>{bar.name}</Text>
+					<Text style={styles.location}>Paris {bar.arrondissement}e</Text>
+					<Text style={styles.cta}>Voir les offres</Text>
 				</View>
 			</Callout>
 		</Marker>
 	);
 }
+
+const styles = StyleSheet.create({
+	callout: {
+		borderRadius: Tokens.borderRadius["2xl"],
+		borderWidth: 1,
+		borderColor: "rgba(255, 255, 255, 0.15)",
+		backgroundColor: "rgba(0, 0, 0, 0.95)",
+		paddingHorizontal: Tokens.spacing[3],
+		paddingVertical: Tokens.spacing[2],
+		minWidth: 170,
+	},
+	name: {
+		color: Tokens.colors.white,
+		fontWeight: "800",
+		fontSize: 14,
+	},
+	location: {
+		color: "rgba(255, 255, 255, 0.75)",
+		marginTop: Tokens.spacing[1],
+		fontSize: 12,
+	},
+	cta: {
+		color: "rgba(255, 255, 255, 0.6)",
+		marginTop: Tokens.spacing[2],
+		fontSize: 11,
+	},
+});

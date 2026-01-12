@@ -1,8 +1,9 @@
-import React from "react";
-import { Pressable, View } from "react-native";
 import { ThemedText } from "@components/ThemedText";
 import { IconSymbol } from "@components/ui/IconSymbol";
+import { Tokens } from "@constants/tokens";
 import { useThemeColor } from "@hooks/color/use-theme-color";
+import React from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
 type Props = {
 	label: string;
@@ -20,36 +21,28 @@ export function RowItem({ label, value, onPress, danger, iconLeft }: Props) {
 		<Pressable
 			onPress={onPress}
 			disabled={!onPress}
-			style={({ pressed }) => {
-				return { borderColor: border, opacity: pressed ? 0.75 : 1 };
-			}}
-			className={
-				"min-h-[52px] py-2.5 px-2.5 rounded-[12px] border border-[0.4px] flex-row items-center justify-between mt-2.5" +
-				(!onPress ? " opacity-85" : "")
-			}
+			style={({ pressed }) => [
+				styles.container,
+				{ borderColor: border },
+				{ opacity: pressed ? 0.75 : !onPress ? 0.85 : 1 },
+			]}
 		>
-			<View className="flex-row items-center gap-2.5 flex-1 pr-2">
+			<View style={styles.content}>
 				{iconLeft ? (
-					<View className="w-[34px] h-[34px] rounded-[10px] items-center justify-center">
+					<View style={styles.iconContainer}>
 						<IconSymbol
 							name={iconLeft}
 							size={18}
-							color={danger ? "#ef4444" : tint}
+							color={danger ? Tokens.colors.red[500] : tint}
 						/>
 					</View>
 				) : null}
 
-				<View style={{ flex: 1 }}>
-					<ThemedText
-						className={"text-[15px]" + (danger ? " text-[#ef4444]" : "")}
-					>
+				<View style={styles.textContainer}>
+					<ThemedText style={[styles.label, danger && styles.dangerText]}>
 						{label}
 					</ThemedText>
-					{value ? (
-						<ThemedText className="mt-[2px] text-[12px] opacity-70">
-							{value}
-						</ThemedText>
-					) : null}
+					{value ? <ThemedText style={styles.value}>{value}</ThemedText> : null}
 				</View>
 			</View>
 
@@ -59,3 +52,45 @@ export function RowItem({ label, value, onPress, danger, iconLeft }: Props) {
 		</Pressable>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		minHeight: 52,
+		paddingVertical: 10,
+		paddingHorizontal: 10,
+		borderRadius: 12,
+		borderWidth: 0.4,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginTop: 10,
+	},
+	content: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 10,
+		flex: 1,
+		paddingRight: Tokens.spacing[2],
+	},
+	iconContainer: {
+		width: 34,
+		height: 34,
+		borderRadius: 10,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	textContainer: {
+		flex: 1,
+	},
+	label: {
+		fontSize: 15,
+	},
+	dangerText: {
+		color: Tokens.colors.red[500],
+	},
+	value: {
+		marginTop: 2,
+		fontSize: 12,
+		opacity: 0.7,
+	},
+});

@@ -1,5 +1,6 @@
+import { Tokens } from "@constants/tokens";
 import React from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 type ScannerInstructionsProps = {
 	isPending: boolean;
@@ -10,20 +11,37 @@ export function ScannerInstructions({
 	isPending,
 	scanned,
 }: ScannerInstructionsProps) {
+	const getMessage = () => {
+		if (isPending) return "⏳ Traitement en cours...";
+		if (scanned) return "✓ QR code détecté !";
+		return "Place le QR code dans le cadre";
+	};
+
 	return (
-		<View className="mt-8 px-6">
-			<Text className="text-gray-800 text-center text-lg font-semibold">
-				{isPending
-					? "⏳ Traitement en cours..."
-					: scanned
-						? "✓ QR code détecté !"
-						: "Place le QR code dans le cadre"}
-			</Text>
+		<View style={styles.container}>
+			<Text style={styles.message}>{getMessage()}</Text>
 			{!scanned && !isPending && (
-				<Text className="text-gray-600 text-center text-sm mt-2">
-					Le scan se fait automatiquement
-				</Text>
+				<Text style={styles.hint}>Le scan se fait automatiquement</Text>
 			)}
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		marginTop: Tokens.spacing[8],
+		paddingHorizontal: Tokens.spacing[6],
+	},
+	message: {
+		color: Tokens.colors.gray[800],
+		textAlign: "center",
+		fontSize: Tokens.typography.sizes.lg,
+		fontWeight: Tokens.typography.weights.semibold,
+	},
+	hint: {
+		color: Tokens.colors.gray[600],
+		textAlign: "center",
+		fontSize: Tokens.typography.sizes.sm,
+		marginTop: Tokens.spacing[2],
+	},
+});
