@@ -51,7 +51,9 @@ export default function ScannerPage() {
               await scannerRef.current.stop();
             }
             scannerRef.current.clear();
-          } catch (e) {}
+          } catch (e) {
+            console.error("Error clearing previous scanner instance", e);
+          }
         }
 
         const scanner = new Html5Qrcode("reader", {
@@ -129,7 +131,9 @@ export default function ScannerPage() {
             setScanned(false);
             try {
               scannerRef.current?.resume();
-            } catch (e) {}
+            } catch (e) {
+              console.error("Error resuming scanner", e);
+            }
           }
         },
         (_errorMessage) => {},
@@ -150,7 +154,7 @@ export default function ScannerPage() {
       <div className="flex flex-col items-center pt-8 min-h-[calc(100vh-64px)] pb-12 gap-8">
         <div className="flex flex-col items-center gap-2 pb-4">
           <h1 className="text-2xl font-bold">Scanner</h1>
-          <p className="text-muted-foreground text-center text-sm max-w-xs">
+          <p className="max-w-xs text-sm text-center text-muted-foreground">
             Placez le QR Code dans le cadre
           </p>
         </div>
@@ -158,19 +162,19 @@ export default function ScannerPage() {
         <div className="relative">
           <div
             id="reader"
-            className="w-[300px] h-[300px] bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100"
+            className="overflow-hidden bg-black border-4 shadow-2xl w-75 h-75 rounded-3xl border-slate-100"
           ></div>
 
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="w-[200px] h-[200px] border-2 border-transparent relative"></div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="relative border-2 border-transparent w-50 h-50"></div>
           </div>
         </div>
 
         {cameras.length > 0 && (
-          <div className="w-full max-w-[300px] z-20">
+          <div className="z-20 w-full max-w-75">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="justify-between w-full">
                   <div className="flex items-center gap-2 truncate">
                     <Camera className="w-4 h-4" />
                     <span className="truncate">
@@ -181,7 +185,7 @@ export default function ScannerPage() {
                   <ChevronDown className="w-4 h-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[300px]">
+              <DropdownMenuContent className="w-75">
                 {cameras.map((camera) => (
                   <DropdownMenuItem key={camera.id} onClick={() => handleCameraChange(camera.id)}>
                     {camera.label || `Camera ${camera.id}`}
