@@ -1,10 +1,8 @@
-// Fallback for using MaterialIcons on Android and web.
-
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { SymbolWeight, SymbolViewProps } from "expo-symbols";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { SymbolViewProps, SymbolWeight } from "expo-symbols";
 import { ComponentProps } from "react";
-import { OpaqueColorValue } from "react-native";
+import { OpaqueColorValue, StyleSheet } from "react-native";
 
 type IconMapping = Partial<Record<SymbolViewProps["name"], string>>;
 export type IconSymbolName = keyof typeof MAPPING;
@@ -35,15 +33,18 @@ export function IconSymbol({
 	size = 24,
 	color,
 	textClassName,
+	style,
 }: {
 	name: IconSymbolName;
 	size?: number;
 	color: string | OpaqueColorValue;
 	textClassName?: string;
 	weight?: SymbolWeight;
+	style?: any;
 }) {
 	const mapped = MAPPING[name];
 
+	// Note: textClassName garde le support rotation pour Collapsible
 	if (mapped?.startsWith?.("ion:")) {
 		const iconName = mapped.slice(4) as ComponentProps<typeof Ionicons>["name"];
 		return (
@@ -52,6 +53,7 @@ export function IconSymbol({
 				size={size}
 				color={color}
 				className={textClassName}
+				style={style}
 			/>
 		);
 	}
@@ -62,6 +64,11 @@ export function IconSymbol({
 			size={size}
 			name={mapped as ComponentProps<typeof MaterialIcons>["name"]}
 			className={textClassName}
+			style={style}
 		/>
 	);
 }
+
+const styles = StyleSheet.create({
+	// Styles statiques si nécessaire (actuellement géré via props)
+});

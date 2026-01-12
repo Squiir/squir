@@ -1,8 +1,9 @@
 import { ThemedText } from "@components/ThemedText";
 import { Input, InputProps } from "@components/ui/Input";
+import { Tokens } from "@constants/tokens";
 import React from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 interface ControlledInputProps<T extends FieldValues> extends InputProps {
 	control: Control<T>;
@@ -17,8 +18,8 @@ export const ControlledInput = <T extends FieldValues>({
 	...props
 }: ControlledInputProps<T>) => {
 	return (
-		<View className="mb-4">
-			<ThemedText className="font-semibold mb-1 ml-1">{label}</ThemedText>
+		<View style={styles.container}>
+			<ThemedText style={styles.label}>{label}</ThemedText>
 
 			<Controller
 				control={control}
@@ -35,14 +36,28 @@ export const ControlledInput = <T extends FieldValues>({
 							variant={error ? "error" : "primary"}
 							{...props}
 						/>
-						{error && (
-							<Text className="text-red-500 text-xs mt-1 ml-1 font-medium">
-								{error.message}
-							</Text>
-						)}
+						{error && <Text style={styles.error}>{error.message}</Text>}
 					</>
 				)}
 			/>
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		marginBottom: Tokens.spacing[4],
+	},
+	label: {
+		fontWeight: Tokens.typography.weights.semibold,
+		marginBottom: Tokens.spacing[1],
+		marginLeft: Tokens.spacing[1],
+	},
+	error: {
+		color: Tokens.colors.red[500],
+		fontSize: Tokens.typography.sizes.xs,
+		marginTop: Tokens.spacing[1],
+		marginLeft: Tokens.spacing[1],
+		fontWeight: Tokens.typography.weights.medium,
+	},
+});

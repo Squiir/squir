@@ -1,8 +1,9 @@
 import { QrCode } from "@app-types/qrcode";
 import { Badge } from "@components/ui/Badge";
+import { Tokens } from "@constants/tokens";
 import { parseQrLabel } from "@utils/qrcode";
 import * as React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type Props = {
 	qr: QrCode;
@@ -13,17 +14,14 @@ export function QrCard({ qr, onPress }: Props) {
 	const { barName, offerName, priceText } = parseQrLabel(qr);
 
 	return (
-		<Pressable
-			onPress={onPress}
-			className="w-[260px] rounded-2xl border border-white/10 bg-white/5 p-4"
-		>
+		<Pressable onPress={onPress} style={styles.container}>
 			{/* Header */}
-			<View className="flex-row items-start justify-between">
-				<View className="flex-1 pr-2">
-					<Text className="text-white font-extrabold" numberOfLines={1}>
+			<View style={styles.header}>
+				<View style={styles.headerContent}>
+					<Text style={styles.title} numberOfLines={1}>
 						{offerName || qr.label || "Offre"}
 					</Text>
-					<Text className="text-white/70 text-xs mt-1" numberOfLines={1}>
+					<Text style={styles.subtitle} numberOfLines={1}>
 						{barName ? `Chez ${barName}` : `Bar: ${qr.barId}`}
 					</Text>
 				</View>
@@ -32,19 +30,70 @@ export function QrCard({ qr, onPress }: Props) {
 			</View>
 
 			{/* Infos */}
-			<View className="mt-3 gap-1">
-				<Text className="text-white/60 text-xs">
+			<View style={styles.infoContainer}>
+				<Text style={styles.infoText}>
 					{priceText ? `Prix: ${priceText}` : "Prix: —"}
 				</Text>
-				<Text className="text-white/60 text-xs">
+				<Text style={styles.infoText}>
 					{qr.used ? "Statut: utilisé" : "Statut: disponible"}
 				</Text>
 			</View>
 
 			{/* CTA */}
-			<View className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 items-center">
-				<Text className="text-white/70 text-xs">Afficher le QR</Text>
+			<View style={styles.cta}>
+				<Text style={styles.ctaText}>Afficher le QR</Text>
 			</View>
 		</Pressable>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		width: 260,
+		borderRadius: Tokens.borderRadius["2xl"],
+		borderWidth: 1,
+		borderColor: "rgba(255, 255, 255, 0.1)",
+		backgroundColor: "rgba(255, 255, 255, 0.05)",
+		padding: Tokens.spacing[4],
+	},
+	header: {
+		flexDirection: "row",
+		alignItems: "flex-start",
+		justifyContent: "space-between",
+	},
+	headerContent: {
+		flex: 1,
+		paddingRight: Tokens.spacing[2],
+	},
+	title: {
+		color: Tokens.colors.white,
+		fontWeight: "800",
+		fontSize: Tokens.typography.sizes.base,
+	},
+	subtitle: {
+		color: "rgba(255, 255, 255, 0.7)",
+		fontSize: Tokens.typography.sizes.xs,
+		marginTop: Tokens.spacing[1],
+	},
+	infoContainer: {
+		marginTop: Tokens.spacing[3],
+		gap: 4,
+	},
+	infoText: {
+		color: "rgba(255, 255, 255, 0.6)",
+		fontSize: Tokens.typography.sizes.xs,
+	},
+	cta: {
+		marginTop: Tokens.spacing[4],
+		borderRadius: Tokens.borderRadius.xl,
+		borderWidth: 1,
+		borderColor: "rgba(255, 255, 255, 0.1)",
+		backgroundColor: "rgba(255, 255, 255, 0.05)",
+		padding: Tokens.spacing[4],
+		alignItems: "center",
+	},
+	ctaText: {
+		color: "rgba(255, 255, 255, 0.7)",
+		fontSize: Tokens.typography.sizes.xs,
+	},
+});

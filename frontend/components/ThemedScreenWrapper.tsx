@@ -1,5 +1,13 @@
+import { Tokens } from "@constants/tokens";
 import { PropsWithChildren } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import {
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedView } from "./ThemedView";
 
 interface ThemedScreenWrapperProps extends PropsWithChildren {
@@ -14,22 +22,48 @@ export const ThemedScreenWrapper = ({
 	lightColor,
 	darkColor,
 }: ThemedScreenWrapperProps) => {
+	const insets = useSafeAreaInsets();
 	const Content = scrollable ? ScrollView : View;
 
 	return (
-		<ThemedView className="flex-1">
+		<ThemedView style={[styles.container, { paddingTop: insets.top }]}>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				className="flex-1"
+				style={styles.keyboardAvoidingView}
 			>
 				<Content
-					className="flex-1"
-					contentContainerStyle={scrollable ? { flexGrow: 1 } : { flex: 1 }}
+					style={styles.content}
+					contentContainerStyle={
+						scrollable ? styles.scrollContent : styles.viewContent
+					}
 					showsVerticalScrollIndicator={false}
 				>
-					<View className="flex-1 px-5 pt-2">{children}</View>
+					<View style={styles.innerContent}>{children}</View>
 				</Content>
 			</KeyboardAvoidingView>
 		</ThemedView>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	keyboardAvoidingView: {
+		flex: 1,
+	},
+	content: {
+		flex: 1,
+	},
+	scrollContent: {
+		flexGrow: 1,
+	},
+	viewContent: {
+		flex: 1,
+	},
+	innerContent: {
+		flex: 1,
+		paddingHorizontal: Tokens.spacing[5],
+		paddingTop: Tokens.spacing[2],
+	},
+});

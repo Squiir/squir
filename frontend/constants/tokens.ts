@@ -1,0 +1,133 @@
+/**
+ * Design Tokens
+ * Valeurs centralisées pour remplacer Tailwind
+ */
+
+export const Tokens = {
+	colors: {
+		// Primary (Blue)
+		primary: {
+			50: "#EFF6FF",
+			100: "#DBEAFE",
+			200: "#BFDBFE",
+			300: "#93C5FD",
+			400: "#60A5FA",
+			500: "#3B82F6",
+			600: "#2563EB",
+			700: "#1D4ED8",
+			800: "#1E40AF",
+			900: "#1E3A8A",
+		},
+
+		// Gray
+		gray: {
+			50: "#F9FAFB",
+			100: "#F3F4F6",
+			200: "#E5E7EB",
+			300: "#D1D5DB",
+			400: "#9CA3AF",
+			500: "#6B7280",
+			600: "#4B5563",
+			700: "#374151",
+			800: "#1F2937",
+			900: "#111827",
+		},
+
+		// Red (Danger)
+		red: {
+			50: "#FEF2F2",
+			100: "#FEE2E2",
+			500: "#EF4444",
+			600: "#DC2626",
+			700: "#B91C1C",
+		},
+
+		// Green (Success)
+		green: {
+			50: "#F0FDF4",
+			100: "#DCFCE7",
+			500: "#22C55E",
+			600: "#16A34A",
+		},
+
+		// Semantic
+		link: "#0A7EA4",
+		transparent: "transparent",
+		white: "#FFFFFF",
+		black: "#000000",
+	},
+
+	spacing: {
+		0: 0,
+		1: 4,
+		2: 8,
+		3: 12,
+		4: 16,
+		5: 20,
+		6: 24,
+		8: 32,
+		10: 40,
+		12: 48,
+		16: 64,
+	},
+
+	borderRadius: {
+		none: 0,
+		sm: 4,
+		md: 6,
+		lg: 8,
+		xl: 12,
+		"2xl": 16,
+		"3xl": 24,
+		full: 9999,
+	},
+
+	typography: {
+		sizes: {
+			xs: 12,
+			sm: 14,
+			base: 16,
+			lg: 18,
+			xl: 20,
+			"2xl": 24,
+			"3xl": 30,
+			"4xl": 32,
+		},
+		lineHeights: {
+			tight: 20,
+			normal: 24,
+			relaxed: 30,
+			loose: 32,
+		},
+		weights: {
+			normal: "400" as const,
+			medium: "500" as const,
+			semibold: "600" as const,
+			bold: "700" as const,
+		},
+	},
+
+	shadows: {
+		sm: {
+			shadowColor: "#000",
+			shadowOffset: { width: 0, height: 1 },
+			shadowOpacity: 0.05,
+			shadowRadius: 2,
+			elevation: 1,
+		},
+		md: {
+			shadowColor: "#000",
+			shadowOffset: { width: 0, height: 2 },
+			shadowOpacity: 0.1,
+			shadowRadius: 4,
+			elevation: 2,
+		},
+		lg: {
+			shadowColor: "#000",
+			shadowOffset: { width: 0, height: 4 },
+			shadowOpacity: 0.15,
+			shadowRadius: 8,
+			elevation: 4,
+		},
+	},
+} as const;

@@ -1,10 +1,11 @@
 import { QrCode } from "@app-types/qrcode";
 import { Badge } from "@components/ui/Badge";
 import { API_URL } from "@constants/api";
+import { Tokens } from "@constants/tokens";
 import { parseQrLabel } from "@utils/qrcode";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 type Props = {
 	qr?: QrCode;
@@ -19,51 +20,43 @@ export function QrModal({ qr, onClose }: Props) {
 
 	return (
 		<Modal visible transparent animationType="fade">
-			<Pressable
-				onPress={onClose}
-				className="flex-1 items-center justify-center px-6 bg-black/50"
-			>
+			<Pressable onPress={onClose} style={styles.overlay}>
 				<Pressable onPress={() => {}}>
 					<LinearGradient
 						colors={["#ffffff", "#235c84ff"]}
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
-						className="w-full max-w-[400px] rounded-3xl overflow-hidden p-6"
+						style={styles.modal}
 					>
 						{/* Header */}
-						<View className="mb-4">
-							<View className="flex-row items-center justify-between mb-2">
-								<View className="flex-1 pr-3">
-									<Text className="text-gray-900 text-lg font-bold">
-										{offerName || qr.label}
-									</Text>
-									<Text className="text-gray-600 text-sm mt-1">
+						<View style={styles.header}>
+							<View style={styles.headerRow}>
+								<View style={styles.headerContent}>
+									<Text style={styles.title}>{offerName || qr.label}</Text>
+									<Text style={styles.subtitle}>
 										{barName ? `Chez ${barName}` : ""}
 									</Text>
 								</View>
 								<Badge text="QR" variant={qr.used ? "warn" : "ok"} />
 							</View>
 
-							<Text className="text-gray-500 text-xs">
+							<Text style={styles.status}>
 								{qr.used ? "Statut : utilisé" : "Statut : disponible"}
 							</Text>
 						</View>
 
 						{/* QR Code - Centré */}
-						<View className="items-center justify-center py-4 bg-white rounded-2xl mb-4">
+						<View style={styles.qrContainer}>
 							<Image
 								source={{ uri: url }}
-								className="w-[280px] h-[280px]"
+								style={styles.qrImage}
 								contentFit="contain"
 							/>
 						</View>
 
 						{/* Bouton Fermer */}
-						<Pressable
-							onPress={onClose}
-							className="py-4 rounded-xl bg-blue-500 items-center"
-						>
-							<Text className="text-white font-bold text-base">Fermer</Text>
+						<Pressable onPress={onClose} style={styles.closeButton}>
+							<Text style={styles.closeButtonText}>Fermer</Text>
 						</Pressable>
 					</LinearGradient>
 				</Pressable>
@@ -71,3 +64,70 @@ export function QrModal({ qr, onClose }: Props) {
 		</Modal>
 	);
 }
+
+const styles = StyleSheet.create({
+	overlay: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		paddingHorizontal: Tokens.spacing[6],
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+	},
+	modal: {
+		width: "100%",
+		maxWidth: 400,
+		borderRadius: Tokens.borderRadius["3xl"],
+		overflow: "hidden",
+		padding: Tokens.spacing[6],
+	},
+	header: {
+		marginBottom: Tokens.spacing[4],
+	},
+	headerRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		marginBottom: Tokens.spacing[2],
+	},
+	headerContent: {
+		flex: 1,
+		paddingRight: Tokens.spacing[3],
+	},
+	title: {
+		color: Tokens.colors.gray[900],
+		fontSize: Tokens.typography.sizes.lg,
+		fontWeight: Tokens.typography.weights.bold,
+	},
+	subtitle: {
+		color: Tokens.colors.gray[600],
+		fontSize: Tokens.typography.sizes.sm,
+		marginTop: Tokens.spacing[1],
+	},
+	status: {
+		color: Tokens.colors.gray[500],
+		fontSize: Tokens.typography.sizes.xs,
+	},
+	qrContainer: {
+		alignItems: "center",
+		justifyContent: "center",
+		paddingVertical: Tokens.spacing[4],
+		backgroundColor: Tokens.colors.white,
+		borderRadius: Tokens.borderRadius["2xl"],
+		marginBottom: Tokens.spacing[4],
+	},
+	qrImage: {
+		width: 280,
+		height: 280,
+	},
+	closeButton: {
+		paddingVertical: Tokens.spacing[4],
+		borderRadius: Tokens.borderRadius.xl,
+		backgroundColor: Tokens.colors.primary[500],
+		alignItems: "center",
+	},
+	closeButtonText: {
+		color: Tokens.colors.white,
+		fontWeight: Tokens.typography.weights.bold,
+		fontSize: Tokens.typography.sizes.base,
+	},
+});

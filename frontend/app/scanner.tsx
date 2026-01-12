@@ -3,11 +3,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { X } from "lucide-react-native";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { ScannerCamera } from "@components/scanner/ScannerCamera";
 import { ScannerInstructions } from "@components/scanner/ScannerInstructions";
 import { ScannerPermission } from "@components/scanner/ScannerPermission";
+import { Tokens } from "@constants/tokens";
 import { useQrScanner } from "@hooks/scanner/use-qr-scanner";
 import { useRequestCameraPermission } from "@hooks/scanner/use-request-camera-permission";
 import { useScannerRedirect } from "@hooks/scanner/use-scanner-redirect";
@@ -39,22 +40,17 @@ export default function ScannerScreen() {
 
 	// Écran de scan
 	return (
-		<LinearGradient colors={["#ffffff", "#60a5fa"]} className="flex-1">
+		<LinearGradient colors={["#ffffff", "#60a5fa"]} style={styles.container}>
 			<Stack.Screen options={{ headerShown: false }} />
 
 			{/* Bouton retour */}
-			<TouchableOpacity
-				onPress={() => router.back()}
-				className="absolute top-12 left-4 z-50 bg-white/90 p-3 rounded-full shadow-lg"
-			>
+			<TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
 				<X size={24} color="#000" />
 			</TouchableOpacity>
 
 			{/* Zone de scan centrée */}
-			<View className="flex-1 items-center justify-center">
-				<Text className="text-gray-800 text-2xl font-bold mb-8">
-					Scanner un QR code
-				</Text>
+			<View style={styles.content}>
+				<Text style={styles.title}>Scanner un QR code</Text>
 
 				<ScannerCamera
 					scanned={scanned}
@@ -66,3 +62,30 @@ export default function ScannerScreen() {
 		</LinearGradient>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+	backButton: {
+		position: "absolute",
+		top: 48,
+		left: Tokens.spacing[4],
+		zIndex: 50,
+		backgroundColor: "rgba(255, 255, 255, 0.9)",
+		padding: Tokens.spacing[3],
+		borderRadius: Tokens.borderRadius.full,
+		...Tokens.shadows.lg,
+	},
+	content: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	title: {
+		color: Tokens.colors.gray[800],
+		fontSize: Tokens.typography.sizes["2xl"],
+		fontWeight: Tokens.typography.weights.bold,
+		marginBottom: Tokens.spacing[8],
+	},
+});
