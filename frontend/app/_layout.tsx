@@ -1,5 +1,4 @@
 import { AuthProvider, useAuth } from "@contexts/AuthProvider";
-import { LocationProvider } from "@contexts/LocationContext";
 import { SocketProvider } from "@contexts/SocketContext";
 import { useColorScheme } from "@hooks/color/use-color-scheme";
 import {
@@ -11,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -47,19 +47,19 @@ export default function RootLayout() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<AuthProvider>
-				<SocketProvider>
-					<ThemeProvider
-						value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-					>
-						<LocationProvider>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<SocketProvider>
+						<ThemeProvider
+							value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+						>
 							<RootNavigator />
 							<StatusBar style="auto" />
-						</LocationProvider>
-					</ThemeProvider>
-				</SocketProvider>
-			</AuthProvider>
-		</QueryClientProvider>
+						</ThemeProvider>
+					</SocketProvider>
+				</AuthProvider>
+			</QueryClientProvider>
+		</GestureHandlerRootView>
 	);
 }

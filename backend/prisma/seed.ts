@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
 import { Pool } from "pg";
 import { seedBars } from "./seed/bars.seed";
-// import { seedFriends } from "./seed/friends.seed";
+import { seedFriends } from "./seed/friends.seed";
 import { seedGroups } from "./seed/groups.seed";
 import { seedPurchases } from "./seed/purchases.seed";
 import { seedQrCodes } from "./seed/qrcodes.seed";
@@ -17,10 +17,11 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Seeding database...");
 
+  // Delete in reverse order of dependencies (children before parents)
   await prisma.$transaction([
+    prisma.qRCode.deleteMany(),
     prisma.offer.deleteMany(),
     prisma.bar.deleteMany(),
-    prisma.qRCode.deleteMany(),
     prisma.friend.deleteMany(),
     prisma.groupMember.deleteMany(),
     prisma.group.deleteMany(),
@@ -28,7 +29,7 @@ async function main() {
   ]);
 
   const users = await seedUsers(prisma);
-  // await seedFriends(prisma, users);
+  await seedFriends(prisma, users);
   await seedGroups(prisma, users);
   await seedPurchases(prisma, users);
   await seedQrCodes(prisma, users);

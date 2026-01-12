@@ -1,11 +1,17 @@
+import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
+import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
 import { Text, View } from "react-native";
 
 export default function HomeScreen() {
 	return (
-		<View>
-			<Text>Home</Text>
-			<NearbyOffersCarousel />
-		</View>
+		<SwipeableTabWrapper currentRoute="index">
+			<ThemedScreenWrapper>
+				<View>
+					<Text>Home</Text>
+					<NearbyOffersCarousel />
+				</View>
+			</ThemedScreenWrapper>
+		</SwipeableTabWrapper>
 	);
 }
