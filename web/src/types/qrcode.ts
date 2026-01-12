@@ -5,9 +5,9 @@ export interface QrCode {
   userId: string;
   barId: string;
   offerId: string;
-  consumedAt?: string; // ISO date string, present only if consumed
+  consumedAt?: string;
   createdAt: string;
   updatedAt: string;
-  url?: string; // QR code image URL
-  value?: string; // squir://redeem?qr=...
+  url?: string;
+  value?: string;
 }
