@@ -2,7 +2,7 @@ import { Bar } from "@app-types/bar";
 import { Offer } from "@app-types/offer";
 import { QrCode } from "@app-types/qrcode";
 import { QrCodeDto } from "@services/qrcode.service";
-import { formatPrice } from "@utils/qrcode";
+import { formatPrice } from "@utils/format";
 import clsx from "clsx";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -59,7 +59,8 @@ function OfferItem({
 	);
 }
 
-export function OfferCard({
+// TODO: Remove this component or at least refactor it
+export function OfferCardFromMap({
 	offerOpen,
 	setOfferOpen,
 	selectedBar,

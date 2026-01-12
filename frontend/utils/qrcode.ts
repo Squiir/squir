@@ -32,8 +32,3 @@ export function parseQrLabel(qrCode?: QrCode): ParsedQrLabel {
 		priceText: pricePart,
 	};
 }
-
-export function formatPrice(price?: number) {
-	if (typeof price !== "number") return null;
-	return `${price.toFixed(2)} €`;
-}

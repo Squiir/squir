@@ -30,6 +30,7 @@
       "@friends/*": ["src/friends/*"],
       "@messages/*": ["src/messages/*"],
       "@groups/*": ["src/groups/*"],
+      "@offers/*": ["src/offers/*"],
       "@purchases/*": ["src/purchases/*"],
       "@qrcodes/*": ["src/qrcodes/*"],
       "@users/*": ["src/users/*"],
