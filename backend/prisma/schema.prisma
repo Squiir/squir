@@ -30,16 +30,15 @@ model User {
 
   qrCodes QRCode[]
   barId   String?
-  bar     Bar?          @relation("BarUsers", fields: [barId], references: [id])
+  bar     Bar?     @relation("BarUsers", fields: [barId], references: [id])
 
   sentFriendRequests     Friend[] @relation("FriendRequester")
   receivedFriendRequests Friend[] @relation("FriendReceiver")
 
-  groupMemberships  GroupMember[]
-  sentGroupMessages GroupMessage[]     @relation("UserSentGroupMessages")
-  groupMessageReads GroupMessageRead[]
+  sentMessages     Message[] @relation("MessageSender")
+  receivedMessages Message[] @relation("MessageReceiver")
 
-  pollVotes PollVote[]
+  groupMemberships GroupMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,15 +82,30 @@ model Friend {
   @@index([receiverId])
 }
 
+model Message {
+  id String @id @default(uuid())
+
+  senderId   String
+  receiverId String
+
+  content String
+
+  createdAt DateTime  @default(now())
+  readAt    DateTime?
+
+  sender   User @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([receiverId, readAt])
+  @@index([senderId, receiverId])
+  @@index([createdAt])
+}
+
 model Group {
   id   String @id @default(uuid())
   name String
 
-  members  GroupMember[]
-  messages GroupMessage[]
-
-  events GroupEvent[]
-  polls  Poll[]
+  members GroupMember[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -106,88 +120,10 @@ model GroupMember {
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   lastReadAt DateTime?
-  joinedAt   DateTime @default(now())
+  joinedAt   DateTime  @default(now())
 
   @@unique([userId, groupId])
   @@index([groupId])
-}
-
-model GroupMessage {
-  id String @id @default(uuid())
-
-  groupId  String
-  authorId String
-  text     String
-
-  group  Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  author User  @relation("UserSentGroupMessages", fields: [authorId], references: [id], onDelete: Cascade)
-
-  reads GroupMessageRead[]
-
-  createdAt DateTime @default(now())
-
-  @@index([groupId, createdAt])
-}
-
-model GroupMessageRead {
-  id String @id @default(uuid())
-
-  messageId String
-  userId    String
-
-  message GroupMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@unique([messageId, userId])
-  @@index([userId])
-}
-
-model GroupEvent {
-  id String @id @default(uuid())
-
-  groupId  String
-  title    String?
-  location String?
-  startAt  DateTime?
-  endAt    DateTime?
-
-  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-}
-
-model Poll {
-  id       String @id @default(uuid())
-  groupId  String
-  question String
-
-  group   Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  options PollOption[]
-
-  createdAt DateTime @default(now())
-}
-
-model PollOption {
-  id     String @id @default(uuid())
-  pollId String
-  label  String
-
-  poll  Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  votes PollVote[]
-}
-
-model PollVote {
-  id String @id @default(uuid())
-
-  optionId String
-  userId   String
-
-  option PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
-  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([optionId, userId])
 }
 
 model Bar {

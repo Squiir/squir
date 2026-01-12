@@ -1,8 +1,8 @@
 import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 import * as bcrypt from "bcrypt";

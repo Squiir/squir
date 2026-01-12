@@ -17,3 +17,7 @@ export function interceptDatesFromResponse(body: any): any {
 
 	return body;
 }
+
+export function formatPrice(price: number) {
+	return `${price.toFixed(2)} €`;
+}

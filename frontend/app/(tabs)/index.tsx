@@ -1,4 +1,5 @@
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
+import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
 import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
 import { Tokens } from "@constants/tokens";
 import React from "react";
@@ -8,8 +9,9 @@ export default function HomeScreen() {
 	return (
 		<SwipeableTabWrapper currentRoute="index">
 			<ThemedScreenWrapper>
-				<View style={styles.container}>
-					<Text style={styles.welcomeText}>Welcome to SQUIR</Text>
+				<View>
+					<Text>Home</Text>
+					<NearbyOffersCarousel />
 				</View>
 			</ThemedScreenWrapper>
 		</SwipeableTabWrapper>

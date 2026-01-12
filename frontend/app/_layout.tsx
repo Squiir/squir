@@ -12,10 +12,12 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
 
 export function RootNavigator() {
+	const insets = useSafeAreaInsets();
 	const { isLoading, isLoggedIn } = useAuth();
 	const router = useRouter();
 
@@ -28,7 +30,12 @@ export function RootNavigator() {
 	if (isLoading) return null;
 
 	return (
-		<Stack screenOptions={{ headerShown: false }}>
+		<Stack
+			screenOptions={{
+				headerShown: false,
+				contentStyle: { paddingTop: insets.top },
+			}}
+		>
 			<Stack.Screen name="(tabs)" />
 			<Stack.Screen name="login" />
 			<Stack.Screen name="register" />

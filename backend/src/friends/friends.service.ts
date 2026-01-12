@@ -1,7 +1,7 @@
 import {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
 } from "@nestjs/common";
 import { FriendStatus } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";

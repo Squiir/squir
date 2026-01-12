@@ -11,7 +11,7 @@ import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
 import { QrCodeDto } from "@services/qrcode.service";
 import { MapMarker } from "./MapMarker";
 import { ModalQrPreview } from "./ModalQrPreview";
-import { OfferCard } from "./OfferCard";
+import { OfferCardFromMap } from "./OfferCardFromMap";
 
 export type Coordinate = {
 	latitude?: number;
@@ -89,7 +89,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 			)}
 
 			{/* ✅ Modal : Choix d'offre */}
-			<OfferCard
+			<OfferCardFromMap
 				offerOpen={offerOpen}
 				setOfferOpen={setOfferOpen}
 				selectedBar={selectedBar}
