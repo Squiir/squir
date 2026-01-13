@@ -47,14 +47,12 @@ model User {
 model QRCode {
   id         String    @id @default(uuid())
   userId     String
-  barId      String
   offerId    String
   label      String?
   used       Boolean   @default(false)
   consumedAt DateTime?
   createdAt  DateTime  @default(now())
   user       User      @relation(fields: [userId], references: [id])
-  bar        Bar       @relation(fields: [barId], references: [id])
   offer      Offer     @relation(fields: [offerId], references: [id])
 }
 
@@ -138,7 +136,6 @@ model Bar {
   offers         Offer[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  qrCodes        QRCode[]
 }
 
 model Offer {

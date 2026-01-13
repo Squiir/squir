@@ -18,7 +18,7 @@ import {
 interface OfferItemProps {
 	offer: Offer;
 	selectedBar: Bar;
-	alreadyHas: boolean;
+	quantity: number;
 	disabled: boolean;
 	onCreateQrCode: (qr: QrCodeDto) => void;
 }
@@ -26,13 +26,12 @@ interface OfferItemProps {
 function OfferItem({
 	offer,
 	selectedBar,
-	alreadyHas,
+	quantity,
 	disabled,
 	onCreateQrCode,
 }: OfferItemProps) {
 	const handlePress = () => {
 		onCreateQrCode({
-			barId: selectedBar.id,
 			offerId: offer.id,
 			label: `${selectedBar.name} • ${offer.name}${
 				typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""
@@ -46,13 +45,15 @@ function OfferItem({
 			disabled={disabled}
 			style={[
 				styles.offerItem,
-				alreadyHas ? styles.offerDisabled : styles.offerActive,
+				styles.offerActive,
 				disabled && styles.offerOpacity,
 			]}
 		>
 			<View style={styles.offerRow}>
 				<Text style={styles.offerName}>{offer.name}</Text>
-				{alreadyHas && <Text style={styles.offerStock}>Déjà en stock</Text>}
+				{quantity > 0 && (
+					<Text style={styles.offerStock}>En stock: x{quantity}</Text>
+				)}
 			</View>
 			{typeof offer.price === "number" && (
 				<Text style={styles.offerPrice}>{formatPrice(offer.price)}</Text>
@@ -107,11 +108,12 @@ export function OfferCardFromMap({
 									key={offer.id}
 									offer={offer}
 									selectedBar={selectedBar!}
-									alreadyHas={
-										qrcodes?.some(
+									quantity={
+										qrcodes?.filter(
 											(qr) =>
-												qr.barId === selectedBar!.id && qr.offerId === offer.id,
-										) ?? false
+												qr.offer?.barId === selectedBar!.id &&
+												qr.offerId === offer.id,
+										).length ?? 0
 									}
 									disabled={isCreateQrCodePending}
 									onCreateQrCode={onCreateQrCode}

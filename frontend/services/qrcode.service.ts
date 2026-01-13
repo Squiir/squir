@@ -2,7 +2,6 @@ import { QrCode } from "@app-types/qrcode";
 import { api } from "@services/api.service";
 
 export interface QrCodeDto {
-	barId: string;
 	offerId: string;
 	label?: string;
 }
