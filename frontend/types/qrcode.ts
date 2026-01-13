@@ -4,8 +4,15 @@ export interface QrCode {
 	label: string;
 	used: boolean;
 	userId: string;
-	barId: string;
 	offerId: string;
+	offer?: {
+		id: string;
+		barId: string;
+		bar?: {
+			id: string;
+			name: string;
+		};
+	};
 	consumedAt?: string; // ISO date string, present only if consumed
 	createdAt: string;
 	updatedAt: string;
