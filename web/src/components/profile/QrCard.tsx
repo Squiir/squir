@@ -15,7 +15,7 @@ export function QrCard({ qr, onClick }: QrCardProps) {
     <div
       onClick={onClick}
       className={clsx(
-        "flex-none w-[260px] rounded-2xl border p-4 cursor-pointer transition-colors",
+        "flex-none w-65 rounded-2xl border p-4 cursor-pointer transition-colors",
         qr.used
           ? "border-muted bg-muted/20 opacity-70 hover:bg-muted/40"
           : "border-border bg-card hover:bg-accent/50 hover:border-accent",
