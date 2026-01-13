@@ -3,7 +3,6 @@ export interface QrCode {
   label: string;
   used: boolean;
   userId: string;
-  barId: string;
   offerId: string;
   consumedAt?: string;
   createdAt: string;

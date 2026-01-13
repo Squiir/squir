@@ -34,7 +34,6 @@ export class QrCodesService {
    * Creates a new QR code for a user
    * @param params - QR code creation parameters
    * @param params.userId - ID of the user creating the QR code
-   * @param params.barId - ID of the bar
    * @param params.offerId - ID of the product/offer
    * @param params.label - Optional label for the QR code
    * @returns Created QR code with value and URL
@@ -42,28 +41,24 @@ export class QrCodesService {
    */
   async createQrcode(params: {
     userId: string;
-    barId: string;
     offerId: string;
     label?: string;
   }) {
-    const { userId, barId, offerId, label } = params;
+    const { userId, offerId, label } = params;
 
     if (!userId) throw new BadRequestException("Missing userId");
-    if (!barId) throw new BadRequestException("Missing barId");
     if (!offerId) throw new BadRequestException("Missing offerId");
 
     const qr = await this.prisma.qRCode.create({
       data: {
         userId,
-        barId,
         offerId,
-        label: label ?? `QR for bar=${barId} product=${offerId}`,
+        label: label ?? `QR for offer=${offerId}`,
       },
       select: {
         id: true,
         used: true,
         userId: true,
-        barId: true,
         offerId: true,
         label: true,
         createdAt: true,
@@ -74,7 +69,6 @@ export class QrCodesService {
       id: qr.id,
       used: qr.used,
       createdAt: qr.createdAt,
-      barId: qr.barId,
       offerId: qr.offerId,
       label: qr.label,
       value: this.qrValue(qr.id),
@@ -98,7 +92,6 @@ export class QrCodesService {
       },
       include: {
         offer: true,
-        bar: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -171,12 +164,16 @@ export class QrCodesService {
         where: { id },
         select: {
           id: true,
-          barId: true,
           offerId: true,
           label: true,
           userId: true,
           createdAt: true,
           consumedAt: true,
+          offer: {
+            select: {
+              barId: true,
+            },
+          },
         },
       }),
       this.prisma.user.findUnique({
@@ -203,7 +200,7 @@ export class QrCodesService {
 
       case UserRole.PROFESSIONAL:
         // PROFESSIONAL can only scan QR codes from their own bar
-        if (!user.barId || user.barId !== qr.barId) {
+        if (!user.barId || user.barId !== qr.offer.barId) {
           throw new ForbiddenException(
             "You can only scan QR codes from your bar",
           );
@@ -231,7 +228,6 @@ export class QrCodesService {
       message: "QR code consumed successfully",
       qrCode: {
         id: qr.id,
-        barId: qr.barId,
         offerId: qr.offerId,
         label: qr.label,
         createdAt: qr.createdAt,
@@ -257,7 +253,6 @@ export class QrCodesService {
       take: MAX_HISTORY_RECORDS,
       select: {
         id: true,
-        barId: true,
         offerId: true,
         label: true,
         consumedAt: true,

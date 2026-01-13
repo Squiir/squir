@@ -34,7 +34,6 @@ export class QrCodesController {
   ) {
     return this.qr.createQrcode({
       userId,
-      barId: dto.barId,
       offerId: dto.offerId,
       label: dto.label,
     });

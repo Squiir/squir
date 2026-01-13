@@ -22,7 +22,11 @@ export function QrCard({ qr, onPress }: Props) {
 						{offerName || qr.label || "Offre"}
 					</Text>
 					<Text style={styles.subtitle} numberOfLines={1}>
-						{barName ? `Chez ${barName}` : `Bar: ${qr.barId}`}
+						{barName
+							? `Chez ${barName}`
+							: qr.offer?.bar?.name
+								? `Chez ${qr.offer.bar.name}`
+								: "Bar inconnu"}
 					</Text>
 				</View>
 

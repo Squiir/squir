@@ -97,7 +97,6 @@ export class StripeController {
           await this.prisma.qRCode.create({
             data: {
               userId,
-              barId,
               offerId,
               used: false,
             },
