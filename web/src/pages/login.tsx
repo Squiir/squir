@@ -52,6 +52,13 @@ export default function LoginPage() {
             <Button className="w-full" disabled={isPending}>
               {isPending ? "..." : "Se connecter"}
             </Button>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Pas de compte ?{" "}
+              <a href="/register" className="underline hover:text-primary">
+                S'inscrire
+              </a>
+            </div>
           </form>
         </CardContent>
       </Card>

@@ -143,4 +143,14 @@ export class AuthService {
       data: { refreshToken: refreshTokenHash },
     });
   }
+
+  async checkUsernameAvailability(username: string) {
+    const user = await this.prisma.user.findUnique({ where: { username } });
+    return { available: !user };
+  }
+
+  async checkEmailAvailability(email: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    return { available: !user };
+  }
 }

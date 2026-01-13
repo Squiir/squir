@@ -13,6 +13,22 @@ export const authService = {
     return data;
   },
 
+  async register(dto: import("@/types/auth").RegisterRequestDto) {
+    const { data } = await api.post<LoginResponseDto>("/auth/register", dto);
+    useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+    return data;
+  },
+
+  async checkUsername(username: string) {
+    const { data } = await api.post<{ available: boolean }>("/auth/check-username", { username });
+    return data.available;
+  },
+
+  async checkEmail(email: string) {
+    const { data } = await api.post<{ available: boolean }>("/auth/check-email", { email });
+    return data.available;
+  },
+
   async refreshToken(): Promise<string> {
     const refreshToken = useAuthStore.getState().refreshToken;
     if (!refreshToken) throw new Error("No refresh token");

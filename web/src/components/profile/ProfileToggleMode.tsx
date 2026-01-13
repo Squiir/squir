@@ -1,13 +1,31 @@
 import { Moon, Sun } from "lucide-react";
 
-import { useTheme } from "@/contexts/ThemeProvider";
 import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { cn } from "@/lib/utils";
 
-export function ProfileToggleMode() {
+interface Props {
+  singleIcon?: boolean;
+}
+
+export function ProfileToggleMode({ singleIcon }: Props) {
   const { theme, setTheme } = useTheme();
 
   const isDark = theme === "dark";
+
+  if (singleIcon) {
+    return (
+      <div className="flex items-center w-full">
+        {isDark ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
+        <span className="flex-1">Thème</span>
+        <Switch
+          id="theme-mode-single"
+          checked={isDark}
+          onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-3">
