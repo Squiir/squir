@@ -8,12 +8,17 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useAuth } from "@/hooks/auth/use-auth";
+import { useMe } from "@/hooks/user/use-me";
+import { UserRole } from "@/types/user";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 export function Navbar() {
   const { isLoggedIn } = useAuth();
+  const { data: user } = useMe();
   const location = useLocation();
   const isProfilePage = location.pathname === "/profile";
+
+  const canScan = user?.role === UserRole.ADMIN || user?.role === UserRole.PROFESSIONAL;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -46,13 +51,15 @@ export function Navbar() {
                   </NavLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <NavLink to="/scanner">
-                    <span className="font-bold text-md">Scanner</span>
-                  </NavLink>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              {canScan && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <NavLink to="/scanner">
+                      <span className="font-bold text-md">Scanner</span>
+                    </NavLink>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         )}

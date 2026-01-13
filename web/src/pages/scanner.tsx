@@ -6,16 +6,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { QR_HOSTNAME, QR_PROTOCOL } from "@/constants/scanner";
+import { QR_HOSTNAME, QR_PROTOCOL, SCAN_DEBOUNCE_MS } from "@/constants/scanner";
 import { useConsumeQrCode } from "@/hooks/qrcode/use-consume-qr-code";
+import { useMe } from "@/hooks/user/use-me";
+import { UserRole } from "@/types/user";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
-import { Camera, ChevronDown } from "lucide-react";
+import { Camera, ChevronDown, Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function ScannerPage() {
   const navigate = useNavigate();
+  const { data: user, isLoading: isUserLoading } = useMe();
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
   const [cameras, setCameras] = useState<Array<{ id: string; label: string }>>([]);
@@ -36,6 +39,15 @@ export default function ScannerPage() {
   }, [scanned]);
 
   useEffect(() => {
+    if (!isUserLoading && user) {
+      if (user.role !== UserRole.ADMIN && user.role !== UserRole.PROFESSIONAL) {
+        toast.error("Vous n'avez pas accès à cette fonctionnalité.");
+        navigate("/home");
+      }
+    }
+  }, [user, isUserLoading, navigate]);
+
+  useEffect(() => {
     isMountedRef.current = true;
 
     const init = async () => {
@@ -52,7 +64,7 @@ export default function ScannerPage() {
             }
             scannerRef.current.clear();
           } catch (e) {
-            console.error("Error clearing previous scanner instance", e);
+            console.warn("Failed to clear previous scanner instance", e);
           }
         }
 
@@ -78,7 +90,7 @@ export default function ScannerPage() {
         scannerRef.current
           .stop()
           .then(() => scannerRef.current?.clear())
-          .catch((err) => console.error(err));
+          .catch((err) => console.error("Error stopping scanner on unmount", err));
       }
     };
   }, []);
@@ -109,11 +121,13 @@ export default function ScannerPage() {
               if (url.protocol === QR_PROTOCOL && url.hostname === QR_HOSTNAME) {
                 qrId = url.searchParams.get("qr");
               }
-            } catch {}
+            } catch (e) {
+              console.warn("Failed to parse scanned text as URL", decodedText, e);
+            }
 
             if (!qrId) {
               toast.error("Ce QR Code n'est pas un code SQUIR valide");
-              setTimeout(() => setScanned(false), 2000);
+              setTimeout(() => setScanned(false), SCAN_DEBOUNCE_MS);
               return;
             }
 
@@ -132,11 +146,13 @@ export default function ScannerPage() {
             try {
               scannerRef.current?.resume();
             } catch (e) {
-              console.error("Error resuming scanner", e);
+              console.warn("Failed to resume scanner after error", e);
             }
           }
         },
-        (_errorMessage) => {},
+        (errorMessage) => {
+          console.log("Scan error", errorMessage);
+        },
       );
     } catch (err) {
       console.error("Error starting scanner", err);
@@ -149,12 +165,14 @@ export default function ScannerPage() {
     startScanner(cameraId);
   };
 
+  if (isUserLoading) return <Loader />;
+
   return (
     <RequireAuth>
       <div className="flex flex-col items-center pt-8 min-h-[calc(100vh-64px)] pb-12 gap-8">
         <div className="flex flex-col items-center gap-2 pb-4">
           <h1 className="text-2xl font-bold">Scanner</h1>
-          <p className="max-w-xs text-sm text-center text-muted-foreground">
+          <p className="text-muted-foreground text-center text-sm max-w-xs">
             Placez le QR Code dans le cadre
           </p>
         </div>
@@ -162,19 +180,19 @@ export default function ScannerPage() {
         <div className="relative">
           <div
             id="reader"
-            className="overflow-hidden bg-black border-4 shadow-2xl w-75 h-75 rounded-3xl border-slate-100"
+            className="w-75 h-75 bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100"
           ></div>
 
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="relative border-2 border-transparent w-50 h-50"></div>
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div className="w-50 h-50 border-2 border-transparent relative"></div>
           </div>
         </div>
 
         {cameras.length > 0 && (
-          <div className="z-20 w-full max-w-75">
+          <div className="w-full max-w-75 z-20">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="justify-between w-full">
+                <Button variant="outline" className="w-full justify-between">
                   <div className="flex items-center gap-2 truncate">
                     <Camera className="w-4 h-4" />
                     <span className="truncate">
