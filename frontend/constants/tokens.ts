@@ -5,21 +5,33 @@
 
 export const Tokens = {
 	colors: {
-		// Primary (Blue)
+		// Primary: Emerald (Green Forest)
 		primary: {
-			50: "#EFF6FF",
-			100: "#DBEAFE",
-			200: "#BFDBFE",
-			300: "#93C5FD",
-			400: "#60A5FA",
-			500: "#3B82F6",
-			600: "#2563EB",
-			700: "#1D4ED8",
-			800: "#1E40AF",
-			900: "#1E3A8A",
+			50: "#ECFDF5",
+			100: "#D1FAE5",
+			200: "#A7F3D0",
+			300: "#6EE7B7",
+			400: "#34D399",
+			500: "#10B981",
+			600: "#059669",
+			700: "#047857",
+			800: "#065F46",
+			900: "#064E3B",
 		},
 
-		// Gray
+		// Accent: Gold (for CTAs, badges, special elements)
+		accent: {
+			50: "#FFFBEB",
+			100: "#FEF3C7",
+			200: "#FDE68A",
+			300: "#FCD34D",
+			400: "#FBBF24",
+			500: "#F59E0B",
+			600: "#D97706",
+			700: "#B45309",
+		},
+
+		// Gray (neutral scale)
 		gray: {
 			50: "#F9FAFB",
 			100: "#F3F4F6",
@@ -42,7 +54,7 @@ export const Tokens = {
 			700: "#B91C1C",
 		},
 
-		// Green (Success)
+		// Green (Success) - using lighter emerald
 		green: {
 			50: "#F0FDF4",
 			100: "#DCFCE7",
@@ -50,8 +62,8 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
-		// Semantic
-		link: "#0A7EA4",
+		// Semantic colors
+		link: "#059669", // emerald-600
 		transparent: "transparent",
 		white: "#FFFFFF",
 		black: "#000000",

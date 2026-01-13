@@ -1,5 +1,5 @@
 import { Offer } from "@app-types/offer";
-import { usePulsatingOpacity } from "@hooks/animations/use-pulsating-opacity";
+import { usePulsatingOpacity } from "@hooks/animation/use-pulsating-opacity";
 import { useLocaleDateString } from "@hooks/formatter/use-locale-date-string";
 import { ContextError } from "@utils/errors/context-error";
 import { formatPrice } from "@utils/format";

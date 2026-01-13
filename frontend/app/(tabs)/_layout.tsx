@@ -2,7 +2,6 @@ import { Tabs } from "expo-router";
 import React from "react";
 
 import { TabBar } from "@components/navigation/TabBar";
-import { BounceIcon } from "@components/ui/AnimatedIconSymbol";
 import { IconSymbol } from "@components/ui/IconSymbol";
 
 export default function TabLayout() {
@@ -28,19 +27,6 @@ export default function TabLayout() {
 					title: "Map",
 					tabBarIcon: ({ color }) => (
 						<IconSymbol size={28} name="paperplane.fill" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="social"
-				options={{
-					title: "Social",
-					tabBarIcon: ({ color }) => (
-						<BounceIcon
-							name="bubble.left.and.bubble.right.fill"
-							size={26}
-							color={color}
-						/>
 					),
 				}}
 			/>

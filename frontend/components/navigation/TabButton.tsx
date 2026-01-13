@@ -1,5 +1,5 @@
 import { Colors } from "@constants/theme";
-import { useTabIconAnimation } from "@hooks/animation/useTabIconAnimation";
+import { useTabIconAnimation } from "@hooks/animation/use-tab-icon-animation";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Route } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";

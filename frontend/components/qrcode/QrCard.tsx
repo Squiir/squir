@@ -1,36 +1,40 @@
-import { QrCode } from "@app-types/qrcode";
-import { Badge } from "@components/ui/Badge";
 import { Tokens } from "@constants/tokens";
-import { parseQrLabel } from "@utils/qrcode";
+import { parseQrLabel, QrCodeGroup } from "@utils/qrcode";
 import * as React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 type Props = {
-	qr: QrCode;
+	group: QrCodeGroup;
 	onPress: () => void;
 };
 
-export function QrCard({ qr, onPress }: Props) {
-	const { barName, offerName, priceText } = parseQrLabel(qr);
+export function QrCard({ group, onPress }: Props) {
+	const { representativeQr, totalCount, availableCount, usedCount } = group;
+	const { barName, offerName, priceText } = parseQrLabel(representativeQr);
 
 	return (
 		<Pressable onPress={onPress} style={styles.container}>
+			{/* Counter Badge */}
+			{totalCount > 1 && (
+				<View style={styles.countBadge}>
+					<Text style={styles.countText}>x{totalCount}</Text>
+				</View>
+			)}
+
 			{/* Header */}
 			<View style={styles.header}>
 				<View style={styles.headerContent}>
 					<Text style={styles.title} numberOfLines={1}>
-						{offerName || qr.label || "Offre"}
+						{offerName || representativeQr.label || "Offre"}
 					</Text>
 					<Text style={styles.subtitle} numberOfLines={1}>
 						{barName
 							? `Chez ${barName}`
-							: qr.offer?.bar?.name
-								? `Chez ${qr.offer.bar.name}`
+							: representativeQr.offer?.bar?.name
+								? `Chez ${representativeQr.offer.bar.name}`
 								: "Bar inconnu"}
 					</Text>
 				</View>
-
-				<Badge text="QR" variant={qr.used ? "warn" : "ok"} />
 			</View>
 
 			{/* Infos */}
@@ -39,13 +43,15 @@ export function QrCard({ qr, onPress }: Props) {
 					{priceText ? `Prix: ${priceText}` : "Prix: —"}
 				</Text>
 				<Text style={styles.infoText}>
-					{qr.used ? "Statut: utilisé" : "Statut: disponible"}
+					{`${availableCount} disponible${availableCount > 1 ? "s" : ""}`}
 				</Text>
 			</View>
 
 			{/* CTA */}
 			<View style={styles.cta}>
-				<Text style={styles.ctaText}>Afficher le QR</Text>
+				<Text style={styles.ctaText}>
+					{totalCount > 1 ? "Voir les QR codes" : "Afficher le QR"}
+				</Text>
 			</View>
 		</Pressable>
 	);
@@ -59,6 +65,25 @@ const styles = StyleSheet.create({
 		borderColor: "rgba(255, 255, 255, 0.1)",
 		backgroundColor: "rgba(255, 255, 255, 0.05)",
 		padding: Tokens.spacing[4],
+		position: "relative",
+	},
+	countBadge: {
+		position: "absolute",
+		top: -8,
+		right: -8,
+		backgroundColor: Tokens.colors.primary[500],
+		borderRadius: Tokens.borderRadius.full,
+		minWidth: 28,
+		height: 28,
+		alignItems: "center",
+		justifyContent: "center",
+		paddingHorizontal: Tokens.spacing[2],
+		zIndex: 1,
+	},
+	countText: {
+		color: Tokens.colors.white,
+		fontSize: Tokens.typography.sizes.sm,
+		fontWeight: "800",
 	},
 	header: {
 		flexDirection: "row",

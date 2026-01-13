@@ -2,7 +2,6 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-import { QrCode } from "@app-types/qrcode";
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { ProfileHeader } from "@components/profile/ProfileHeader";
 import { QrCard } from "@components/qrcode/QrCard";
@@ -15,6 +14,7 @@ import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
 import { useScannerAccess } from "@hooks/scanner/use-scanner-access";
 import { useMe } from "@hooks/use-me";
 import { useSocketNotifications } from "@hooks/use-socket-notifications";
+import { groupQrCodesByOffer, QrCodeGroup } from "@utils/qrcode";
 
 export default function ProfileScreen() {
 	const { data: user } = useMe();
@@ -32,9 +32,15 @@ export default function ProfileScreen() {
 		error: qrsErr,
 	} = useGetMyQrCodes();
 
-	const [selectedQr, setSelectedQr] = React.useState<QrCode | undefined>(
-		undefined,
-	);
+	// Group QR codes by offer
+	const groupedQrCodes = React.useMemo(() => {
+		if (!qrcodes) return [];
+		return groupQrCodesByOffer(qrcodes);
+	}, [qrcodes]);
+
+	const [selectedGroup, setSelectedGroup] = React.useState<
+		QrCodeGroup | undefined
+	>(undefined);
 
 	if (!user) return null;
 
@@ -63,16 +69,16 @@ export default function ProfileScreen() {
 								? qrsErr.message
 								: "Erreur de chargement"}
 						</Text>
-					) : !qrcodes || qrcodes.length === 0 ? (
+					) : !groupedQrCodes || groupedQrCodes?.length === 0 ? (
 						<Text style={styles.emptyText}>Aucun QR code pour l'instant.</Text>
 					) : (
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 							<View style={styles.qrList}>
-								{qrcodes.map((qr: QrCode) => (
+								{groupedQrCodes.map((group) => (
 									<QrCard
-										key={qr.id}
-										qr={qr}
-										onPress={() => setSelectedQr(qr)}
+										key={group.offerId}
+										group={group}
+										onPress={() => setSelectedGroup(group)}
 									/>
 								))}
 							</View>
@@ -81,7 +87,10 @@ export default function ProfileScreen() {
 				</View>
 
 				{/* Modal QR */}
-				<QrModal qr={selectedQr} onClose={() => setSelectedQr(undefined)} />
+				<QrModal
+					group={selectedGroup}
+					onClose={() => setSelectedGroup(undefined)}
+				/>
 
 				{/* Historique */}
 				<QrCodeHistory />
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
 		color: "rgba(255, 255, 255, 0.7)",
 	},
 	errorText: {
-		color: Tokens.colors.red[400],
+		color: Tokens.colors.red[500],
 	},
 	emptyText: {
 		color: "rgba(255, 255, 255, 0.7)",

@@ -33,22 +33,22 @@ export function useSocketConnection() {
 		});
 
 		newSocket.on("connect", () => {
-			console.log("✅ WebSocket connected:", newSocket.id);
+			if (__DEV__) console.log("✅ WebSocket connected:", newSocket.id);
 			setIsConnected(true);
 
 			// Join user room (server uses JWT token)
-			newSocket.emit("room:join", (response: any) => {
-				console.log("Joined room:", response);
+			newSocket.emit("room:join", (response: unknown) => {
+				if (__DEV__) console.log("Joined room:", response);
 			});
 		});
 
 		newSocket.on("disconnect", () => {
-			console.log("❌ WebSocket disconnected");
+			if (__DEV__) console.log("❌ WebSocket disconnected");
 			setIsConnected(false);
 		});
 
 		newSocket.on("connection:error", (error) => {
-			console.error("[WS] Connection error:", error);
+			if (__DEV__) console.error("[WS] Connection error:", error);
 		});
 
 		setSocket(newSocket);
