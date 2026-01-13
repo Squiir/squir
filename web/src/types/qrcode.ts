@@ -1,15 +1,13 @@
-import type { User } from "@/types/user";
-
-export interface QRcode {
+export interface QrCode {
   id: string;
   label: string;
   used: boolean;
-  url: string;
-
-  user: User;
-
+  userId: string;
   barId: string;
-  productId: string;
-
+  offerId: string;
+  consumedAt?: string;
   createdAt: string;
+  updatedAt: string;
+  url?: string;
+  value?: string;
 }
