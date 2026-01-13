@@ -1,5 +1,6 @@
 import { ModalQrPreview } from "@/components/map/ModalQrPreview";
 import { OfferCard } from "@/components/map/OfferCard";
+import { PaymentModal } from "@/components/payment/PaymentModal";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { createBarIcon, FRANCE_BOUNDS, userIcon } from "@/constants/map";
@@ -8,7 +9,9 @@ import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
 import type { QrCodeDto } from "@/services/qrcode.service";
 import type { Bar } from "@/types/bar";
+import type { Offer } from "@/types/offer";
 import type { QrCode } from "@/types/qrcode";
+import { useQueryClient } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import { LocateFixed, Minus, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -108,11 +111,14 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
   const { mutate: createQrCode, isPending: isCreateQrCodePending } = useCreateQrCode();
   const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
   const { data: bars, isPending: isGetBarsPending } = useGetBars();
+  const queryClient = useQueryClient();
 
   const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
   const [offerOpen, setOfferOpen] = useState(false);
   const [selectedBar, setSelectedBar] = useState<Bar | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
   const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
     if (!selectedBar) return;
@@ -190,10 +196,42 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
         setOfferOpen={setOfferOpen}
         selectedBar={selectedBar}
         qrcodes={qrcodes ?? null}
-        onCreateQrCode={onCreateQrCode}
+        onSelectOffer={(offer) => {
+          if (offer.price > 0) {
+            setSelectedOffer(offer);
+            setPaymentOpen(true);
+            setOfferOpen(false);
+          } else {
+            if (!selectedBar) return;
+            onCreateQrCode({
+              barId: selectedBar.id,
+              offerId: offer.id,
+              label: `${selectedBar.name} • ${offer.name}`,
+            });
+          }
+        }}
         isCreateQrCodePending={isCreateQrCodePending}
         isGetMyQrCodesPending={isGetMyQrCodesPending}
       />
+
+      {selectedBar && selectedOffer && (
+        <PaymentModal
+          open={paymentOpen}
+          onClose={() => setPaymentOpen(false)}
+          barId={selectedBar.id}
+          offerId={selectedOffer.id}
+          amount={selectedOffer.price}
+          onSuccess={() => {
+            setPaymentOpen(false);
+            onCreateQrCode({
+              barId: selectedBar.id,
+              offerId: selectedOffer.id,
+              label: `${selectedBar.name} • ${selectedOffer.name}`,
+            });
+            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
+          }}
+        />
+      )}
 
       <ModalQrPreview
         visible={previewOpen}

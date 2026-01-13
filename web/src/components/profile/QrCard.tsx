@@ -37,9 +37,6 @@ export function QrCard({ qr, onClick }: QrCardProps) {
         <p className="text-muted-foreground text-xs">
           {priceText ? `Prix: ${priceText}` : "Prix: —"}
         </p>
-        <p className="text-muted-foreground text-xs">
-          {qr.used ? "Statut: utilisé" : "Statut: disponible"}
-        </p>
       </div>
 
       <div className="rounded-xl border border-dashed border-border bg-muted/10 p-2 text-center">

@@ -10,4 +10,11 @@ export interface QrCode {
   updatedAt: string;
   url?: string;
   value?: string;
+  offer?: {
+    name: string;
+    price: number;
+  };
+  bar?: {
+    name: string;
+  };
 }

@@ -28,9 +28,7 @@ export function QrModal({ qr, onClose }: QrModalProps) {
                 {barName ? `Chez ${barName}` : ""}
               </p>
             </div>
-            <Badge variant={qr.used ? "secondary" : "default"}>
-              {qr.used ? "Utilisé" : "Ready"}
-            </Badge>
+            <Badge variant={qr.used ? "secondary" : "green"}>{qr.used ? "Utilisé" : "Prêt"}</Badge>
           </div>
         </DialogHeader>
 

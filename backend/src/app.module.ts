@@ -9,6 +9,7 @@ import { OffersModule } from "@offers/offers.module";
 import { PrismaModule } from "@prisma/prisma.module";
 import { PurchasesModule } from "@purchases/purchases.module";
 import { QrCodesModule } from "@qrcodes/qrcodes.module";
+import { StripeModule } from "@stripe/stripe.module";
 import { UsersModule } from "@users/users.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -29,6 +30,7 @@ import { AppService } from "./app.service";
     BarsModule,
     OffersModule,
     MessagesModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
