@@ -4,11 +4,6 @@ export class GenerateQrCodeDto {
   @IsString()
   @MinLength(2)
   @MaxLength(80)
-  barId!: string;
-
-  @IsString()
-  @MinLength(2)
-  @MaxLength(80)
   offerId!: string;
 
   @IsString()

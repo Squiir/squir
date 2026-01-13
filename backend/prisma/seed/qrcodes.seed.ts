@@ -19,7 +19,6 @@ export async function seedQrCodes(prisma: PrismaClient, users: User[]) {
       data: offersToUse.map((offer, index) => ({
         userId: user.id,
         label: `${offer.name} - ${offer.bar.name}`,
-        barId: offer.barId,
         offerId: offer.id,
       })),
     });
