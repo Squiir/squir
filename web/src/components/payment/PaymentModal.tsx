@@ -40,10 +40,9 @@ function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
 
     const { error } = await stripe.confirmPayment({
       elements,
-      redirect: "if_required", // Handle success without redirect if possible
-      // If redirect is needed, provide return_url:
+      redirect: "if_required",
       confirmParams: {
-        return_url: window.location.href, // This might reload the page, using if_required helps for card payments usually
+        return_url: window.location.href,
       },
     });
 
@@ -105,7 +104,7 @@ export function PaymentModal({
   const appearance = {
     theme: "stripe" as const,
     variables: {
-      colorPrimary: "#233f81ff",
+      colorPrimary: "#0f172a",
     },
   };
   const options = {
