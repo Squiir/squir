@@ -1,108 +1,24 @@
+import { MapController } from "@/components/map/MapController";
 import { ModalQrPreview } from "@/components/map/ModalQrPreview";
 import { OfferCard } from "@/components/map/OfferCard";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { createBarIcon, FRANCE_BOUNDS, userIcon } from "@/constants/map";
+import { ZoomControlWithSlider } from "@/components/map/ZoomControlWithSlider";
+import {
+  DEFAULT_PARIS_CENTER,
+  DEFAULT_ZOOM,
+  FRANCE_BOUNDS,
+  createBarIcon,
+  userIcon,
+} from "@/constants/map";
 import { useGetBars } from "@/hooks/bars/use-get-bars";
 import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
 import type { QrCodeDto } from "@/services/qrcode.service";
 import type { Bar } from "@/types/bar";
+import type { Coordinate } from "@/types/map";
 import type { QrCode } from "@/types/qrcode";
 import "leaflet/dist/leaflet.css";
-import { LocateFixed, Minus, Plus } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
-
-export type Coordinate = {
-  latitude?: number;
-  longitude?: number;
-};
-
-function MapController({ latitude, longitude }: Coordinate) {
-  const map = useMap();
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    if (latitude && longitude && !initializedRef.current) {
-      map.flyTo([latitude, longitude], 13, { duration: 1 });
-      initializedRef.current = true;
-    }
-  }, [latitude, longitude, map]);
-
-  if (!latitude || !longitude) return null;
-
-  return (
-    <div className="absolute -translate-x-1/2 bottom-24 left-1/2 z-1000">
-      <Button
-        variant="secondary"
-        className="h-auto gap-2 px-4 py-2 bg-white border rounded-full shadow-lg border-slate-200 hover:bg-slate-50"
-        onClick={() => map.flyTo([latitude, longitude], 13, { duration: 1 })}
-      >
-        <LocateFixed className="w-4 h-4 text-blue-500" />
-        <span className="text-sm font-medium text-slate-700">Ma position</span>
-      </Button>
-    </div>
-  );
-}
-
-function ZoomControlWithSlider() {
-  const map = useMap();
-  const [zoom, setZoom] = useState(map.getZoom());
-
-  useMapEvents({
-    zoomend: () => {
-      setZoom(map.getZoom());
-    },
-  });
-
-  const handleZoomChange = (value: number[]) => {
-    const newZoom = value[0];
-    setZoom(newZoom);
-    map.setZoom(newZoom);
-  };
-
-  const zoomIn = () => {
-    map.zoomIn();
-  };
-
-  const zoomOut = () => {
-    map.zoomOut();
-  };
-
-  return (
-    <div className="absolute flex flex-row items-center gap-4 p-3 -translate-x-1/2 border rounded-full shadow-xl bottom-8 left-1/2 z-1000 bg-white/90 backdrop-blur-sm border-slate-200">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="w-8 h-8 rounded-full hover:bg-slate-100"
-        onClick={zoomOut}
-      >
-        <Minus className="w-5 h-5 text-slate-700" />
-      </Button>
-
-      <div className="flex items-center justify-center w-48 px-2">
-        <Slider
-          min={5}
-          max={18}
-          step={0.5}
-          value={[zoom]}
-          onValueChange={handleZoomChange}
-          className="w-full cursor-pointer"
-        />
-      </div>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        className="w-8 h-8 rounded-full hover:bg-slate-100"
-        onClick={zoomIn}
-      >
-        <Plus className="w-5 h-5 text-slate-700" />
-      </Button>
-    </div>
-  );
-}
+import { useEffect, useState } from "react";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
 export default function FranceMap({ latitude, longitude }: Coordinate) {
   const { mutate: createQrCode, isPending: isCreateQrCodePending } = useCreateQrCode();
@@ -133,9 +49,6 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
     }
   }, [previewedQrCode]);
 
-  const defaultCenter: [number, number] = [48.8566, 2.3522];
-  const defaultZoom = 13;
-
   return (
     <div className="relative z-0 w-full h-full bg-slate-100">
       {isGetBarsPending && (
@@ -145,8 +58,8 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
       )}
 
       <MapContainer
-        center={defaultCenter}
-        zoom={defaultZoom}
+        center={DEFAULT_PARIS_CENTER}
+        zoom={DEFAULT_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
         dragging={true}
@@ -174,7 +87,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
           <Marker
             key={bar.id}
             position={[bar.latitude, bar.longitude]}
-            icon={createBarIcon(bar.color || "#ef4444")}
+            icon={createBarIcon("Bar")}
             eventHandlers={{
               click: () => {
                 setSelectedBar(bar);
