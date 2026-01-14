@@ -26,7 +26,7 @@ export default function TabLayout() {
 				options={{
 					title: "Map",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
+						<IconSymbol size={28} name="map.fill" color={color} />
 					),
 				}}
 			/>
@@ -36,6 +36,15 @@ export default function TabLayout() {
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
 						<IconSymbol size={28} name="person.circle" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="qrcode"
+				options={{
+					title: "QR",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="qrcode.viewfinder" color={color} />
 					),
 				}}
 			/>

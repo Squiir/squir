@@ -1,4 +1,3 @@
-import { Badge } from "@components/ui/Badge";
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { API_URL } from "@constants/api";
 import { Tokens } from "@constants/tokens";
@@ -49,26 +48,31 @@ export function QrModal({ group, onClose }: Props) {
 
 	return (
 		<Modal visible transparent animationType="fade">
+			{/* Purple-tinted overlay */}
 			<View style={styles.overlay}>
 				<View style={styles.modalContainer}>
 					<LinearGradient
-						colors={["#ffffff", "#235c84ff"]}
+						colors={[Tokens.colors.pink[50], Tokens.colors.pink[200]]}
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
 						style={styles.modal}
 					>
 						{/* Header */}
 						<View style={styles.header}>
-							<View style={styles.headerRow}>
-								<View style={styles.headerContent}>
-									<Text style={styles.title}>
-										{offerName || selectedQr.label}
-									</Text>
-									<Text style={styles.subtitle}>
-										{barName ? `Chez ${barName}` : ""}
-									</Text>
-								</View>
-								<Badge text="QR" variant={selectedQr.used ? "warn" : "ok"} />
+							<View style={styles.headerIconContainer}>
+								<IconSymbol
+									name="qrcode.viewfinder"
+									size={24}
+									color={Tokens.colors.pink[500]}
+								/>
+							</View>
+							<View style={styles.headerContent}>
+								<Text style={styles.title}>
+									{offerName || selectedQr.label}
+								</Text>
+								<Text style={styles.subtitle}>
+									{barName ? `Chez ${barName}` : ""}
+								</Text>
 							</View>
 						</View>
 
@@ -170,48 +174,59 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		paddingHorizontal: Tokens.spacing[6],
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		backgroundColor: "rgba(13, 4, 22, 0.6)", // Pink text color with opacity
 	},
 	modalContainer: {
 		width: "100%",
 		maxWidth: 400,
+		shadowColor: Tokens.colors.pink[500],
+		shadowOffset: { width: 0, height: 8 },
+		shadowOpacity: 0.25,
+		shadowRadius: 24,
+		elevation: 12,
 	},
 	modal: {
 		borderRadius: Tokens.borderRadius["3xl"],
 		overflow: "hidden",
 		padding: Tokens.spacing[6],
+		borderWidth: 1,
+		borderColor: Tokens.colors.pink[200],
 	},
 	header: {
-		marginBottom: Tokens.spacing[4],
-	},
-	headerRow: {
 		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "space-between",
-		marginBottom: Tokens.spacing[2],
+		marginBottom: Tokens.spacing[4],
+	},
+	headerIconContainer: {
+		width: 48,
+		height: 48,
+		borderRadius: 24,
+		backgroundColor: "rgba(228, 88, 195, 0.15)",
+		justifyContent: "center",
+		alignItems: "center",
+		marginRight: Tokens.spacing[3],
 	},
 	headerContent: {
 		flex: 1,
-		paddingRight: Tokens.spacing[3],
 	},
 	title: {
-		color: Tokens.colors.gray[900],
+		color: Tokens.colors.pink[900],
 		fontSize: Tokens.typography.sizes.lg,
 		fontWeight: Tokens.typography.weights.bold,
 	},
 	subtitle: {
-		color: Tokens.colors.gray[600],
+		color: Tokens.colors.pink[600],
 		fontSize: Tokens.typography.sizes.sm,
 		marginTop: Tokens.spacing[1],
 	},
 	selectorContainer: {
 		marginBottom: Tokens.spacing[4],
-		backgroundColor: "rgba(0, 0, 0, 0.05)",
+		backgroundColor: "rgba(192, 145, 243, 0.2)",
 		borderRadius: Tokens.borderRadius.xl,
 		padding: Tokens.spacing[3],
 	},
 	selectorLabel: {
-		color: Tokens.colors.gray[700],
+		color: Tokens.colors.pink[700],
 		fontSize: Tokens.typography.sizes.sm,
 		fontWeight: "600",
 		textAlign: "center",
@@ -226,12 +241,12 @@ const styles = StyleSheet.create({
 		width: 36,
 		height: 36,
 		borderRadius: Tokens.borderRadius.lg,
-		backgroundColor: Tokens.colors.primary[500],
+		backgroundColor: Tokens.colors.pink[500],
 		alignItems: "center",
 		justifyContent: "center",
 	},
 	arrowButtonDisabled: {
-		backgroundColor: Tokens.colors.gray[300],
+		backgroundColor: Tokens.colors.pink[200],
 	},
 	selectorScrollContent: {
 		flexDirection: "row",
@@ -246,20 +261,20 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		borderWidth: 2,
-		borderColor: Tokens.colors.gray[200],
+		borderColor: Tokens.colors.pink[200],
 		position: "relative",
 	},
 	selectorItemActive: {
-		backgroundColor: Tokens.colors.primary[100],
-		borderColor: Tokens.colors.primary[500],
+		backgroundColor: Tokens.colors.pink[100],
+		borderColor: Tokens.colors.pink[500],
 	},
 	selectorItemText: {
-		color: Tokens.colors.gray[700],
+		color: Tokens.colors.pink[600],
 		fontWeight: "700",
 		fontSize: Tokens.typography.sizes.base,
 	},
 	selectorItemTextActive: {
-		color: Tokens.colors.primary[700],
+		color: Tokens.colors.pink[700],
 	},
 	usedDot: {
 		position: "absolute",
@@ -268,7 +283,7 @@ const styles = StyleSheet.create({
 		width: 10,
 		height: 10,
 		borderRadius: 5,
-		backgroundColor: Tokens.colors.gray[400],
+		backgroundColor: Tokens.colors.pink[400],
 		borderWidth: 2,
 		borderColor: Tokens.colors.white,
 	},
@@ -279,15 +294,17 @@ const styles = StyleSheet.create({
 		backgroundColor: Tokens.colors.white,
 		borderRadius: Tokens.borderRadius["2xl"],
 		marginBottom: Tokens.spacing[4],
+		borderWidth: 1,
+		borderColor: Tokens.colors.pink[200],
 	},
 	qrImage: {
-		width: 280,
-		height: 280,
+		width: 260,
+		height: 260,
 	},
 	closeButton: {
 		paddingVertical: Tokens.spacing[4],
 		borderRadius: Tokens.borderRadius.xl,
-		backgroundColor: Tokens.colors.primary[500],
+		backgroundColor: Tokens.colors.pink[500],
 		alignItems: "center",
 	},
 	closeButtonText: {

@@ -62,6 +62,23 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
+		// Nature-Lavender palette
+		// Olive green primary, soft blue secondary, lavender accent
+		pink: {
+			text: "#161910", // rgb(22, 25, 16)
+			background: "#F7F8F4", // rgb(247, 248, 244)
+			50: "#F7F8F4", // Background
+			100: "#ECEEE8", // Light surface
+			200: "#D9DDD2", // Light border
+			300: "#889B65", // Primary - Olive green
+			400: "#A6B2C5", // Secondary - Soft blue
+			500: "#9D8EB5", // Accent - Lavender
+			600: "#8A7BA2",
+			700: "#77688F",
+			800: "#64557C",
+			900: "#161910", // Text
+		},
+
 		// Semantic colors
 		link: "#059669", // emerald-600
 		transparent: "transparent",

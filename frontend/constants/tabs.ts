@@ -2,7 +2,7 @@
  * Tab configuration
  * Single source of truth for tab routes
  */
-export const TAB_ORDER = ["index", "map", "profile"] as const;
+export const TAB_ORDER = ["index", "map", "profile", "qrcode"] as const;
 
 export type TabName = (typeof TAB_ORDER)[number];
 
@@ -14,6 +14,7 @@ export const TAB_PATHS: Record<TabName, string> = {
 	index: "/(tabs)/",
 	map: "/(tabs)/map",
 	profile: "/(tabs)/profile",
+	qrcode: "/(tabs)/qrcode",
 };
 
 /**

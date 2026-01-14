@@ -50,7 +50,7 @@ export function TabButton({
 			<Animated.View style={iconStyle}>
 				{options.tabBarIcon?.({
 					focused: isFocused,
-					color: isFocused ? colors.tint : colors.icon,
+					color: isFocused ? colors.tabIconSelected : colors.tabIconDefault,
 					size: 24,
 				})}
 			</Animated.View>

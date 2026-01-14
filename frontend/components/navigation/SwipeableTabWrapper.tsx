@@ -1,3 +1,4 @@
+import { ThemedView } from "@components/ThemedView";
 import { SWIPE_GESTURE } from "@constants/swipe-gesture";
 import { useTabNavigation } from "@hooks/navigation/useTabNavigation";
 import {
@@ -9,7 +10,7 @@ import {
 	isVerticalScroll,
 } from "@utils/swipe";
 import React, { PropsWithChildren } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 
@@ -96,7 +97,7 @@ export function SwipeableTabWrapper({
 
 	return (
 		<GestureDetector gesture={panGesture}>
-			<View style={styles.container}>{children}</View>
+			<ThemedView style={styles.container}>{children}</ThemedView>
 		</GestureDetector>
 	);
 }
