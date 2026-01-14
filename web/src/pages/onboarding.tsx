@@ -32,7 +32,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
+    <div className="min-h-screen pb-20">
       <div className="p-6 pt-12 max-w-md mx-auto">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text mb-8">
           Onboarding
