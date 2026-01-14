@@ -7,32 +7,32 @@ import { Platform } from "react-native";
 
 export const Colors = {
 	light: {
-		background: "#FCFCFD", // Cool white
-		surface: "#F5F4F9",
-		textPrimary: "#0D0D18",
-		textSecondary: "#6663A9",
-		border: "#E8E6F0",
+		background: "#F6FAF4", // Natural white
+		surface: "#EBF5E8",
+		textPrimary: "#121A0D",
+		textSecondary: "#579C3A",
+		border: "#D4EACD",
 
-		primary: "#6663A9", // Purple
-		tint: "#AB87BD", // Orchid accent
+		primary: "#7EBE59", // Fresh green
+		tint: "#93D26D", // Lime accent
 
-		icon: "#BFAAD0", // Pink-lavender
-		tabIconDefault: "#BFAAD0",
-		tabIconSelected: "#6663A9",
+		icon: "#A9D88E", // Light green
+		tabIconDefault: "#A9D88E",
+		tabIconSelected: "#7EBE59",
 	},
 	dark: {
-		background: "#0D0D18", // Deep purple-black
-		surface: "#1A1A28",
-		textPrimary: "#FCFCFD",
-		textSecondary: "#BFAAD0",
-		border: "#2A2A38",
+		background: "#121A0D", // Deep forest
+		surface: "#1C2816",
+		textPrimary: "#F6FAF4",
+		textSecondary: "#A9D88E",
+		border: "#283620",
 
-		primary: "#6663A9", // Purple
-		tint: "#AB87BD", // Orchid accent
+		primary: "#7EBE59", // Fresh green
+		tint: "#93D26D", // Lime accent
 
-		icon: "#BFAAD0", // Pink-lavender
-		tabIconDefault: "#BFAAD0",
-		tabIconSelected: "#AB87BD",
+		icon: "#A9D88E", // Light green
+		tabIconDefault: "#A9D88E",
+		tabIconSelected: "#93D26D",
 	},
 };
 

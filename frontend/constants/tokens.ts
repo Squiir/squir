@@ -62,21 +62,21 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
-		// Purple-Lavender palette
-		// Soft purple primary, pink-lavender secondary, orchid accent
+		// Fresh Green palette
+		// Natural green tones
 		pink: {
-			text: "#0D0D18", // rgb(13, 13, 24)
-			background: "#FCFCFD", // rgb(252, 252, 253)
-			50: "#FCFCFD", // Background
-			100: "#F5F4F9", // Light surface
-			200: "#E8E6F0", // Light border
-			300: "#6663A9", // Primary - Purple
-			400: "#BFAAD0", // Secondary - Pink-lavender
-			500: "#AB87BD", // Accent - Orchid
-			600: "#9A78AC",
-			700: "#89699B",
-			800: "#785A8A",
-			900: "#0D0D18", // Text
+			text: "#121A0D", // rgb(18, 26, 13)
+			background: "#F6FAF4", // rgb(246, 250, 244)
+			50: "#F6FAF4", // Background
+			100: "#EBF5E8", // Light surface
+			200: "#D4EACD", // Light border
+			300: "#7EBE59", // Primary - Fresh green
+			400: "#A9D88E", // Secondary - Light green
+			500: "#93D26D", // Accent - Lime green
+			600: "#7FC05C",
+			700: "#6BAE4B",
+			800: "#579C3A",
+			900: "#121A0D", // Text
 		},
 
 		// Semantic colors
