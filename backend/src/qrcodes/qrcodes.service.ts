@@ -90,6 +90,9 @@ export class QrCodesService {
         userId,
         consumedAt: null, // Only active QR codes
       },
+      include: {
+        offer: true,
+      },
       orderBy: { createdAt: "desc" },
     });
   }

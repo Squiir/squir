@@ -35,7 +35,8 @@
       "@qrcodes/*": ["src/qrcodes/*"],
       "@users/*": ["src/users/*"],
       "@utils/*": ["src/utils/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
+      "@stripe/*": ["src/stripe/*"]
     }
   }
 }

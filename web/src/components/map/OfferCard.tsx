@@ -6,8 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { QrCodeDto } from "@/services/qrcode.service";
 import type { Bar } from "@/types/bar";
+import type { Offer } from "@/types/offer";
 import type { QrCode } from "@/types/qrcode";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
@@ -17,7 +17,7 @@ interface OfferCardProps {
   setOfferOpen: (open: boolean) => void;
   selectedBar: Bar | null | undefined;
   qrcodes: QrCode[] | null;
-  onCreateQrCode: (qr: QrCodeDto) => void;
+  onSelectOffer: (offer: Offer) => void;
   isCreateQrCodePending: boolean;
   isGetMyQrCodesPending: boolean;
 }
@@ -27,7 +27,7 @@ export function OfferCard({
   setOfferOpen,
   selectedBar,
   qrcodes,
-  onCreateQrCode,
+  onSelectOffer,
   isCreateQrCodePending,
   isGetMyQrCodesPending,
 }: OfferCardProps) {
@@ -60,11 +60,7 @@ export function OfferCard({
                 onClick={() => {
                   if (alreadyHas || isCreateQrCodePending) return;
                   if (!selectedBar) return;
-                  onCreateQrCode({
-                    barId: selectedBar.id,
-                    offerId: offer.id,
-                    label: `${selectedBar.name} • ${offer.name} ${typeof offer.price === "number" ? `• ${offer.price}€` : ""}`,
-                  });
+                  onSelectOffer(offer);
                 }}
               >
                 <div>
