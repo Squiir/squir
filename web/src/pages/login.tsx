@@ -54,7 +54,7 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center text-sm text-muted-foreground">
-              Pas de compte ?{" "}
+              Toujours pas de compte ?{" "}
               <a href="/register" className="underline hover:text-primary">
                 S'inscrire
               </a>
