@@ -12,7 +12,7 @@ export function BestSellingOffersCarousel() {
 
 	return (
 		<Carousel
-			title="Les best-sellers"
+			title="Best-Sellers"
 			isLoading={isLoading}
 			isError={isError}
 			onRetry={refetch}
