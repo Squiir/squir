@@ -1,5 +1,8 @@
-import { Offer } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
-export type OfferWithDistance = Offer & {
+export type ExtendedOfferWithParams = Prisma.OfferGetPayload<{
+  include: { bar: true; qrCodes: true };
+}> & {
   distance?: number;
+  numberOfQrCodes?: number;
 };

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { OfferParamsDto } from "@offers/dto/offers.dto";
-import { OfferWithDistance } from "@offers/offers.type";
+import { ExtendedOfferWithParams } from "@offers/offers.type";
 import { PrismaService } from "@prisma/prisma.service";
 import { haversineDistance } from "@utils/distance";
 
@@ -10,6 +10,7 @@ export class OffersService {
 
   /**
    * Get all offers
+   * @param params - Offer parameters
    * @returns List of all offers
    */
   async findAll(params: OfferParamsDto = {}) {
@@ -25,30 +26,37 @@ export class OffersService {
 
     // DB query
     const offers = await this.prisma.offer.findMany({
-      include: { bar: true },
+      include: { bar: true, qrCodes: true },
       take: limit,
     });
 
     // Distance calculation
-    let results: OfferWithDistance[] = offers.map((offer) => {
-      let distance: number | undefined;
+    let results: ExtendedOfferWithParams[] = offers
+      .map((offer) => {
+        let distance: number | undefined;
 
-      if (
-        latitude !== undefined &&
-        longitude !== undefined &&
-        offer.bar.latitude !== undefined &&
-        offer.bar.longitude !== undefined
-      ) {
-        distance = haversineDistance(
-          latitude,
-          longitude,
-          offer.bar.latitude,
-          offer.bar.longitude,
-        );
-      }
+        if (
+          latitude !== undefined &&
+          longitude !== undefined &&
+          offer.bar.latitude !== undefined &&
+          offer.bar.longitude !== undefined
+        ) {
+          distance = haversineDistance(
+            latitude,
+            longitude,
+            offer.bar.latitude,
+            offer.bar.longitude,
+          );
+        }
 
-      return { ...offer, distance };
-    });
+        return { ...offer, distance };
+      })
+      .map((offer) => {
+        return {
+          ...offer,
+          numberOfQrCodes: offer.qrCodes.length,
+        };
+      });
 
     // Distance filtering
     if (minDistance !== undefined || maxDistance !== undefined) {
@@ -65,8 +73,8 @@ export class OffersService {
     // Final sorting
     if (sortBy) {
       results.sort((a, b) => {
-        const valA = a[sortBy as keyof OfferWithDistance];
-        const valB = b[sortBy as keyof OfferWithDistance];
+        const valA = a[sortBy as keyof ExtendedOfferWithParams];
+        const valB = b[sortBy as keyof ExtendedOfferWithParams];
 
         if (valA === undefined || valB === undefined) return 0;
         if (valA < valB) return orderBy === "asc" ? -1 : 1;

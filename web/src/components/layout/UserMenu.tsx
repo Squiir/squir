@@ -1,3 +1,4 @@
+import { ProfileToggleMode } from "@/components/profile/ProfileToggleMode";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +53,10 @@ export function UserMenu() {
         <DropdownMenuItem onClick={() => navigate("/profile")}>
           <User className="w-4 h-4 mr-2" />
           Profil
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+          <ProfileToggleMode singleIcon />
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => logout()} className="text-red-600 focus:text-red-600">
