@@ -20,7 +20,7 @@ export const authService = {
   },
 
   async checkUsername(username: string) {
-    const { data } = await api.post<{ available: boolean }>("/auth/check-username", { username });
+    const { data } = await api.post<{ isAvailable: boolean }>("/auth/check-username", { username });
     return data.available;
   },
 
