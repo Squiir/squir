@@ -19,11 +19,11 @@ export function ThemedView({
 }: ThemedViewProps) {
 	const colorScheme = useColorScheme() ?? "dark";
 
-	// Gradient colors based on theme - forest green
+	// Gradient colors based on theme - hot pink
 	const gradientColors =
 		colorScheme === "dark"
-			? (["#121A0D", "#1C2816", "#162010"] as const) // Deep forest gradient
-			: ([Tokens.colors.pink[50], Tokens.colors.pink[100]] as const); // Light natural gradient
+			? (["#0F0207", "#1F0A14", "#180812"] as const) // Deep pink-black gradient
+			: ([Tokens.colors.pink[50], Tokens.colors.pink[100]] as const); // Light pink gradient
 
 	if (gradient) {
 		return (

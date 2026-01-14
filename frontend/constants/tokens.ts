@@ -62,21 +62,21 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
-		// Fresh Green palette
-		// Natural green tones
+		// Hot Pink-Yellow-Lime palette
+		// Bold and vibrant
 		pink: {
-			text: "#121A0D", // rgb(18, 26, 13)
-			background: "#F6FAF4", // rgb(246, 250, 244)
-			50: "#F6FAF4", // Background
-			100: "#EBF5E8", // Light surface
-			200: "#D4EACD", // Light border
-			300: "#7EBE59", // Primary - Fresh green
-			400: "#A9D88E", // Secondary - Light green
-			500: "#93D26D", // Accent - Lime green
-			600: "#7FC05C",
-			700: "#6BAE4B",
-			800: "#579C3A",
-			900: "#121A0D", // Text
+			text: "#0F0207", // rgb(15, 2, 7)
+			background: "#FEF5FA", // rgb(254, 245, 250)
+			50: "#FEF5FA", // Background
+			100: "#FDEAF3", // Light surface
+			200: "#FAD4E5", // Light border
+			300: "#E43087", // Primary - Hot pink
+			400: "#F0DE8D", // Secondary - Yellow
+			500: "#CEE957", // Accent - Lime
+			600: "#C72E78",
+			700: "#B02969",
+			800: "#99245A",
+			900: "#0F0207", // Text
 		},
 
 		// Semantic colors
