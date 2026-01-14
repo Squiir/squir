@@ -151,6 +151,6 @@ export class AuthService {
 
   async checkEmailAvailability(email: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    return { available: !user };
+    return { isAvailable: !user };
   }
 }
