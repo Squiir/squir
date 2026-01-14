@@ -44,7 +44,8 @@ export async function seedUsers(prisma: PrismaClient): Promise<User[]> {
         password,
         role: UserRole.ADMIN,
         status: "Dyd u (dydyou) come tonight ?",
-        avatarUrl: "https://i.pravatar.cc/150?img=3",
+        avatarUrl:
+          "https://gravatar.com/avatar/e87d96a5bb1c7c49a5c4d569d862e662?s=400&d=robohash&r=x",
         loyaltyPoints: 90,
         birthDate: iso8601ToDateTime("2002-01-19T10:05:00Z"),
       },
@@ -66,7 +67,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<User[]> {
   });
 
   // Create PROFESSIONAL users with their bars
-  const bar1Owner = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "bar1@squir.com",
       username: "bar1er",
@@ -79,7 +80,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<User[]> {
     },
   });
 
-  const bar2Owner = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: "bar2@squir.com",
       username: "bar2em",
