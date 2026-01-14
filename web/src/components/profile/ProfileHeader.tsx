@@ -89,7 +89,7 @@ export function ProfileHeader({ user, isLoading }: Props) {
                 ) : (
                   <div className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-2 py-1 rounded-md text-xs font-medium hover:bg-muted transition-colors">
                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span>Set your status</span>
+                    <span>Ajoute ton statut</span>
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </div>
                 )}
