@@ -62,21 +62,21 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
-		// Indigo-Beige-Sage palette
-		// Indigo primary, beige secondary, sage accent
+		// Orange-Blue-Purple palette
+		// Orange primary, sky blue secondary, purple accent
 		pink: {
-			text: "#0B0B12", // rgb(11, 11, 18)
-			background: "#F7F7FA", // rgb(247, 247, 250)
-			50: "#F7F7FA", // Background
-			100: "#EDEDF2", // Light surface
-			200: "#DDDDE6", // Light border
-			300: "#62639D", // Primary - Indigo
-			400: "#CCB9AD", // Secondary - Beige
-			500: "#B0B98F", // Accent - Sage
-			600: "#9BA583",
-			700: "#869177",
-			800: "#717D6B",
-			900: "#0B0B12", // Text
+			text: "#0B0600", // rgb(11, 6, 0)
+			background: "#FFFCFA", // rgb(255, 252, 250)
+			50: "#FFFCFA", // Background
+			100: "#FFF5ED", // Warm light
+			200: "#FFE8D9", // Light orange tint
+			300: "#FE7D13", // Primary - Orange
+			400: "#7CBDFE", // Secondary - Sky blue
+			500: "#9C35FE", // Accent - Purple
+			600: "#8A2EE0",
+			700: "#7827C2",
+			800: "#6620A4",
+			900: "#0B0600", // Text
 		},
 
 		// Semantic colors
