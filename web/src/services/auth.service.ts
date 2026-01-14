@@ -21,7 +21,7 @@ export const authService = {
 
   async checkUsername(username: string) {
     const { data } = await api.post<{ isAvailable: boolean }>("/auth/check-username", { username });
-    return data.available;
+    return data.isAvailable;
   },
 
   async checkEmail(email: string) {
