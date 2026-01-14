@@ -7,7 +7,7 @@ export function RecentOffersCarousel() {
 
 	return (
 		<Carousel
-			title="Les nouveautés"
+			title="Nouveautés"
 			isLoading={isLoading}
 			isError={isError}
 			onRetry={refetch}
