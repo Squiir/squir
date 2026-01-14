@@ -1,13 +1,13 @@
 import { OfferCard } from "@components/offer/OfferCard";
 import { Carousel } from "@components/ui/Carousel";
-import { useGetNearbyOffers } from "@hooks/offer/use-get-nearby-offers";
+import { useGetRecentOffers } from "@hooks/offer/use-get-recent-offers";
 
-export function NearbyOffersCarousel() {
-	const { data: offers, isLoading, isError, refetch } = useGetNearbyOffers();
+export function RecentOffersCarousel() {
+	const { data: offers, isLoading, isError, refetch } = useGetRecentOffers();
 
 	return (
 		<Carousel
-			title="A proximité"
+			title="Nouveautés"
 			isLoading={isLoading}
 			isError={isError}
 			onRetry={refetch}
