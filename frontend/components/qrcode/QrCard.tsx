@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
 	},
 	infoContainer: {
 		marginTop: Tokens.spacing[4],
-		backgroundColor: "rgba(192, 145, 243, 0.15)",
+		backgroundColor: `${Tokens.colors.pink[400]}26`, // 15% opacity
 		borderRadius: Tokens.borderRadius.lg,
 		padding: Tokens.spacing[3],
 		gap: Tokens.spacing[2],

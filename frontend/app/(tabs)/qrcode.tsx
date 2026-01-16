@@ -195,17 +195,17 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingVertical: Tokens.spacing[10],
 		paddingHorizontal: Tokens.spacing[6],
-		backgroundColor: "rgba(236, 72, 153, 0.1)",
+		backgroundColor: `${Tokens.colors.pink[400]}1A`, // 10% opacity
 		borderRadius: Tokens.borderRadius["2xl"],
 		borderWidth: 1,
-		borderColor: "rgba(236, 72, 153, 0.2)",
+		borderColor: `${Tokens.colors.pink[400]}33`, // 20% opacity
 		borderStyle: "dashed",
 	},
 	emptyIcon: {
 		width: 80,
 		height: 80,
 		borderRadius: 40,
-		backgroundColor: "rgba(236, 72, 153, 0.15)",
+		backgroundColor: `${Tokens.colors.pink[400]}26`, // 15% opacity
 		justifyContent: "center",
 		alignItems: "center",
 		marginBottom: Tokens.spacing[4],

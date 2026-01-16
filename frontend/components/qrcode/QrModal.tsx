@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
 		width: 48,
 		height: 48,
 		borderRadius: 24,
-		backgroundColor: "rgba(228, 88, 195, 0.15)",
+		backgroundColor: `${Tokens.colors.pink[400]}26`, // 15% opacity
 		justifyContent: "center",
 		alignItems: "center",
 		marginRight: Tokens.spacing[3],
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
 	},
 	selectorContainer: {
 		marginBottom: Tokens.spacing[4],
-		backgroundColor: "rgba(192, 145, 243, 0.2)",
+		backgroundColor: `${Tokens.colors.pink[400]}33`, // 20% opacity
 		borderRadius: Tokens.borderRadius.xl,
 		padding: Tokens.spacing[3],
 	},

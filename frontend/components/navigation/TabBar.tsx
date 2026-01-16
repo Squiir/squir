@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
 		borderRadius: TAB_BAR.CIRCLE_SIZE / 2,
 		borderWidth: TAB_BAR.BORDER_WIDTH,
 		top: (TAB_BAR.BAR_HEIGHT - TAB_BAR.CIRCLE_SIZE) / 2,
-		backgroundColor: "rgba(255, 61, 110, 0.15)", // pink-500 with opacity
+		backgroundColor: `${Tokens.colors.pink[500]}26`, // 15% opacity
 	},
 	gap: {
 		width: 12,

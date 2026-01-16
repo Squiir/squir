@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
 	emptyContainer: {
 		alignItems: "center",
 		paddingVertical: Tokens.spacing[6],
-		backgroundColor: "rgba(192, 145, 243, 0.1)",
+		backgroundColor: `${Tokens.colors.pink[400]}1A`, // 10% opacity
 		borderRadius: Tokens.borderRadius.xl,
 		gap: Tokens.spacing[2],
 	},
