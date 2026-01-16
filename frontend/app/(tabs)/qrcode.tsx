@@ -46,7 +46,7 @@ export default function QrCodeScreen() {
 				contentContainerStyle={styles.content}
 			>
 				{/* Header */}
-				<QrHeader count={groupedQrCodes.length} />
+				<QrHeader />
 
 				{/* Scanner Button - PRO/ADMIN only */}
 				{canAccessScanner && (

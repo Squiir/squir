@@ -3,16 +3,12 @@ import { Tokens } from "@constants/tokens";
 import React from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 
-type Props = {
-	count: number;
-};
-
 // Calculate responsive font size for 66% width
-// Text "Mes QR Codes" + Icon ~= 10-11 units of width
+// Adjusted to be slightly bigger as requested (divided by 8.5 instead of 10)
 const { width } = Dimensions.get("window");
-const responsiveFontSize = (width * 0.66) / 10;
+const responsiveFontSize = (width * 0.66) / 8.5;
 
-export function QrHeader({ count }: Props) {
+export function QrHeader() {
 	return (
 		<View style={styles.headerBar}>
 			<View style={styles.headerContentContainer}>
@@ -26,14 +22,6 @@ export function QrHeader({ count }: Props) {
 					numberOfLines={1}
 				>
 					Mes QR Codes
-					<Text
-						style={[
-							styles.headerSubtitle,
-							{ fontSize: responsiveFontSize * 0.5 },
-						]}
-					>
-						{count > 0 ? ` (${count})` : ""}
-					</Text>
 				</Text>
 			</View>
 		</View>
@@ -47,23 +35,16 @@ const styles = StyleSheet.create({
 		paddingVertical: Tokens.spacing[8],
 	},
 	headerContentContainer: {
-		width: "66%", // Exact request
+		width: "66%",
 		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "space-between", // Spread icon and text to fill the 66%
+		justifyContent: "space-between",
 	},
 	headerTitle: {
-		fontFamily: "Montserrat_700Bold",
-		fontWeight: "bold",
+		fontFamily: "Montserrat",
 		color: Tokens.colors.pink[100],
 		marginLeft: Tokens.spacing[2],
 		flex: 1,
 		textAlign: "center",
-	},
-	headerSubtitle: {
-		fontWeight: Tokens.typography.weights.medium,
-		color: Tokens.colors.pink[100],
-		opacity: 0.8,
-		marginLeft: Tokens.spacing[2],
 	},
 });
