@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		paddingHorizontal: Tokens.spacing[6],
-		backgroundColor: "rgba(13, 4, 22, 0.6)", // Pink text color with opacity
+		backgroundColor: `${Tokens.colors.pink[900]}99`, // 60% opacity
 	},
 	modalContainer: {
 		width: "100%",

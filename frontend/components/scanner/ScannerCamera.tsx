@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 	container: {
 		width: SCAN_AREA_SIZE,
 		height: SCAN_AREA_SIZE,
-		borderRadius: Tokens.borderRadius.xl, // Less rounded? Or keep 3xl? Let's use xl for a tighter look
+		borderRadius: Tokens.borderRadius.xl,
 		overflow: "hidden",
 		backgroundColor: Tokens.colors.black, // Background while loading
 		...Tokens.shadows.lg,
