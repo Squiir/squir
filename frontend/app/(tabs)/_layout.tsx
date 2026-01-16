@@ -3,6 +3,7 @@ import React from "react";
 
 import { TabBar } from "@components/navigation/TabBar";
 import { IconSymbol } from "@components/ui/IconSymbol";
+import { Tokens } from "@constants/tokens";
 
 export default function TabLayout() {
 	return (
@@ -42,9 +43,9 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="qrcode"
 				options={{
-					title: "QR",
-					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="qrcode.viewfinder" color={color} />
+					title: "QR Code",
+					tabBarIcon: ({ color, focused }) => (
+						<IconSymbol size={28} name="qrcode" color={Tokens.colors.white} />
 					),
 				}}
 			/>

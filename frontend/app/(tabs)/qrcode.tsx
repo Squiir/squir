@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { QrCard } from "@components/qrcode/QrCard";
 import { QrCodeHistory } from "@components/qrcode/QrCodeHistory";
+import { QrHeader } from "@components/qrcode/QrHeader";
 import { QrModal } from "@components/qrcode/QrModal";
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { Tokens } from "@constants/tokens";
@@ -44,24 +45,8 @@ export default function QrCodeScreen() {
 				style={styles.container}
 				contentContainerStyle={styles.content}
 			>
-				{/* Header - Solid pink background */}
-				<View style={styles.headerContainer}>
-					<View style={styles.headerContent}>
-						<View style={styles.headerIcon}>
-							<IconSymbol
-								name="qrcode.viewfinder"
-								size={32}
-								color={Tokens.colors.white}
-							/>
-						</View>
-						<Text style={styles.title}>Mes QR Codes</Text>
-						<Text style={styles.subtitle}>
-							{groupedQrCodes.length > 0
-								? `${groupedQrCodes.length} offre${groupedQrCodes.length > 1 ? "s" : ""} disponible${groupedQrCodes.length > 1 ? "s" : ""}`
-								: "Scannez ou achetez des offres"}
-						</Text>
-					</View>
-				</View>
+				{/* Header */}
+				<QrHeader count={groupedQrCodes.length} />
 
 				{/* Scanner Button - PRO/ADMIN only */}
 				{canAccessScanner && (
@@ -73,7 +58,7 @@ export default function QrCodeScreen() {
 							<IconSymbol
 								name="camera.fill"
 								size={24}
-								color={Tokens.colors.white}
+								color={Tokens.colors.pink[300]}
 							/>
 							<Text style={styles.scannerText}>Scanner un QR code</Text>
 						</View>
@@ -148,78 +133,44 @@ const styles = StyleSheet.create({
 	content: {
 		paddingBottom: Tokens.spacing[16],
 	},
-	// Header
-	headerContainer: {
-		paddingTop: Tokens.spacing[12],
-		paddingBottom: Tokens.spacing[8],
-		paddingHorizontal: Tokens.spacing[6],
-		borderBottomLeftRadius: Tokens.borderRadius["3xl"],
-		borderBottomRightRadius: Tokens.borderRadius["3xl"],
-		backgroundColor: Tokens.colors.pink[400], // Lighter than scanner button
-	},
-	headerContent: {
-		alignItems: "center",
-	},
-	headerIcon: {
-		width: 64,
-		height: 64,
-		borderRadius: 32,
-		backgroundColor: "rgba(255, 255, 255, 0.2)",
-		justifyContent: "center",
-		alignItems: "center",
-		marginBottom: Tokens.spacing[3],
-	},
-	title: {
-		color: Tokens.colors.white,
-		fontSize: Tokens.typography.sizes["2xl"],
-		fontWeight: Tokens.typography.weights.bold,
-	},
-	subtitle: {
-		color: "rgba(255, 255, 255, 0.8)",
-		fontSize: Tokens.typography.sizes.sm,
-		marginTop: Tokens.spacing[1],
-	},
-	// Scanner
+	// Header styles moved to components/qrcode/QrHeader.tsx
+
+	// Scanner - No white background
 	scannerButton: {
 		marginHorizontal: Tokens.spacing[6],
 		marginTop: -Tokens.spacing[4],
 		borderRadius: Tokens.borderRadius.xl,
-		backgroundColor: Tokens.colors.pink[500],
+		backgroundColor: "transparent", // Transparent
 		borderWidth: 2,
-		borderColor: Tokens.colors.white,
-		shadowColor: Tokens.colors.pink[500],
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.3,
-		shadowRadius: 8,
-		elevation: 8,
+		borderColor: Tokens.appColors.light.primary,
 	},
 	scannerContent: {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
 		paddingVertical: Tokens.spacing[4],
-		gap: Tokens.spacing[2],
 	},
 	scannerText: {
-		color: Tokens.colors.white,
+		color: Tokens.appColors.light.primary,
 		fontSize: Tokens.typography.sizes.base,
 		fontWeight: Tokens.typography.weights.semibold,
+		marginLeft: Tokens.spacing[2],
 	},
 	// Section
 	section: {
-		marginTop: Tokens.spacing[6],
-		paddingHorizontal: Tokens.spacing[4],
+		marginTop: Tokens.spacing[8],
+		paddingHorizontal: Tokens.spacing[6],
 	},
 	sectionHeader: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom: Tokens.spacing[3],
+		marginBottom: Tokens.spacing[4],
 	},
 	sectionDot: {
 		width: 8,
 		height: 8,
 		borderRadius: 4,
-		backgroundColor: Tokens.colors.pink[500],
+		backgroundColor: Tokens.appColors.light.primary,
 		marginRight: Tokens.spacing[2],
 	},
 	sectionTitle: {

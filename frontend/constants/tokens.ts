@@ -62,21 +62,21 @@ export const Tokens = {
 			600: "#16A34A",
 		},
 
-		// Hot Pink-Yellow-Lime palette
-		// Bold and vibrant
+		// Modern Pink palette
+		// Soft pink accents for minimalist design
 		pink: {
-			text: "#0F0207", // rgb(15, 2, 7)
-			background: "#FEF5FA", // rgb(254, 245, 250)
-			50: "#FEF5FA", // Background
-			100: "#FDEAF3", // Light surface
-			200: "#FAD4E5", // Light border
-			300: "#E43087", // Primary - Hot pink
-			400: "#F0DE8D", // Secondary - Yellow
-			500: "#CEE957", // Accent - Lime
-			600: "#C72E78",
-			700: "#B02969",
-			800: "#99245A",
-			900: "#0F0207", // Text
+			text: "#1A1A1A", // Almost black
+			background: "#FAFAF9", // Warm off-white
+			50: "#FDF2F8", // Lightest pink tint
+			100: "#FCE7F3", // Very light pink
+			200: "#FBCFE8", // Light pink
+			300: "#F9A8D4", // Soft pink
+			400: "#EC4899", // Vibrant pink (main)
+			500: "#DB2777", // Deep pink
+			600: "#BE185D",
+			700: "#9D174D",
+			800: "#831843",
+			900: "#1A1A1A", // Text
 		},
 
 		// Semantic colors
@@ -84,6 +84,63 @@ export const Tokens = {
 		transparent: "transparent",
 		white: "#FFFFFF",
 		black: "#000000",
+	},
+
+	// ========================================
+	// APP THEME COLORS - CENTRALIZED
+	// Modern Minimalist - Off-white with Pink Accents
+	// ========================================
+	appColors: {
+		light: {
+			// Backgrounds - Off-white base
+			background: "#FAFAF9", // Warm off-white
+			surface: "#FFFFFF", // Pure white for cards
+			surfaceSecondary: "#F5F5F4", // Subtle gray for secondary surfaces
+
+			// Text - High contrast
+			textPrimary: "#1A1A1A", // Almost black
+			textSecondary: "#737373", // Medium gray
+			textTertiary: "#A3A3A3", // Light gray
+
+			// Borders - Very subtle
+			border: "#E7E5E4", // Subtle border
+			borderLight: "#F5F5F4", // Very light border
+
+			// Brand colors - Pink accents
+			primary: "#EC4899", // Vibrant pink
+			primaryLight: "#F9A8D4", // Light pink
+			tint: "#FDF2F8", // Very light pink tint
+
+			// Icons
+			icon: "#EC4899", // Pink
+			tabIconDefault: "#EC4899", // Gray when inactive
+			tabIconSelected: "#EC4899", // Pink when active
+		},
+		dark: {
+			// Backgrounds - Dark theme
+			background: "#1A1A1A", // Dark gray
+			surface: "#262626", // Lighter dark
+			surfaceSecondary: "#171717", // Darker
+
+			// Text
+			textPrimary: "#FAFAFA", // Off-white
+			textSecondary: "#A3A3A3", // Medium gray
+			textTertiary: "#737373", // Darker gray
+
+			// Borders
+			border: "#404040", // Subtle dark border
+			borderLight: "#262626",
+
+			// Brand colors
+			primary: "#F472B6", // Brighter pink for dark mode
+			primaryLight: "#F9A8D4",
+			tint: "#3F1728", // Dark pink tint
+
+			// Icons
+			icon: "#F472B6", // Bright pink
+			tabIconDefault: "#A3A3A3",
+			tabIconSelected: "#F472B6",
+		},
 	},
 
 	spacing: {

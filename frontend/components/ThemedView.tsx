@@ -1,46 +1,27 @@
-import { View, type ViewProps } from "react-native";
-
 import { Tokens } from "@constants/tokens";
 import { useColorScheme } from "@hooks/color/use-color-scheme";
-import { LinearGradient } from "expo-linear-gradient";
+import { View, type ViewProps } from "react-native";
 
 export type ThemedViewProps = ViewProps & {
 	lightColor?: string;
 	darkColor?: string;
-	gradient?: boolean;
 };
 
 export function ThemedView({
 	style,
 	lightColor,
 	darkColor,
-	gradient = true,
 	...otherProps
 }: ThemedViewProps) {
 	const colorScheme = useColorScheme() ?? "dark";
 
-	// Gradient colors based on theme - hot pink
-	const gradientColors =
-		colorScheme === "dark"
-			? (["#0F0207", "#1F0A14", "#180812"] as const) // Deep pink-black gradient
-			: ([Tokens.colors.pink[50], Tokens.colors.pink[100]] as const); // Light pink gradient
-
-	if (gradient) {
-		return (
-			<LinearGradient
-				colors={gradientColors}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 1 }}
-				style={[{ flex: 1 }, style]}
-				{...otherProps}
-			/>
-		);
-	}
-
+	// Get background color from centralized theme
 	const backgroundColor =
-		colorScheme === "dark"
-			? (darkColor ?? "#1A0A2E")
-			: (lightColor ?? "#FAF7FD");
+		lightColor ??
+		darkColor ??
+		(colorScheme === "dark"
+			? Tokens.appColors.dark.background
+			: Tokens.appColors.light.background);
 
-	return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+	return <View style={[{ flex: 1, backgroundColor }, style]} {...otherProps} />;
 }

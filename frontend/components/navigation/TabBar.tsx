@@ -6,25 +6,14 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
 	useAnimatedStyle,
-	useDerivedValue,
+	useSharedValue,
 	withSpring,
 } from "react-native-reanimated";
 import { TabButton } from "./TabButton";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-	// Pink theme colors - full object for TabButton
-	const colors = {
-		background: Tokens.colors.pink[50],
-		surface: Tokens.colors.pink[100],
-		textPrimary: Tokens.colors.pink[900],
-		textSecondary: Tokens.colors.pink[600],
-		border: Tokens.colors.pink[200],
-		primary: Tokens.colors.pink[500],
-		tint: Tokens.colors.pink[500],
-		icon: Tokens.colors.pink[300],
-		tabIconDefault: Tokens.colors.pink[300],
-		tabIconSelected: Tokens.colors.pink[500],
-	};
+	// Use centralized theme colors
+	const colors = Tokens.appColors.light;
 
 	// Separate main tabs (first 3) from QR tab (last 1)
 	const mainRoutes = state.routes.slice(0, 3);
@@ -32,27 +21,36 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
 	const [mainTabWidth, setMainTabWidth] = React.useState(0);
 
-	// Circle animation only for main tabs
-	const mainActiveIndex = useDerivedValue(() => {
-		if (state.index >= 3) return -1;
-		return withSpring(state.index, {
-			damping: TAB_BAR_ANIMATION.SPRING_DAMPING,
-			stiffness: TAB_BAR_ANIMATION.SPRING_STIFFNESS,
-			mass: TAB_BAR_ANIMATION.SPRING_MASS,
-		});
-	});
+	// Use shared value initialized to current index to avoid initial animation
+	const animatedIndex = useSharedValue(state.index < 3 ? state.index : 0);
+
+	// Only animate when index actually changes
+	React.useEffect(() => {
+		if (state.index < 3) {
+			animatedIndex.value = withSpring(state.index, {
+				damping: TAB_BAR_ANIMATION.SPRING_DAMPING,
+				stiffness: TAB_BAR_ANIMATION.SPRING_STIFFNESS,
+				mass: TAB_BAR_ANIMATION.SPRING_MASS,
+			});
+		}
+	}, [state.index]);
 
 	const circleStyle = useAnimatedStyle(() => {
-		if (mainActiveIndex.value < 0) {
+		// Hide when on QR tab
+		if (state.index >= 3) {
 			return { opacity: 0, transform: [{ translateX: 0 }] };
 		}
+
+		// Use fallback width if not yet measured
+		const effectiveWidth = mainTabWidth > 0 ? mainTabWidth : 100;
+
 		return {
 			opacity: 1,
 			transform: [
 				{
 					translateX:
-						mainActiveIndex.value * mainTabWidth +
-						(mainTabWidth - TAB_BAR.CIRCLE_SIZE) / 2,
+						animatedIndex.value * effectiveWidth +
+						(effectiveWidth - TAB_BAR.CIRCLE_SIZE) / 2,
 				},
 			],
 		};
@@ -87,7 +85,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 								key={route.key}
 								route={route}
 								index={index}
-								activeIndex={mainActiveIndex}
+								activeIndex={animatedIndex}
 								isFocused={state.index === index}
 								descriptors={descriptors}
 								navigation={navigation}
@@ -115,15 +113,11 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 					key={qrRoute.key}
 					route={qrRoute}
 					index={3}
-					activeIndex={mainActiveIndex}
+					activeIndex={animatedIndex}
 					isFocused={state.index === 3}
 					descriptors={descriptors}
 					navigation={navigation}
-					colors={{
-						...colors,
-						tabIconDefault: Tokens.colors.white,
-						tabIconSelected: Tokens.colors.white,
-					}}
+					colors={colors}
 				/>
 			</LinearGradient>
 		</View>
