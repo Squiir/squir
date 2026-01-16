@@ -40,12 +40,15 @@ export default function ScannerScreen() {
 
 	// Écran de scan
 	return (
-		<LinearGradient colors={["#ffffff", "#60a5fa"]} style={styles.container}>
+		<LinearGradient
+			colors={[Tokens.colors.pink[100], "#ffffff"]}
+			style={styles.container}
+		>
 			<Stack.Screen options={{ headerShown: false }} />
 
 			{/* Bouton retour */}
 			<TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-				<X size={24} color="#000" />
+				<X size={24} color={Tokens.colors.pink[500]} />
 			</TouchableOpacity>
 
 			{/* Zone de scan centrée */}
