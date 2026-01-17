@@ -1,7 +1,7 @@
 import { QrCode } from "@app-types/qrcode";
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { Tokens } from "@constants/tokens";
-import React from "react";
+import { useLocaleDateString } from "@hooks/formatter/use-locale-date-string";
 import { StyleSheet, Text, View } from "react-native";
 
 type QrCodeHistoryCardProps = {
@@ -9,6 +9,17 @@ type QrCodeHistoryCardProps = {
 };
 
 export function QrCodeHistoryCard({ item }: QrCodeHistoryCardProps) {
+	const formattedDate = useLocaleDateString(
+		item.consumedAt ? new Date(item.consumedAt) : new Date(),
+		{
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		},
+	);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.iconContainer}>
@@ -23,15 +34,7 @@ export function QrCodeHistoryCard({ item }: QrCodeHistoryCardProps) {
 					{item.label}
 				</Text>
 				<Text style={styles.date}>
-					Consommé le{" "}
-					{item.consumedAt &&
-						new Date(item.consumedAt).toLocaleDateString("fr-FR", {
-							day: "numeric",
-							month: "long",
-							year: "numeric",
-							hour: "2-digit",
-							minute: "2-digit",
-						})}
+					Consommé le {item.consumedAt && formattedDate}
 				</Text>
 			</View>
 		</View>
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
 		width: 36,
 		height: 36,
 		borderRadius: 18,
-		backgroundColor: "rgba(228, 88, 195, 0.15)",
+		backgroundColor: `${Tokens.colors.pink[500]}26`,
 		justifyContent: "center",
 		alignItems: "center",
 		marginRight: Tokens.spacing[3],

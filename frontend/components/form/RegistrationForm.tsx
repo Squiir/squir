@@ -3,7 +3,6 @@ import { ControlledInput } from "@components/form/controlled/ControlledInput";
 import { FormStep } from "@components/form/FormStep";
 import { MultiStepSelector } from "@components/form/MultiStepSelector";
 import { useRegistrationForm } from "@hooks/form/use-registration-form";
-import React from "react";
 
 export function RegistrationForm() {
 	const {

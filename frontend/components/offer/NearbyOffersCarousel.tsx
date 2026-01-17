@@ -1,56 +1,17 @@
 import { OfferCard } from "@components/offer/OfferCard";
 import { Carousel } from "@components/ui/Carousel";
-import { useLocation } from "@contexts/LocationContext";
-import { useGetOffers } from "@hooks/offer/use-get-offers";
-
-const sortingParams = {
-	sortBy: "distance",
-	orderBy: "asc",
-} as const;
-
-const paginationParams = {
-	limit: 10,
-} as const;
+import { useGetNearbyOffers } from "@hooks/offer/use-get-nearby-offers";
 
 export function NearbyOffersCarousel() {
-	const { coordinates } = useLocation();
-	const {
-		data: offers,
-		isLoading,
-		isError,
-		refetch,
-	} = useGetOffers(
-		coordinates
-			? {
-					...paginationParams,
-					...sortingParams,
-					distance: {
-						min: 0,
-						max: 1000,
-					},
-					coordinates,
-				}
-			: paginationParams,
-	);
-
-	if (isLoading) {
-		return (
-			<Carousel title="A proximité">
-				<Carousel.Skeleton />
-			</Carousel>
-		);
-	}
-
-	if (isError) {
-		return (
-			<Carousel title="A proximité">
-				<Carousel.Error onPress={() => refetch()} />
-			</Carousel>
-		);
-	}
+	const { data: offers, isLoading, isError, refetch } = useGetNearbyOffers();
 
 	return (
-		<Carousel title="A proximité">
+		<Carousel
+			title="A proximité"
+			isLoading={isLoading}
+			isError={isError}
+			onRetry={refetch}
+		>
 			<Carousel.Title />
 			<Carousel.Scroll>
 				{offers?.map((offer) => (

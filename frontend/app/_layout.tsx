@@ -16,7 +16,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -61,7 +61,7 @@ export default function RootLayout() {
 		Montserrat_700Bold,
 	});
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (fontsLoaded) {
 			SplashScreen.hideAsync();
 		}

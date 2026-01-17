@@ -3,8 +3,7 @@ import { API_URL } from "@constants/api";
 import { Tokens } from "@constants/tokens";
 import { parseQrLabel, QrCodeGroup } from "@utils/qrcode";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
 	Modal,
 	Pressable,
@@ -20,17 +19,39 @@ type Props = {
 };
 
 export function QrModal({ group, onClose }: Props) {
-	const [selectedIndex, setSelectedIndex] = React.useState(0);
+	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	// Reset selection when group changes
-	React.useEffect(() => {
+	useEffect(() => {
 		setSelectedIndex(0);
 	}, [group?.offerId]);
 
 	if (!group) return null;
 
-	const { qrCodes, totalCount } = group;
+	const qrCodes = group.qrCodes ?? [];
+	const totalCount = group.totalCount ?? qrCodes.length;
+
+	// Guard against empty qrCodes array
+	if (qrCodes.length === 0) {
+		return (
+			<Modal visible transparent animationType="fade">
+				<View style={styles.overlay}>
+					<View style={styles.modalContainer}>
+						<View style={styles.modal}>
+							<Text style={styles.title}>Aucun QR code disponible</Text>
+							<Pressable onPress={onClose} style={styles.closeButton}>
+								<Text style={styles.closeButtonText}>Fermer</Text>
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</Modal>
+		);
+	}
+
 	const selectedQr = qrCodes[selectedIndex];
+	if (!selectedQr) return null;
+
 	const { barName, offerName } = parseQrLabel(selectedQr);
 	const url = `${API_URL}/qrcodes/${selectedQr.id}.png`;
 
@@ -51,12 +72,7 @@ export function QrModal({ group, onClose }: Props) {
 			{/* Purple-tinted overlay */}
 			<View style={styles.overlay}>
 				<View style={styles.modalContainer}>
-					<LinearGradient
-						colors={[Tokens.colors.pink[50], Tokens.colors.pink[200]]}
-						start={{ x: 0, y: 0 }}
-						end={{ x: 1, y: 1 }}
-						style={styles.modal}
-					>
+					<View style={styles.modal}>
 						{/* Header */}
 						<View style={styles.header}>
 							<View style={styles.headerIconContainer}>
@@ -161,7 +177,7 @@ export function QrModal({ group, onClose }: Props) {
 						<Pressable onPress={onClose} style={styles.closeButton}>
 							<Text style={styles.closeButtonText}>Fermer</Text>
 						</Pressable>
-					</LinearGradient>
+					</View>
 				</View>
 			</View>
 		</Modal>
@@ -191,6 +207,7 @@ const styles = StyleSheet.create({
 		padding: Tokens.spacing[6],
 		borderWidth: 1,
 		borderColor: Tokens.colors.pink[200],
+		backgroundColor: Tokens.colors.pink[50],
 	},
 	header: {
 		flexDirection: "row",

@@ -5,7 +5,6 @@ import { Tokens } from "@constants/tokens";
 import { QrCodeDto } from "@services/qrcode.service";
 import { formatPrice } from "@utils/format";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
 import {
 	ActivityIndicator,
 	Modal,

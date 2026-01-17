@@ -8,6 +8,14 @@ export function formatPrice(price: number): string {
 }
 
 export function parseQrLabel(qr: QrCode) {
+  if (qr.offer && qr.bar) {
+    return {
+      barName: qr.bar.name,
+      offerName: qr.offer.name,
+      priceText: formatPrice(qr.offer.price),
+    };
+  }
+
   const parts = qr.label?.split(" • ") ?? [];
   const barName = parts[0] || "Bar inconnu";
   const offerName = parts[1] || "Offre inconnue";

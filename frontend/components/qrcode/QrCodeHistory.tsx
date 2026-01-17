@@ -1,9 +1,9 @@
 import { QrCode } from "@app-types/qrcode";
 import { QrCodeHistoryCard } from "@components/qrcode/QrCodeHistoryCard";
+import { QrSection } from "@components/qrcode/QrSection";
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { Tokens } from "@constants/tokens";
 import { useGetHistory } from "@hooks/qrcode/use-get-history";
-import React from "react";
 import {
 	ActivityIndicator,
 	ScrollView,
@@ -16,13 +16,7 @@ export function QrCodeHistory() {
 	const { data: history, isLoading } = useGetHistory();
 
 	return (
-		<View style={styles.container}>
-			{/* Section Header */}
-			<View style={styles.headerRow}>
-				<View style={styles.sectionDot} />
-				<Text style={styles.title}>Historique</Text>
-			</View>
-
+		<QrSection title="Historique" style={styles.container}>
 			{isLoading ? (
 				<View style={styles.loadingContainer}>
 					<ActivityIndicator color={Tokens.colors.pink[400]} />
@@ -43,32 +37,13 @@ export function QrCodeHistory() {
 					<Text style={styles.emptyText}>Aucun historique</Text>
 				</View>
 			)}
-		</View>
+		</QrSection>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: Tokens.spacing[8],
-		paddingHorizontal: Tokens.spacing[4],
 		paddingBottom: Tokens.spacing[6],
-	},
-	headerRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: Tokens.spacing[4],
-	},
-	sectionDot: {
-		width: 8,
-		height: 8,
-		borderRadius: 4,
-		backgroundColor: Tokens.colors.pink[400],
-		marginRight: Tokens.spacing[2],
-	},
-	title: {
-		fontSize: Tokens.typography.sizes.lg,
-		fontWeight: Tokens.typography.weights.bold,
-		color: Tokens.colors.white,
 	},
 	loadingContainer: {
 		paddingVertical: Tokens.spacing[6],

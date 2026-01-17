@@ -1,6 +1,5 @@
 import { IconSymbol } from "@components/ui/IconSymbol";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 
 // Calculate responsive font size for 66% width

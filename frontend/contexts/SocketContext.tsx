@@ -1,9 +1,5 @@
 import { useSocketConnection } from "@hooks/use-socket-connection";
-import React, {
-	createContext,
-	useContext,
-	type PropsWithChildren,
-} from "react";
+import { createContext, useContext, type PropsWithChildren } from "react";
 import { Socket } from "socket.io-client";
 
 interface SocketContextType {

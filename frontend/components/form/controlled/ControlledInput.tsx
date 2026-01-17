@@ -1,7 +1,6 @@
 import { ThemedText } from "@components/ThemedText";
 import { Input, InputProps } from "@components/ui/Input";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 

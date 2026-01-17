@@ -36,4 +36,14 @@ export class AuthController {
   logout(@CurrentUserId() userId: string) {
     return this.auth.logout(userId);
   }
+
+  @Post("check-username")
+  checkUsername(@Body("username") username: string) {
+    return this.auth.checkUsernameAvailability(username);
+  }
+
+  @Post("check-email")
+  checkEmail(@Body("email") email: string) {
+    return this.auth.checkEmailAvailability(email);
+  }
 }

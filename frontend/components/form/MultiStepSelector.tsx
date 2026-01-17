@@ -1,6 +1,5 @@
 import { Button } from "@components/ui/Button";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { StyleSheet, View } from "react-native";
 
 export type MultiStepSelectorProps = {

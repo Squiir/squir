@@ -3,8 +3,8 @@ import { IsIn, IsNumber, IsOptional, Max, Min } from "class-validator";
 
 export class OfferParamsDto {
   @IsOptional()
-  @IsIn(["distance", "price", "name", "createdAt"])
-  sortBy?: "distance" | "price" | "name" | "createdAt";
+  @IsIn(["createdAt", "distance", "numberOfQrCodes", "price"])
+  sortBy?: "createdAt" | "distance" | "numberOfQrCodes" | "price";
 
   @IsOptional()
   @IsIn(["asc", "desc"])

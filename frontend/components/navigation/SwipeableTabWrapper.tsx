@@ -9,7 +9,7 @@ import {
 	isValidEdgeGesture,
 	isVerticalScroll,
 } from "@utils/swipe";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { StyleSheet, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";

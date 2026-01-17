@@ -1,6 +1,5 @@
 import { ThemedText } from "@components/ThemedText";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { StyleSheet } from "react-native";
 
 export function SectionHeader({ title }: { title: string }) {

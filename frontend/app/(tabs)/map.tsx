@@ -3,7 +3,7 @@ import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper"
 import { Tokens } from "@constants/tokens";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, View } from "react-native";
 
 export default function MapScreen() {

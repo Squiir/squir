@@ -1,5 +1,6 @@
 import { QrCode } from "@app-types/qrcode";
 import { api } from "@services/api.service";
+import { QrCodeGroup } from "@utils/qrcode";
 
 export interface QrCodeDto {
 	offerId: string;
@@ -14,6 +15,11 @@ export const qrCodeService = {
 
 	async getMyQrCodes() {
 		const { data } = await api.get<QrCode[]>("/qrcodes/me");
+		return data;
+	},
+
+	async getMyQrCodesGrouped() {
+		const { data } = await api.get<QrCodeGroup[]>("/qrcodes/me?groupBy=offer");
 		return data;
 	},
 

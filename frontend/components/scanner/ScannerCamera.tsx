@@ -1,7 +1,6 @@
 import { SCAN_AREA_SIZE } from "@constants/scanner";
 import { Tokens } from "@constants/tokens";
 import { BarcodeScanningResult, CameraView } from "expo-camera";
-import React from "react";
 import { StyleSheet, View } from "react-native";
 
 type ScannerCameraProps = {

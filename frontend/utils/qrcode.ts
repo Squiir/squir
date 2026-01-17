@@ -44,34 +44,3 @@ export function parseQrLabel(qrCode?: QrCode): ParsedQrLabel {
 		priceText: pricePart,
 	};
 }
-
-/**
- * Group QR codes by their offer ID
- * Returns one group per unique offer, with counts
- */
-export function groupQrCodesByOffer(qrCodes: QrCode[]): QrCodeGroup[] {
-	const groups = new Map<string, QrCode[]>();
-
-	// Group by offerId
-	for (const qr of qrCodes) {
-		const key = qr.offerId;
-		const existing = groups.get(key) || [];
-		existing.push(qr);
-		groups.set(key, existing);
-	}
-
-	// Convert to array with counts
-	return Array.from(groups.entries()).map(([offerId, qrs]) => {
-		const availableCount = qrs.filter((q) => !q.used).length;
-		const usedCount = qrs.filter((q) => q.used).length;
-
-		return {
-			offerId,
-			qrCodes: qrs,
-			availableCount,
-			usedCount,
-			totalCount: qrs.length,
-			representativeQr: qrs[0],
-		};
-	});
-}

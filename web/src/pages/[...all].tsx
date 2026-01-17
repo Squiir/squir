@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export default function NotFoundPage() {
   return (
@@ -11,10 +11,6 @@ export default function NotFoundPage() {
       <div className="flex gap-10">
         <Button asChild>
           <Link to="/">Retour à l’accueil</Link>
-        </Button>
-
-        <Button variant="outline" asChild>
-          <Link to="/login">Se connecter</Link>
         </Button>
       </div>
     </div>

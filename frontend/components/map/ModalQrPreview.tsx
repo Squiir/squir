@@ -2,7 +2,6 @@ import { QrCode } from "@app-types/qrcode";
 import { Tokens } from "@constants/tokens";
 import { LinearGradient } from "expo-linear-gradient";
 import { Check } from "lucide-react-native";
-import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 type ModalQrPreviewProps = {

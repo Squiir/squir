@@ -90,7 +90,71 @@ export class QrCodesService {
         userId,
         consumedAt: null, // Only active QR codes
       },
+      include: {
+        offer: true,
+      },
       orderBy: { createdAt: "desc" },
+    });
+  }
+
+  /**
+   * Retrieves all active QR codes grouped by offer
+   * @param userId - ID of the user
+   * @returns Array of grouped QR codes with counts
+   */
+  async getMyQrcodesGroupedByOffer(userId: string) {
+    if (!userId) throw new BadRequestException("Missing userId");
+
+    // Fetch offers that have active QR codes for this user
+    const offersWithQrCodes = await this.prisma.offer.findMany({
+      where: {
+        qrCodes: {
+          some: {
+            userId,
+            consumedAt: null,
+          },
+        },
+      },
+      include: {
+        bar: true,
+        qrCodes: {
+          where: {
+            userId,
+            consumedAt: null,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            // Include nested offer/bar if needed by frontend types (though redundant)
+            offer: {
+              include: {
+                bar: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Map to QrCodeGroup format
+    return offersWithQrCodes.map((offer) => {
+      const qrCodes = offer.qrCodes;
+      const totalCount = qrCodes.length;
+      const availableCount = qrCodes.filter((qr) => !qr.used).length;
+      const usedCount = qrCodes.filter((qr) => qr.used).length;
+
+      // Use the most recent QR code as representative
+      const representativeQr = qrCodes[0];
+
+      return {
+        offerId: offer.id,
+        qrCodes,
+        totalCount,
+        availableCount,
+        usedCount,
+        representativeQr,
+      };
     });
   }
 

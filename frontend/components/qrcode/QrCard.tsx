@@ -1,20 +1,32 @@
 import { Tokens } from "@constants/tokens";
 import { parseQrLabel, QrCodeGroup } from "@utils/qrcode";
-import { LinearGradient } from "expo-linear-gradient";
-import * as React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Pressable,
+	PressableProps,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 
-type Props = {
+type Props = Omit<PressableProps, "onPress"> & {
 	group: QrCodeGroup;
 	onPress: () => void;
 };
 
-export function QrCard({ group, onPress }: Props) {
+export function QrCard({ group, onPress, ...pressableProps }: Props) {
 	const { representativeQr, totalCount, availableCount } = group;
 	const { barName, offerName, priceText } = parseQrLabel(representativeQr);
 
+	// Handle case where representativeQr might be undefined
+	const displayLabel = offerName || representativeQr?.label || "Offre";
+	const displayBarName = barName
+		? `Chez ${barName}`
+		: representativeQr?.offer?.bar?.name
+			? `Chez ${representativeQr.offer.bar.name}`
+			: "Bar inconnu";
+
 	return (
-		<Pressable onPress={onPress} style={styles.container}>
+		<Pressable onPress={onPress} style={styles.container} {...pressableProps}>
 			{/* Counter Badge - positioned relative to container */}
 			{totalCount > 1 && (
 				<View style={styles.countBadge}>
@@ -22,24 +34,15 @@ export function QrCard({ group, onPress }: Props) {
 				</View>
 			)}
 
-			<LinearGradient
-				colors={[Tokens.colors.pink[50], Tokens.colors.pink[100]]}
-				start={{ x: 0, y: 0 }}
-				end={{ x: 1, y: 1 }}
-				style={styles.card}
-			>
+			<View style={styles.card}>
 				{/* Header */}
 				<View style={styles.header}>
 					<View style={styles.headerContent}>
 						<Text style={styles.title} numberOfLines={1}>
-							{offerName || representativeQr.label || "Offre"}
+							{displayLabel}
 						</Text>
 						<Text style={styles.subtitle} numberOfLines={1}>
-							{barName
-								? `Chez ${barName}`
-								: representativeQr.offer?.bar?.name
-									? `Chez ${representativeQr.offer.bar.name}`
-									: "Bar inconnu"}
+							{displayBarName}
 						</Text>
 					</View>
 				</View>
@@ -62,7 +65,7 @@ export function QrCard({ group, onPress }: Props) {
 						{totalCount > 1 ? "Voir les QR codes" : "Afficher le QR"}
 					</Text>
 				</View>
-			</LinearGradient>
+			</View>
 		</Pressable>
 	);
 }
@@ -103,6 +106,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: Tokens.colors.pink[200],
 		padding: Tokens.spacing[4],
+		backgroundColor: Tokens.colors.pink[50],
 		shadowColor: Tokens.colors.pink[500],
 		shadowOffset: { width: 0, height: 4 },
 		shadowOpacity: 0.15,
