@@ -1,12 +1,9 @@
 import { Tokens } from "@constants/tokens";
-import { PropsWithChildren } from "react";
 import { StyleSheet, Text, View, ViewProps } from "react-native";
 
-type Props = PropsWithChildren<
-	ViewProps & {
-		title: string;
-	}
->;
+type Props = ViewProps & {
+	title: string;
+};
 
 export function QrSection({ title, children, style, ...props }: Props) {
 	return (

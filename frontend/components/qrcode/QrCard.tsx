@@ -8,10 +8,9 @@ import {
 	View,
 } from "react-native";
 
-type Props = Omit<PressableProps, "onPress"> & {
+interface Props extends PressableProps {
 	group: QrCodeGroup;
-	onPress: () => void;
-};
+}
 
 export function QrCard({ group, onPress, ...pressableProps }: Props) {
 	const { representativeQr, totalCount, availableCount } = group;

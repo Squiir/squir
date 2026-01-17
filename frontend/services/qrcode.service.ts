@@ -18,8 +18,10 @@ export const qrCodeService = {
 		return data;
 	},
 
-	async getMyQrCodesGrouped() {
-		const { data } = await api.get<QrCodeGroup[]>("/qrcodes/me?groupBy=offer");
+	async getMyQrCodesGroupedByOffer() {
+		const { data } = await api.get<QrCodeGroup[]>("/qrcodes/me", {
+			params: { groupBy: "offer" },
+		});
 		return data;
 	},
 

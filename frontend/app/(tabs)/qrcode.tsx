@@ -3,13 +3,13 @@ import { ScrollView, StyleSheet } from "react-native";
 
 import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { ActiveQrList } from "@components/qrcode/ActiveQrList";
+import { QrCodeHeader } from "@components/qrcode/QrCodeHeader";
 import { QrCodeHistory } from "@components/qrcode/QrCodeHistory";
-import { QrHeader } from "@components/qrcode/QrHeader";
 import { QrModal } from "@components/qrcode/QrModal";
 import { QrSection } from "@components/qrcode/QrSection";
 import { ScannerButton } from "@components/scanner/ScannerButton";
 import { Tokens } from "@constants/tokens";
-import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
+import { useGetMyQrCodesGroupedByOffer } from "@hooks/qrcode/use-get-qr-codes";
 import { useSocketNotifications } from "@hooks/use-socket-notifications";
 import { QrCodeGroup } from "@utils/qrcode";
 
@@ -22,7 +22,7 @@ export default function QrCodeScreen() {
 		isLoading: qrsLoading,
 		isError: qrsError,
 		error: qrsErr,
-	} = useGetMyQrCodes();
+	} = useGetMyQrCodesGroupedByOffer();
 
 	const [selectedGroup, setSelectedGroup] = useState<QrCodeGroup | undefined>(
 		undefined,
@@ -35,7 +35,7 @@ export default function QrCodeScreen() {
 				contentContainerStyle={styles.content}
 			>
 				{/* Header */}
-				<QrHeader />
+				<QrCodeHeader />
 
 				{/* Scanner Button - PRO/ADMIN only */}
 				<ScannerButton />

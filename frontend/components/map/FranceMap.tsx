@@ -7,7 +7,7 @@ import { QrCode } from "@app-types/qrcode";
 import { Tokens } from "@constants/tokens";
 import { useGetBars } from "@hooks/bars/use-get-bars";
 import { useCreateQrCode } from "@hooks/qrcode/use-create-qr-code";
-import { useGetMyQrCodesFlat } from "@hooks/qrcode/use-get-qr-codes";
+import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
 import { QrCodeDto } from "@services/qrcode.service";
 import { MapMarker } from "./MapMarker";
 import { ModalQrPreview } from "./ModalQrPreview";
@@ -23,8 +23,7 @@ export type Coordinate = {
 export default function FranceMap({ latitude, longitude }: Coordinate) {
 	const { mutate: createQrCode, isPending: isCreateQrCodePending } =
 		useCreateQrCode();
-	const { data: qrcodes, isPending: isGetMyQrCodesPending } =
-		useGetMyQrCodesFlat();
+	const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
 	const { data: bars, isPending: isGetBarsPending } = useGetBars();
 	const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
 

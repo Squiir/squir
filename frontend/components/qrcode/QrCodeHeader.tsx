@@ -7,7 +7,7 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 const { width } = Dimensions.get("window");
 const responsiveFontSize = (width * 0.66) / 8.5;
 
-export function QrHeader() {
+export function QrCodeHeader() {
 	return (
 		<View style={styles.headerBar}>
 			<View style={styles.headerContentContainer}>
