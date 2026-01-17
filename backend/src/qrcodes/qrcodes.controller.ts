@@ -8,6 +8,7 @@ import {
   Header,
   Param,
   Post,
+  Query,
   Res,
   UseGuards,
 } from "@nestjs/common";
@@ -40,7 +41,13 @@ export class QrCodesController {
   }
 
   @Get("me")
-  getMyQrcodes(@CurrentUserId() userId: string) {
+  getMyQrcodes(
+    @CurrentUserId() userId: string,
+    @Query("groupBy") groupBy?: string,
+  ) {
+    if (groupBy === "offer") {
+      return this.qr.getMyQrcodesGroupedByOffer(userId);
+    }
     return this.qr.getMyQrcodes(userId);
   }
 

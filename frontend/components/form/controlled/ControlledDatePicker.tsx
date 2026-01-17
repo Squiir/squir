@@ -3,7 +3,7 @@ import DateTimePicker, {
 	DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { CalendarDays } from "lucide-react-native";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form";
 import {
 	Modal,

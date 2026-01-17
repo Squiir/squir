@@ -1,6 +1,5 @@
 import { Tokens } from "@constants/tokens";
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ScannerPermissionProps = {

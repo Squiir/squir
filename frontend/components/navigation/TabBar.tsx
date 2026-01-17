@@ -1,96 +1,73 @@
+import { QrTabButton } from "@components/navigation/QrTabButton";
+import { TabList } from "@components/navigation/TabList";
 import { TAB_BAR, TAB_BAR_ANIMATION } from "@constants/tabBar";
-import { Colors } from "@constants/theme";
-import { useColorScheme } from "@hooks/color/use-color-scheme";
+import { Tokens } from "@constants/tokens";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import React from "react";
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, {
-	useAnimatedStyle,
-	useDerivedValue,
-	withSpring,
-} from "react-native-reanimated";
-import { TabButton } from "./TabButton";
+import { useSharedValue, withSpring } from "react-native-reanimated";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-	const colorScheme = useColorScheme() ?? "light";
-	const colors = Colors[colorScheme];
-	const [tabWidth, setTabWidth] = React.useState(0);
+	// Use centralized theme colors
+	const colors = Tokens.appColors.light;
 
-	const activeIndex = useDerivedValue(() =>
-		withSpring(state.index, {
-			damping: TAB_BAR_ANIMATION.SPRING_DAMPING,
-			stiffness: TAB_BAR_ANIMATION.SPRING_STIFFNESS,
-			mass: TAB_BAR_ANIMATION.SPRING_MASS,
-		}),
-	);
+	// Separate main tabs (first 3) from QR tab (last 1)
+	const mainRoutes = state.routes.slice(0, 3);
+	const qrRoute = state.routes[3];
 
-	const circleStyle = useAnimatedStyle(() => ({
-		transform: [
-			{
-				translateX:
-					activeIndex.value * tabWidth + (tabWidth - TAB_BAR.CIRCLE_SIZE) / 2,
-			},
-		],
-	}));
+	// Use shared value initialized to current index to avoid initial animation
+	const animatedIndex = useSharedValue(state.index < 3 ? state.index : 0);
+
+	// Only animate when index actually changes
+	useEffect(() => {
+		if (state.index < 3) {
+			animatedIndex.value = withSpring(state.index, {
+				damping: TAB_BAR_ANIMATION.SPRING_DAMPING,
+				stiffness: TAB_BAR_ANIMATION.SPRING_STIFFNESS,
+				mass: TAB_BAR_ANIMATION.SPRING_MASS,
+			});
+		}
+	}, [state.index]);
 
 	return (
-		<View
-			style={[styles.container, { backgroundColor: colors.background }]}
-			onLayout={(e) =>
-				setTabWidth(e.nativeEvent.layout.width / state.routes.length)
-			}
-		>
-			{tabWidth > 0 && (
-				<Animated.View
-					style={[styles.circle, { borderColor: colors.tint }, circleStyle]}
-				/>
-			)}
+		<View style={styles.wrapper}>
+			{/* Main tabs container (Home, Map, Profile) */}
+			<TabList
+				routes={mainRoutes}
+				state={state}
+				descriptors={descriptors}
+				navigation={navigation}
+				animatedIndex={animatedIndex}
+				colors={colors}
+			/>
 
-			<View style={styles.tabs}>
-				{state.routes.map((route, index) => (
-					<TabButton
-						key={route.key}
-						route={route}
-						index={index}
-						activeIndex={activeIndex}
-						isFocused={state.index === index}
-						descriptors={descriptors}
-						navigation={navigation}
-						colors={colors}
-					/>
-				))}
-			</View>
+			{/* Small gap instead of arc */}
+			<View style={styles.gap} />
+
+			{/* QR tab container */}
+			<QrTabButton
+				route={qrRoute}
+				index={3}
+				activeIndex={animatedIndex}
+				isFocused={state.index === 3}
+				descriptors={descriptors}
+				navigation={navigation}
+				colors={colors}
+			/>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
+	wrapper: {
 		position: "absolute",
 		bottom: TAB_BAR.BOTTOM_SPACING,
 		left: TAB_BAR.HORIZONTAL_SPACING,
 		right: TAB_BAR.HORIZONTAL_SPACING,
-		height: TAB_BAR.BAR_HEIGHT,
-		borderRadius: TAB_BAR.BAR_HEIGHT / 2,
 		flexDirection: "row",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.1,
-		shadowRadius: 8,
-		elevation: 8,
-	},
-	tabs: {
-		flexDirection: "row",
-		flex: 1,
 		alignItems: "center",
 	},
-	circle: {
-		position: "absolute",
-		width: TAB_BAR.CIRCLE_SIZE,
-		height: TAB_BAR.CIRCLE_SIZE,
-		borderRadius: TAB_BAR.CIRCLE_SIZE / 2,
-		borderWidth: TAB_BAR.BORDER_WIDTH,
-		top: (TAB_BAR.BAR_HEIGHT - TAB_BAR.CIRCLE_SIZE) / 2,
-		backgroundColor: "transparent",
+	gap: {
+		width: 12,
 	},
 });

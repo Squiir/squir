@@ -1,6 +1,5 @@
 import { Bar } from "@app-types/bar";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Callout, Marker } from "react-native-maps";
 

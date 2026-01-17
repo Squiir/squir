@@ -11,7 +11,7 @@ export function useSocketNotifications() {
 		if (!socket || !isConnected) return;
 
 		const handleQrConsumed = (data: { message: string; qrCodeId: string }) => {
-			console.log("[NOTIFICATION] QR code consumed:", data);
+			if (__DEV__) console.log("[NOTIFICATION] QR code consumed:", data);
 
 			// Show notification to user
 			Alert.alert("QR Code scanné", data.message, [

@@ -1,5 +1,5 @@
 import { Colors } from "@constants/theme";
-import { useTabIconAnimation } from "@hooks/animation/useTabIconAnimation";
+import { useTabIconAnimation } from "@hooks/animation/use-tab-icon-animation";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Route } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
@@ -50,7 +50,7 @@ export function TabButton({
 			<Animated.View style={iconStyle}>
 				{options.tabBarIcon?.({
 					focused: isFocused,
-					color: isFocused ? colors.tint : colors.icon,
+					color: isFocused ? colors.tabIconSelected : colors.tabIconDefault,
 					size: 24,
 				})}
 			</Animated.View>

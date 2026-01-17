@@ -4,7 +4,6 @@ import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
 import { RecentOffersCarousel } from "@components/offer/RecentOffersCarousel";
 import { ThemedScreenWrapper } from "@components/ThemedScreenWrapper";
 import { Tokens } from "@constants/tokens";
-import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function HomeScreen() {

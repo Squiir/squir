@@ -2,9 +2,9 @@
  * Tab Bar Configuration Constants
  */
 export const TAB_BAR = {
-	CIRCLE_SIZE: 60,
+	CIRCLE_SIZE: 60, // Restored to original size
 	BAR_HEIGHT: 70,
-	BORDER_WIDTH: 3,
+	BORDER_WIDTH: 2,
 	BOTTOM_SPACING: 20,
 	HORIZONTAL_SPACING: 20,
 } as const;

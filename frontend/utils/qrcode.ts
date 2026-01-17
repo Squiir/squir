@@ -7,6 +7,18 @@ export type ParsedQrLabel = {
 };
 
 /**
+ * Grouped QR codes by offer
+ */
+export type QrCodeGroup = {
+	offerId: string;
+	qrCodes: QrCode[];
+	availableCount: number;
+	usedCount: number;
+	totalCount: number;
+	representativeQr: QrCode; // First QR to get offer details
+};
+
+/**
  * Parse QR code information from QrCode object
  * Extracts bar name, offer name, and price from the label
  * @param qrCode - QR code object to parse

@@ -1,9 +1,8 @@
 import { Tabs } from "expo-router";
-import React from "react";
 
 import { TabBar } from "@components/navigation/TabBar";
-import { BounceIcon } from "@components/ui/AnimatedIconSymbol";
 import { IconSymbol } from "@components/ui/IconSymbol";
+import { Tokens } from "@constants/tokens";
 
 export default function TabLayout() {
 	return (
@@ -27,20 +26,7 @@ export default function TabLayout() {
 				options={{
 					title: "Map",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={28} name="paperplane.fill" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="social"
-				options={{
-					title: "Social",
-					tabBarIcon: ({ color }) => (
-						<BounceIcon
-							name="bubble.left.and.bubble.right.fill"
-							size={26}
-							color={color}
-						/>
+						<IconSymbol size={28} name="map.fill" color={color} />
 					),
 				}}
 			/>
@@ -50,6 +36,15 @@ export default function TabLayout() {
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
 						<IconSymbol size={28} name="person.circle" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="qrcode"
+				options={{
+					title: "QR Code",
+					tabBarIcon: ({ color }) => (
+						<IconSymbol size={28} name="qrcode" color={Tokens.colors.white} />
 					),
 				}}
 			/>

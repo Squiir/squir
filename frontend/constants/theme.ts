@@ -4,37 +4,10 @@
  */
 
 import { Platform } from "react-native";
+import { Tokens } from "./tokens";
 
-export const Colors = {
-	light: {
-		background: "#FFFFFF",
-		surface: "#F8F9FA",
-		textPrimary: "#0A0A0A",
-		textSecondary: "#6B7280",
-		border: "#E5E7EB",
-
-		primary: "#111827",
-		tint: "#111827",
-
-		icon: "#6B7280",
-		tabIconDefault: "#9CA3AF",
-		tabIconSelected: "#111827",
-	},
-	dark: {
-		background: "#0A0A0A",
-		surface: "#161616",
-		textPrimary: "#FFFFFF",
-		textSecondary: "#9CA3AF",
-		border: "#262626",
-
-		primary: "#FFFFFF",
-		tint: "#FFFFFF",
-
-		icon: "#9CA3AF",
-		tabIconDefault: "#6B7280",
-		tabIconSelected: "#FFFFFF",
-	},
-};
+// Import centralized colors from tokens
+export const Colors = Tokens.appColors;
 
 export const Fonts = Platform.select({
 	ios: {

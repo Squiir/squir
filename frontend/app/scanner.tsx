@@ -1,8 +1,6 @@
 import { useCameraPermissions } from "expo-camera";
-import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { X } from "lucide-react-native";
-import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { ScannerCamera } from "@components/scanner/ScannerCamera";
@@ -40,12 +38,12 @@ export default function ScannerScreen() {
 
 	// Écran de scan
 	return (
-		<LinearGradient colors={["#ffffff", "#60a5fa"]} style={styles.container}>
+		<View style={styles.container}>
 			<Stack.Screen options={{ headerShown: false }} />
 
 			{/* Bouton retour */}
 			<TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-				<X size={24} color="#000" />
+				<X size={24} color={Tokens.colors.pink[500]} />
 			</TouchableOpacity>
 
 			{/* Zone de scan centrée */}
@@ -59,13 +57,14 @@ export default function ScannerScreen() {
 
 				<ScannerInstructions isPending={isPending} scanned={scanned} />
 			</View>
-		</LinearGradient>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: Tokens.colors.pink[50],
 	},
 	backButton: {
 		position: "absolute",
