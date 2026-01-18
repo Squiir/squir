@@ -15,7 +15,14 @@ import { MessagesService } from "./messages.service";
 
 @WebSocketGateway({
   namespace: "/ws",
-  cors: { origin: "*" },
+  cors: {
+    origin: [
+      "http://localhost:8081",
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://witty-dune-0ca6e4603.1.azurestaticapps.net",
+    ],
+  },
 })
 export class MessagesGateway
   implements OnGatewayConnection, OnGatewayDisconnect

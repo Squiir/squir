@@ -12,6 +12,7 @@ async function bootstrap() {
       "http://localhost:8081",
       "http://localhost:3000",
       "http://localhost:5173",
+      "https://witty-dune-0ca6e4603.1.azurestaticapps.net",
     ],
     credentials: true,
   });
