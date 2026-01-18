@@ -3,7 +3,7 @@ import { RequireAuth } from "@/components/auth/RequireAuth";
 export default function HomePage() {
   return (
     <RequireAuth>
-      <div>Home</div>
+      <div>Home page</div>
     </RequireAuth>
   );
 }
