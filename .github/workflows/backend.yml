@@ -25,7 +25,7 @@ jobs:
       - name: Build & Push Docker Image
         run: |
           cd backend
-          docker build . -t ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} .
           docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Azure CLI Login
