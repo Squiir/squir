@@ -21,4 +21,15 @@ export const userService = {
     const { data } = await api.patch<User>("/users/me/status", { status });
     return data;
   },
+
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const { data } = await api.post<User>("/users/me/avatar/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  },
 };

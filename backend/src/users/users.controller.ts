@@ -6,18 +6,26 @@ import {
   Get,
   Param,
   Patch,
+  Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { UpdateAvatarDto } from "@users/dto/update-avatar.dto";
 import { UpdatePasswordDto } from "@users/dto/update-password.dto";
 import { UpdateStatusDto } from "@users/dto/update-status.dto";
 import { UpdateUsernameDto } from "@users/dto/update-username.dto";
 import { UsersService } from "@users/users.service";
 import { CurrentUserId } from "@utils/decorators/current-user.decorator";
+import { AzureStorageService } from "../azure-storage/azure-storage.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(private users: UsersService) {}
+  constructor(
+    private users: UsersService,
+    private azureStorage: AzureStorageService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get("me")
@@ -35,6 +43,22 @@ export class UsersController {
   @Delete("me")
   deleteMe(@CurrentUserId() userId: string) {
     return this.users.deleteMe(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("me/avatar/upload")
+  @UseInterceptors(FileInterceptor("file"))
+  async uploadAvatar(
+    @CurrentUserId() userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const user = await this.users.me(userId);
+    if (user.avatarUrl) {
+      await this.azureStorage.deleteFile(user.avatarUrl);
+    }
+
+    const avatarUrl = await this.azureStorage.uploadFile(file);
+    return this.users.updateAvatar(userId, avatarUrl);
   }
 
   @UseGuards(JwtAuthGuard)
