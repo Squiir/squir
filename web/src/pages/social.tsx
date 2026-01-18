@@ -11,7 +11,7 @@ export default function SocialPage() {
   return (
     <RequireAuth>
       <div className="flex h-[calc(90vh)] w-full">
-        <aside className="border-r bg-background">
+        <aside className="border-r bg-background w-[450px] flex-shrink-0">
           <SocialPanel selectedFriendId={selectedFriendId} onSelectFriend={setSelectedFriendId} />
         </aside>
 

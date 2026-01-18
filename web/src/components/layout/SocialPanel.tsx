@@ -11,7 +11,7 @@ export function SocialPanel({
   onSelectFriend: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-col w-full max-w-lg gap-4 p-4">
+    <div className="flex flex-col w-full h-full gap-6 p-6">
       <FriendSearch />
       <CreateGroupDialog />
       <GroupList />

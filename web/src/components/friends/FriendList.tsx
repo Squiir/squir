@@ -13,7 +13,7 @@ export function FriendList({
 
   return (
     <div className="flex flex-col h-full">
-      <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Conversations</h3>
+      <h3 className="mb-4 text-lg font-semibold text-foreground">Conversations</h3>
 
       {isLoading && <AppSkeleton />}
 
