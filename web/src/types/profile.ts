@@ -1,4 +1,4 @@
-import type { QRcode } from "@/types/qrcode";
+import type { QrCode } from "@/types/qrcode";
 
 export type ProfileHeaderProps = {
   username: string;
@@ -7,5 +7,5 @@ export type ProfileHeaderProps = {
 };
 
 export type QRCodeCarouselProps = {
-  qrCodes: QRcode[];
+  qrCodes: QrCode[];
 };

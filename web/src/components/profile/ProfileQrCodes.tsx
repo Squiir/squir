@@ -1,17 +1,11 @@
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
 import type { QrCode } from "@/types/qrcode";
-import type { User } from "@/types/user";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { QrCard } from "./QrCard";
 import { QrModal } from "./QrModal";
 
-interface ProfileQrCodesProps {
-  user?: User | null;
-  isLoading?: boolean;
-}
-
-export function ProfileQrCodes({ user }: ProfileQrCodesProps) {
+export function ProfileQrCodes() {
   const { data: qrcodes, isLoading, error } = useGetMyQrCodes();
   const [selectedQr, setSelectedQr] = useState<QrCode | undefined>();
 

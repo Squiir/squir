@@ -12,10 +12,9 @@ import { toast } from "sonner";
 
 interface Props {
   user?: User;
-  isLoading: boolean;
 }
 
-export function ProfileHeader({ user, isLoading }: Props) {
+export function ProfileHeader({ user }: Props) {
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");

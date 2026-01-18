@@ -1,0 +1,42 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: ['backend/**']
+
+env:
+  IMAGE_NAME: squir-backend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Container Registry Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build & Push Docker Image
+        run: |
+          cd backend
+          docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      
+      - name: Azure CLI Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          containerAppName: squir-backend
+          resourceGroup: rg-squir-prod

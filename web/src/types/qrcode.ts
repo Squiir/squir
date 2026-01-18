@@ -15,5 +15,6 @@ export interface QrCode {
   };
   bar?: {
     name: string;
+    id: string;
   };
 }

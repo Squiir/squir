@@ -44,7 +44,7 @@ export function OfferCard({
         <div className="grid gap-4 py-4">
           {offers.map((offer) => {
             const alreadyHas =
-              qrcodes?.some((qr) => qr.barId === selectedBar?.id && qr.offerId === offer.id) ??
+              qrcodes?.some((qr) => qr.bar?.id === selectedBar?.id && qr.offerId === offer.id) ??
               false;
 
             return (
