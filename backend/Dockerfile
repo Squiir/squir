@@ -5,6 +5,9 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 RUN npm ci --omit=dev
+
+RUN npm install -g @nestjs/cli
+
 RUN npx prisma generate
 
 COPY . .
