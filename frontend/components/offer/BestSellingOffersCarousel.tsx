@@ -1,8 +1,13 @@
+import { Offer } from "@app-types/offer";
 import { OfferCard } from "@components/offer/OfferCard";
 import { Carousel } from "@components/ui/Carousel";
 import { useGetBestSellingOffers } from "@hooks/offer/use-get-best-selling-offers";
 
-export function BestSellingOffersCarousel() {
+interface Props {
+	onOfferPress?: (offer: Offer) => void;
+}
+
+export function BestSellingOffersCarousel({ onOfferPress }: Props) {
 	const {
 		data: offers,
 		isLoading,
@@ -20,7 +25,11 @@ export function BestSellingOffersCarousel() {
 			<Carousel.Title />
 			<Carousel.Scroll>
 				{offers?.map((offer) => (
-					<OfferCard key={offer.id} offer={offer}>
+					<OfferCard
+						key={offer.id}
+						offer={offer}
+						onPress={() => onOfferPress?.(offer)}
+					>
 						<OfferCard.Name />
 						<OfferCard.Price />
 						<OfferCard.CreatedAt />

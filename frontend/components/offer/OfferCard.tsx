@@ -1,4 +1,5 @@
 import { Offer } from "@app-types/offer";
+import { Tokens } from "@constants/tokens";
 import { usePulsatingOpacity } from "@hooks/animation/use-pulsating-opacity";
 import { useLocaleDateString } from "@hooks/formatter/use-locale-date-string";
 import { ContextError } from "@utils/errors/context-error";
@@ -6,11 +7,13 @@ import { formatPrice } from "@utils/format";
 import { createContext, useContext, useMemo } from "react";
 import {
 	Animated,
+	Pressable,
+	PressableProps,
 	StyleSheet,
 	Text,
 	TextProps,
 	View,
-	ViewProps,
+	ViewStyle,
 } from "react-native";
 
 interface OfferCardContextProps {
@@ -30,18 +33,23 @@ function useOfferCardContext() {
 	return context;
 }
 
-interface OfferCardProps extends ViewProps {
+interface OfferCardProps extends PressableProps {
 	offer: Offer;
 }
 
-export function OfferCard({ offer, children, ...props }: OfferCardProps) {
+export function OfferCard({
+	offer,
+	children,
+	style,
+	...props
+}: OfferCardProps) {
 	const offerMemo = useMemo(() => ({ offer }), [offer]);
 
 	return (
 		<OfferCardContext.Provider value={offerMemo}>
-			<View {...props} style={[props.style, styles.card]}>
+			<Pressable {...props} style={[styles.card, style as ViewStyle]}>
 				{children}
-			</View>
+			</Pressable>
 		</OfferCardContext.Provider>
 	);
 }
@@ -93,35 +101,38 @@ OfferCard.Skeleton = Skeleton;
 
 const styles = StyleSheet.create({
 	card: {
-		backgroundColor: "#fff",
-		borderRadius: 12,
-		padding: 16,
-		marginVertical: 8,
+		backgroundColor: Tokens.colors.pink[50],
+		borderRadius: Tokens.borderRadius.xl,
+		padding: Tokens.spacing[4],
+		marginVertical: Tokens.spacing[2],
 		width: 250,
-		marginRight: 12,
-		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 4,
-		elevation: 3,
+		marginRight: Tokens.spacing[3],
+		shadowColor: Tokens.colors.pink[500],
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.15,
+		shadowRadius: 8,
+		elevation: 4,
+		borderWidth: 1,
+		borderColor: Tokens.colors.pink[200],
 	},
 	name: {
-		fontSize: 18,
-		fontWeight: "bold",
-		color: "#333",
+		fontSize: Tokens.typography.sizes.lg,
+		fontWeight: Tokens.typography.weights.bold,
+		color: Tokens.colors.gray[900],
 	},
 	price: {
-		fontSize: 16,
-		color: "#2ecc71",
-		fontWeight: "600",
-		marginTop: 4,
+		fontSize: Tokens.typography.sizes.base,
+		color: Tokens.colors.pink[600],
+		fontWeight: Tokens.typography.weights.semibold,
+		marginTop: Tokens.spacing[1],
 	},
 	date: {
-		fontSize: 12,
-		color: "#999",
-		marginTop: 8,
+		fontSize: Tokens.typography.sizes.xs,
+		color: Tokens.colors.gray[500],
+		marginTop: Tokens.spacing[2],
 	},
 	skeleton: {
-		backgroundColor: "#E1E9EE",
-		borderRadius: 4,
+		backgroundColor: Tokens.colors.pink[100],
+		borderRadius: Tokens.borderRadius.sm,
 	},
 });

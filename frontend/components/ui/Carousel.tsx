@@ -1,5 +1,6 @@
 import { PropsWithMessage } from "@app-types/props-with-message";
 import { RetryButton } from "@components/ui/RetryButton";
+import { Tokens } from "@constants/tokens";
 import { ContextError } from "@utils/errors/context-error";
 import { createContext, PropsWithChildren, useContext } from "react";
 import {
@@ -109,30 +110,36 @@ Carousel.Error = Error;
 
 const styles = StyleSheet.create({
 	container: {
-		marginBottom: 24,
-		paddingLeft: 16,
+		marginBottom: Tokens.spacing[4],
+		marginHorizontal: Tokens.spacing[4],
+		padding: Tokens.spacing[4],
+		backgroundColor: `${Tokens.colors.pink[400]}15`,
+		borderRadius: Tokens.borderRadius["2xl"],
+		borderWidth: 1,
+		borderColor: `${Tokens.colors.pink[300]}40`,
 	},
 	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-		marginBottom: 12,
-		color: "#1a1a1a",
+		fontSize: Tokens.typography.sizes.lg,
+		fontWeight: Tokens.typography.weights.bold,
+		marginBottom: Tokens.spacing[3],
+		color: Tokens.colors.pink[100],
+		fontFamily: "Montserrat",
 	},
 	scroll: {
 		overflow: "visible",
 	},
 	errorContainer: {
-		padding: 20,
-		backgroundColor: "#fff5f5",
-		borderRadius: 12,
-		marginRight: 16,
+		padding: Tokens.spacing[5],
+		backgroundColor: Tokens.colors.pink[50],
+		borderRadius: Tokens.borderRadius.xl,
+		marginRight: Tokens.spacing[4],
 		alignItems: "center",
 		borderWidth: 1,
-		borderColor: "#feb2b2",
+		borderColor: Tokens.colors.pink[200],
 	},
 	errorText: {
-		color: "#c53030",
-		fontSize: 14,
+		color: Tokens.colors.pink[600],
+		fontSize: Tokens.typography.sizes.sm,
 		textAlign: "center",
 	},
 });
