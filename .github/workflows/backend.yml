@@ -1,9 +1,9 @@
-name: Build & Push Docker Image
+name: Backend Deploy
 
 on:
   push:
-    branches: [ "main" ]
-    paths: ['backend/**']
+    branches: ["main"]
+    paths: ["backend/**"]
 
 env:
   IMAGE_NAME: squir-backend
@@ -28,7 +28,7 @@ jobs:
           cd backend
           docker build -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-      
+
       - name: Azure CLI Login
         uses: azure/login@v1
         with:
