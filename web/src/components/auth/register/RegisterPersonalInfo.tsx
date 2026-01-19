@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { RegisterFormValues } from "@/types/register";
 import type { UseFormReturn } from "react-hook-form";
 
 interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form: UseFormReturn<any>;
+  form: UseFormReturn<RegisterFormValues>;
   isPending: boolean;
 }
 

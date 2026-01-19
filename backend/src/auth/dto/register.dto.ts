@@ -1,9 +1,10 @@
 import {
   IsEmail,
-  IsString,
-  MinLength,
-  MaxLength,
   IsISO8601,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
 } from "class-validator";
 
 export class RegisterDto {
@@ -23,10 +24,12 @@ export class RegisterDto {
   @IsISO8601()
   birthDate!: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(2)
   firstName?: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(2)
   lastName?: string;

@@ -23,13 +23,19 @@ export function AvatarUploadDialog({ isOpen, onOpenChange }: Props) {
 
   const { mutate: uploadAvatar, isPending } = useUploadAvatar();
 
-  const handleClose = () => {
-    onOpenChange(false);
-    setTimeout(() => {
-      setImageSrc(null);
-      setZoom(1);
-      setCrop({ x: 0, y: 0 });
-    }, 200);
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange(open);
+    if (!open) {
+      setTimeout(() => {
+        setImageSrc(null);
+        setZoom(1);
+        setCrop({ x: 0, y: 0 });
+        setCroppedAreaPixels(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }, 200);
+    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +71,7 @@ export function AvatarUploadDialog({ isOpen, onOpenChange }: Props) {
       uploadAvatar(croppedImage, {
         onSuccess: () => {
           toast.success("Avatar mis à jour");
-          handleClose();
+          handleOpenChange(false);
         },
         onError: () => toast.error("Erreur lors de la mise à jour de l'avatar"),
       });
@@ -76,7 +82,7 @@ export function AvatarUploadDialog({ isOpen, onOpenChange }: Props) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Modifier l'avatar</DialogTitle>
@@ -152,7 +158,7 @@ export function AvatarUploadDialog({ isOpen, onOpenChange }: Props) {
           />
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={handleClose} disabled={isPending}>
+            <Button variant="ghost" onClick={() => handleOpenChange(false)} disabled={isPending}>
               Annuler
             </Button>
             <Button onClick={handleSubmit} disabled={!imageSrc || isPending}>

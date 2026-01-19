@@ -5,31 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useRegister } from "@/hooks/auth/use-register";
 import { authService } from "@/services/auth.service";
+import { registerSchema, type RegisterFormValues } from "@/types/register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Navigate } from "react-router";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const registerSchema = z.object({
-  email: z.string().email("Email invalide"),
-  username: z.string().min(3, "3 caractères minimum").max(30, "30 caractères maximum"),
-  password: z.string().min(8, "8 caractères minimum"),
-  birthDate: z.string().min(1, "Date de naissance requise"),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const { isLoggedIn } = useAuth();
   const { mutate: register, isPending } = useRegister();
   const [step, setStep] = useState(1);
 
-  const form = useForm<FormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
   });
@@ -69,16 +58,32 @@ export default function RegisterPage() {
     }
   };
 
-  const onSubmit = (values: FormValues) => {
-    register(values, {
-      onSuccess: () => {
-        toast.success("Compte créé avec succès !");
+  const onSubmit = (values: RegisterFormValues) => {
+    register(
+      {
+        ...values,
+        firstName: values.firstName || undefined,
+        lastName: values.lastName || undefined,
       },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Erreur lors de l'inscription");
+      {
+        onSuccess: () => {
+          toast.success("Compte créé avec succès !");
+        },
+        onError: (err: any) => {
+          console.error(err);
+          const messages = err.response?.data?.message;
+          if (messages) {
+            if (Array.isArray(messages)) {
+              messages.forEach((msg: string) => toast.error(msg));
+            } else {
+              toast.error(messages);
+            }
+          } else {
+            toast.error("Erreur lors de l'inscription");
+          }
+        },
       },
-    });
+    );
   };
 
   if (isLoggedIn) return <Navigate to="/home" replace />;
