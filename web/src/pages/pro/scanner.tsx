@@ -11,12 +11,12 @@ import { useConsumeQrCode } from "@/hooks/qrcode/use-consume-qr-code";
 import { useMe } from "@/hooks/user/use-me";
 import { UserRole } from "@/types/user";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
-import { Camera, ChevronDown, Loader } from "lucide-react";
+import { Camera, ChevronDown, Loader, QrCode } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export default function ScannerPage() {
+export default function ProScannerPage() {
   const navigate = useNavigate();
   const { data: user, isLoading: isUserLoading } = useMe();
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
@@ -107,7 +107,6 @@ export default function ScannerPage() {
         cameraIdOrConfig,
         {
           fps: 10,
-          qrbox: { width: 250, height: 250 },
           aspectRatio: 1.0,
         },
         async (decodedText) => {
@@ -169,41 +168,56 @@ export default function ScannerPage() {
 
   return (
     <RequireAuth>
-      <div className="flex flex-col items-center pt-8 min-h-[calc(100vh-64px)] pb-12 gap-8">
-        <div className="flex flex-col items-center gap-2 pb-4">
-          <h1 className="text-2xl font-bold">Scanner</h1>
-          <p className="text-muted-foreground text-center text-sm max-w-xs">
-            Placez le QR Code dans le cadre
-          </p>
+      <div className="flex flex-col items-center justify-center h-full max-h-screen bg-muted/20 p-4">
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <div className="p-4 bg-background rounded-2xl shadow-sm">
+            <QrCode className="w-8 h-8 text-primary" />
+          </div>
+          <div className="text-center space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight">Scanner</h1>
+            <p className="text-muted-foreground text-sm">Placez le QR Code dans le cadre</p>
+          </div>
         </div>
 
-        <div className="relative">
-          <div
-            id="reader"
-            className="w-75 h-75 bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100"
-          ></div>
+        <div className="relative w-full max-w-[500px] aspect-square mb-8">
+          <div className="absolute inset-0 rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/50 z-10">
+            <div id="reader" className="w-full h-full bg-black" />
+          </div>
 
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="w-50 h-50 border-2 border-transparent relative"></div>
+          <div className="absolute inset-0 z-20 pointer-events-none rounded-[40px]">
+            <div className="absolute top-8 left-8 w-10 h-10 border-l-[6px] border-t-[6px] border-white rounded-tl-xl shadow-sm" />
+            <div className="absolute top-8 right-8 w-10 h-10 border-r-[6px] border-t-[6px] border-white rounded-tr-xl shadow-sm" />
+            <div className="absolute bottom-8 left-8 w-10 h-10 border-l-[6px] border-b-[6px] border-white rounded-bl-xl shadow-sm" />
+            <div className="absolute bottom-8 right-8 w-10 h-10 border-r-[6px] border-b-[6px] border-white rounded-br-xl shadow-sm" />
+
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center opacity-50">
+              <div className="absolute w-full h-1 bg-white/80 rounded-full" />
+              <div className="absolute h-full w-1 bg-white/80 rounded-full" />
+            </div>
           </div>
         </div>
 
         {cameras.length > 0 && (
-          <div className="w-full max-w-75 z-20">
+          <div className="w-full max-w-[350px] z-30">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  <div className="flex items-center gap-2 truncate">
-                    <Camera className="w-4 h-4" />
-                    <span className="truncate">
-                      {cameras.find((c) => c.id === selectedCameraId)?.label ||
-                        "Caméra automatique"}
-                    </span>
+                <Button
+                  variant="outline"
+                  className="w-full h-12 rounded-full border-border/50 shadow-sm bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                >
+                  <div className="flex items-center justify-between w-full px-2 max-w-full">
+                    <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
+                      <Camera className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <span className="font-medium truncate text-sm">
+                        {cameras.find((c) => c.id === selectedCameraId)?.label ||
+                          "Caméra automatique"}
+                      </span>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground/50 shrink-0 ml-2" />
                   </div>
-                  <ChevronDown className="w-4 h-4 opacity-50" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-75">
+              <DropdownMenuContent align="center" className="w-[300px] rounded-lg shadow-sm">
                 {cameras.map((camera) => (
                   <DropdownMenuItem key={camera.id} onClick={() => handleCameraChange(camera.id)}>
                     {camera.label || `Camera ${camera.id}`}

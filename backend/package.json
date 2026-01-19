@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.30.0",
@@ -81,8 +81,9 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.4.6",
     "ts-loader": "^9.5.2",
-    "ts-node": "^1.7.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.20.0"
   },
