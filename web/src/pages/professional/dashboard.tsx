@@ -1,6 +1,6 @@
 import { LayoutDashboard } from "lucide-react";
 
-export default function ProDashboardPage() {
+export default function ProfessionalDashboardPage() {
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-4">
       <div className="p-4 bg-background rounded-full">

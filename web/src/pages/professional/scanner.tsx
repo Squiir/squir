@@ -11,18 +11,19 @@ import { useConsumeQrCode } from "@/hooks/qrcode/use-consume-qr-code";
 import { useMe } from "@/hooks/user/use-me";
 import { UserRole } from "@/types/user";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
-import { Camera, ChevronDown, Loader, QrCode } from "lucide-react";
+import { AlertCircle, Camera, ChevronDown, Loader, QrCode, RefreshCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export default function ProScannerPage() {
+export default function ProfessionalScannerPage() {
   const navigate = useNavigate();
   const { data: user, isLoading: isUserLoading } = useMe();
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
   const [cameras, setCameras] = useState<Array<{ id: string; label: string }>>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
+  const [permissionError, setPermissionError] = useState(false);
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isMountedRef = useRef(true);
@@ -47,40 +48,49 @@ export default function ProScannerPage() {
     }
   }, [user, isUserLoading, navigate]);
 
-  useEffect(() => {
-    isMountedRef.current = true;
+  const init = async () => {
+    try {
+      setPermissionError(false);
+      const devices = await Html5Qrcode.getCameras();
+      if (devices && devices.length) {
+        setCameras(devices);
+      }
 
-    const init = async () => {
-      try {
-        const devices = await Html5Qrcode.getCameras();
-        if (devices && devices.length) {
-          setCameras(devices);
-        }
-
-        if (scannerRef.current) {
-          try {
-            if (scannerRef.current.isScanning) {
-              await scannerRef.current.stop();
-            }
-            scannerRef.current.clear();
-          } catch (e) {
-            console.warn("Failed to clear previous scanner instance", e);
+      if (scannerRef.current) {
+        try {
+          if (scannerRef.current.isScanning) {
+            await scannerRef.current.stop();
           }
+          scannerRef.current.clear();
+        } catch (e) {
+          console.warn("Failed to clear previous scanner instance", e);
         }
+      }
 
-        const scanner = new Html5Qrcode("reader", {
-          verbose: false,
-          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-        });
-        scannerRef.current = scanner;
+      const scanner = new Html5Qrcode("reader", {
+        verbose: false,
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+      });
+      scannerRef.current = scanner;
 
-        await startScanner({ facingMode: "environment" });
-      } catch (err) {
-        console.error("Initialization error", err);
+      await startScanner({ facingMode: "environment" });
+    } catch (err: any) {
+      console.error("Initialization error", err);
+      // Check if error is related to permission
+      if (
+        err?.name === "NotAllowedError" ||
+        err?.name === "PermissionDeniedError" ||
+        err?.message?.toLowerCase().includes("permission")
+      ) {
+        setPermissionError(true);
+      } else {
         toast.error("Impossible d'initialiser le scanner");
       }
-    };
+    }
+  };
 
+  useEffect(() => {
+    isMountedRef.current = true;
     const timer = setTimeout(init, 100);
 
     return () => {
@@ -164,6 +174,25 @@ export default function ProScannerPage() {
     startScanner(cameraId);
   };
 
+  const handleRetry = async () => {
+    try {
+      // Explicitly request user media to trigger browser prompt
+      // This works better when triggered by a user gesture
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      // If successful, stop the tracks immediately as we just wanted to get permission
+      stream.getTracks().forEach((track) => track.stop());
+
+      // Re-initialize scanner
+      setPermissionError(false);
+      await init();
+    } catch (err) {
+      console.error("Retry failed:", err);
+      setPermissionError(true);
+      toast.error("Impossible d'accéder à la caméra. Vérifiez vos paramètres navigateur.");
+    }
+  };
+
   if (isUserLoading) return <Loader />;
 
   return (
@@ -181,7 +210,30 @@ export default function ProScannerPage() {
 
         <div className="relative w-full max-w-[500px] aspect-square mb-8">
           <div className="absolute inset-0 rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/50 z-10">
-            <div id="reader" className="w-full h-full bg-black" />
+            <div id="reader" className="w-full h-full bg-black">
+              {permissionError && (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-black/90 p-6 text-center">
+                  <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+                  <h3 className="text-white font-semibold text-lg mb-2">Accès caméra refusé</h3>
+                  <p className="text-white/70 text-sm mb-6 max-w-[280px]">
+                    Veuillez autoriser l'accès à la caméra dans les paramètres de votre navigateur.
+                    <br />
+                    <span className="text-xs opacity-70 mt-2 block">
+                      (Cliquez sur l'icône 🔒 ou 📷 dans la barre d'adresse si la popup n'apparaît
+                      pas)
+                    </span>
+                  </p>
+                  <Button
+                    onClick={handleRetry}
+                    variant="secondary"
+                    className="gap-2 rounded-full font-medium"
+                  >
+                    <RefreshCcw className="w-4 h-4" />
+                    Réessayer
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="absolute inset-0 z-20 pointer-events-none rounded-[40px]">
