@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard, QrCode, Ticket } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-export function ProNavbar() {
+export function ProfessionalNavbar() {
   return (
     <nav className="border-t bg-background p-2">
       <div className="grid grid-cols-3 gap-1 mx-auto max-w-md">

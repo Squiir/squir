@@ -1,4 +1,4 @@
-import { ProNavbar } from "@/components/layout/ProNavbar";
+import { ProfessionalNavbar } from "@/components/layout/ProfessionalNavbar";
 import { Outlet } from "react-router-dom";
 
 export default function ProfessionalLayout() {
@@ -8,7 +8,7 @@ export default function ProfessionalLayout() {
         <Outlet />
       </main>
 
-      <ProNavbar />
+      <ProfessionalNavbar />
     </div>
   );
 }
