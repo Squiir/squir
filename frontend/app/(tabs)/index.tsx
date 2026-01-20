@@ -1,6 +1,5 @@
 import { Offer } from "@app-types/offer";
 import { HomeHeader } from "@components/home/HomeHeader";
-import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { BestSellingOffersCarousel } from "@components/offer/BestSellingOffersCarousel";
 import { NearbyOffersCarousel } from "@components/offer/NearbyOffersCarousel";
 import { OfferConfirmModal } from "@components/offer/OfferConfirmModal";
@@ -47,28 +46,23 @@ export default function HomeScreen() {
 	};
 
 	return (
-		<SwipeableTabWrapper currentRoute="index">
-			<ThemedScreenWrapper>
-				<ScrollView
-					style={styles.container}
-					showsVerticalScrollIndicator={false}
-				>
-					<HomeHeader />
-					<NearbyOffersCarousel onOfferPress={handleOfferPress} />
-					<BestSellingOffersCarousel onOfferPress={handleOfferPress} />
-					<RecentOffersCarousel onOfferPress={handleOfferPress} />
-				</ScrollView>
+		<ThemedScreenWrapper>
+			<ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+				<HomeHeader />
+				<NearbyOffersCarousel onOfferPress={handleOfferPress} />
+				<BestSellingOffersCarousel onOfferPress={handleOfferPress} />
+				<RecentOffersCarousel onOfferPress={handleOfferPress} />
+			</ScrollView>
 
-				<OfferConfirmModal
-					offer={selectedOffer}
-					visible={!!selectedOffer}
-					onClose={handleClose}
-					onConfirm={handleConfirm}
-					isPending={isPending}
-					isSuccess={isSuccess}
-				/>
-			</ThemedScreenWrapper>
-		</SwipeableTabWrapper>
+			<OfferConfirmModal
+				offer={selectedOffer}
+				visible={!!selectedOffer}
+				onClose={handleClose}
+				onConfirm={handleConfirm}
+				isPending={isPending}
+				isSuccess={isSuccess}
+			/>
+		</ThemedScreenWrapper>
 	);
 }
 

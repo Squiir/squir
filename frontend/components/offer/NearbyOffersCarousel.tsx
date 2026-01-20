@@ -17,7 +17,6 @@ export function NearbyOffersCarousel({ onOfferPress }: Props) {
 			isError={isError}
 			onRetry={refetch}
 		>
-			<Carousel.Title />
 			<Carousel.Scroll>
 				{offers?.map((offer) => (
 					<OfferCard
