@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 
-export function ProOffersView() {
+export function ProfessionalOfferView() {
   return (
     <div className="flex flex-col h-full space-y-4">
       <div className="flex items-center justify-between">

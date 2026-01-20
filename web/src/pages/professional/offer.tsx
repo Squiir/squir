@@ -1,5 +1,5 @@
-import { ProOffersView } from "@/components/offers/ProfessionalOfferView";
+import { ProfessionalOfferView } from "@/components/offers/ProfessionalOfferView";
 
-export default function ProOffersPage() {
-  return <ProOffersView />;
+export default function ProfessionalOfferPage() {
+  return <ProfessionalOfferView />;
 }
