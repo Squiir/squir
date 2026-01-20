@@ -1,34 +1,24 @@
+import { RegisterCredentials } from "@/components/auth/register/RegisterCredentials";
+import { RegisterPersonalInfo } from "@/components/auth/register/RegisterPersonalInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useRegister } from "@/hooks/auth/use-register";
 import { authService } from "@/services/auth.service";
+import { registerSchema, type RegisterFormValues } from "@/types/register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Navigate } from "react-router";
 import { toast } from "sonner";
-import { z } from "zod";
-
-const registerSchema = z.object({
-  email: z.string().email("Email invalide"),
-  username: z.string().min(3, "3 caractères minimum").max(30, "30 caractères maximum"),
-  password: z.string().min(8, "8 caractères minimum"),
-  birthDate: z.string().min(1, "Date de naissance requise"),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const { isLoggedIn } = useAuth();
   const { mutate: register, isPending } = useRegister();
   const [step, setStep] = useState(1);
 
-  const form = useForm<FormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
   });
@@ -68,16 +58,32 @@ export default function RegisterPage() {
     }
   };
 
-  const onSubmit = (values: FormValues) => {
-    register(values, {
-      onSuccess: () => {
-        toast.success("Compte créé avec succès !");
+  const onSubmit = (values: RegisterFormValues) => {
+    register(
+      {
+        ...values,
+        firstName: values.firstName || undefined,
+        lastName: values.lastName || undefined,
       },
-      onError: (err) => {
-        console.error(err);
-        toast.error("Erreur lors de l'inscription");
+      {
+        onSuccess: () => {
+          toast.success("Compte créé avec succès !");
+        },
+        onError: (err: any) => {
+          console.error(err);
+          const messages = err.response?.data?.message;
+          if (messages) {
+            if (Array.isArray(messages)) {
+              messages.forEach((msg: string) => toast.error(msg));
+            } else {
+              toast.error(messages);
+            }
+          } else {
+            toast.error("Erreur lors de l'inscription");
+          }
+        },
       },
-    });
+    );
   };
 
   if (isLoggedIn) return <Navigate to="/home" replace />;
@@ -103,77 +109,8 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {step === 1 && (
-              <>
-                <div className="space-y-2">
-                  <Input placeholder="Email" type="email" {...form.register("email")} />
-                  {form.formState.errors.email && (
-                    <p className="text-destructive text-xs">
-                      {form.formState.errors.email.message}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Input placeholder="Nom d'utilisateur" {...form.register("username")} />
-                  {form.formState.errors.username && (
-                    <p className="text-destructive text-xs">
-                      {form.formState.errors.username.message}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Input
-                    placeholder="Mot de passe"
-                    type="password"
-                    {...form.register("password")}
-                  />
-                  {form.formState.errors.password && (
-                    <p className="text-destructive text-xs">
-                      {form.formState.errors.password.message}
-                    </p>
-                  )}
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-medium pl-1 text-muted-foreground">
-                    Date de naissance
-                  </label>
-                  <Input type="date" {...form.register("birthDate")} />
-                  {form.formState.errors.birthDate && (
-                    <p className="text-destructive text-xs">
-                      {form.formState.errors.birthDate.message}
-                    </p>
-                  )}
-                </div>
-
-                <Button type="button" className="w-full" onClick={onNext}>
-                  Suivant
-                </Button>
-
-                <div className="text-center text-sm text-muted-foreground mt-2">
-                  Déjà un compte ?{" "}
-                  <a href="/login" className="underline hover:text-primary">
-                    Se connecter
-                  </a>
-                </div>
-              </>
-            )}
-
-            {step === 2 && (
-              <>
-                <div className="space-y-2">
-                  <Input placeholder="Prénom (optionnel)" {...form.register("firstName")} />
-                </div>
-                <div className="space-y-2">
-                  <Input placeholder="Nom (optionnel)" {...form.register("lastName")} />
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <Button type="submit" className="w-full" disabled={isPending}>
-                    {isPending ? "..." : "S'inscrire"}
-                  </Button>
-                </div>
-              </>
-            )}
+            {step === 1 && <RegisterCredentials form={form} onNext={onNext} />}
+            {step === 2 && <RegisterPersonalInfo form={form} isPending={isPending} />}
           </form>
         </CardContent>
       </Card>

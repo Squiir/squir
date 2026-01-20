@@ -19,56 +19,55 @@ export function FriendItem({
   return (
     <div
       className={clsx(
-        "flex items-center justify-between px-2 py-2 rounded-md",
-        active ? "bg-muted" : "hover:bg-muted",
+        "flex items-center justify-between p-2 rounded-lg transition-colors group",
+        active ? "bg-accent" : "hover:bg-accent/50",
       )}
     >
       <button
         onClick={onClick}
-        className={clsx(
-          "flex justify-between items-center w-full gap-2 text-left overflow-auto",
-          "px-3 py-2 rounded-md hover:bg-muted",
-          active && "bg-muted",
-        )}
+        className="flex items-center flex-1 gap-4 overflow-hidden text-left"
       >
-        <div className="flex flex-row items-center gap-3 px-2 py-2 text-left">
-          <Avatar className="w-8 h-8">
-            <AvatarImage src={conversation.friend.avatarUrl ?? undefined} />
-            <AvatarFallback>{conversation.friend.username[0].toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium">{conversation.friend.username}</span>
-        </div>
-        <div className="min-w-0">
+        <Avatar className="w-12 h-12 border-2 border-background shadow-sm">
+          <AvatarImage src={conversation.friend.avatarUrl ?? undefined} />
+          <AvatarFallback className="text-lg">
+            {conversation.friend.username[0].toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1 min-w-0 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="font-semibold text-base truncate">{conversation.friend.username}</span>
+            {conversation.unreadCount > 0 && (
+              <span className="flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white bg-primary rounded-full">
+                {conversation.unreadCount}
+              </span>
+            )}
+          </div>
+
           {conversation.lastMessage && (
-            <div
+            <p
               className={clsx(
-                "text-xs truncate mx-2",
-                isUnread ? "font-semibold text-foreground" : "text-muted-foreground",
+                "text-sm truncate",
+                isUnread ? "font-medium text-foreground" : "text-muted-foreground",
               )}
             >
               {conversation.lastMessage}
-            </div>
-          )}
-        </div>
-
-        <div>
-          {conversation.unreadCount > 0 && (
-            <span className="px-3 py-0.5 text-xs rounded-full bg-primary text-primary-foreground">
-              {conversation.unreadCount}
-            </span>
+            </p>
           )}
         </div>
       </button>
 
-      <ActionMenu
-        actions={[
-          {
-            label: "Supprimer l’ami",
-            destructive: true,
-            onClick: () => removeFriend.mutate(conversation.friend.id),
-          },
-        ]}
-      />
+      <div className="pl-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <ActionMenu
+          actions={[
+            {
+              label: "Supprimer l’ami",
+              destructive: true,
+              onClick: () => removeFriend.mutate(conversation.friend.id),
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 }

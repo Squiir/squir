@@ -26,18 +26,19 @@ export function FriendSearch() {
           {data.map((user) => (
             <div
               key={user.id}
-              className="flex items-center justify-between px-3 py-2 hover:bg-muted"
+              className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
             >
-              <div className="flex items-center gap-2">
-                <Avatar className="w-8 h-8">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-10 h-10">
                   <AvatarImage src={user.avatarUrl ?? undefined} />
                   <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium">{user.username}</span>
+                <span className="font-medium">{user.username}</span>
               </div>
 
               <Button
                 size="sm"
+                variant={user.friendshipStatus === "PENDING" ? "secondary" : "default"}
                 disabled={user.friendshipStatus === "PENDING"}
                 onClick={() => {
                   addFriend.mutate({ friendId: user.id });

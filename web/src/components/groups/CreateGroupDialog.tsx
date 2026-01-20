@@ -46,7 +46,9 @@ export function CreateGroupDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">Créer un groupe</Button>
+        <Button className="w-full" size="lg">
+          Créer un groupe
+        </Button>
       </DialogTrigger>
 
       <DialogContent>

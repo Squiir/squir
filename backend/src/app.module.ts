@@ -1,4 +1,5 @@
 import { AuthModule } from "@auth/auth.module";
+import { AzureStorageModule } from "@azure-storage/azure-storage.module";
 import { BarsModule } from "@bars/bars.module";
 import { FriendsModule } from "@friends/friends.module";
 import { GroupsModule } from "@groups/groups.module";
@@ -31,6 +32,7 @@ import { AppService } from "./app.service";
     OffersModule,
     MessagesModule,
     StripeModule,
+    AzureStorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
