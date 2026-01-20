@@ -1,13 +1,17 @@
-import AppLayout from "@/layouts/AppLayout";
-import { useRoutes } from "react-router-dom";
-import routes from "~react-pages";
+import { useCustomerRoutes } from "@/hooks/use-customer-routes";
+import { useProfessionalRoutes } from "@/hooks/use-professional-routes";
+import { useMe } from "@/hooks/user/use-me";
 
 export default function App() {
-  return useRoutes([
-    {
-      element: <AppLayout />,
-      children: routes.filter((r) => !(r.path && ["/login", "/register"].includes(r.path))),
-    },
-    ...routes.filter((r) => r.path && ["/login", "/register"].includes(r.path)),
-  ]);
+  const { data: user, isLoading } = useMe();
+  const customerRoutes = useCustomerRoutes();
+  const proRoutes = useProfessionalRoutes();
+
+  if (isLoading) return null;
+
+  if (user?.role === "PROFESSIONAL") {
+    return proRoutes;
+  }
+
+  return customerRoutes;
 }

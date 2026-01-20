@@ -77,6 +77,7 @@ export class OffersService {
         const valB = b[sortBy as keyof ExtendedOfferWithParams];
 
         if (valA === undefined || valB === undefined) return 0;
+        if (valA === null || valB === null) return 0;
         if (valA < valB) return orderBy === "asc" ? -1 : 1;
         if (valA > valB) return orderBy === "asc" ? 1 : -1;
         return 0;

@@ -1,0 +1,14 @@
+import { ProfessionalNavbar } from "@/components/layout/ProfessionalNavbar";
+import { Outlet } from "react-router-dom";
+
+export default function ProfessionalLayout() {
+  return (
+    <div className="flex flex-col h-screen bg-muted">
+      <main className="flex-1 overflow-auto p-4">
+        <Outlet />
+      </main>
+
+      <ProfessionalNavbar />
+    </div>
+  );
+}
