@@ -6,8 +6,15 @@ import { Navigate, useRoutes } from "react-router-dom";
 import routes from "~react-pages";
 
 export function useProfessionalRoutes() {
-  const commonRoutes = routes.filter((r) => r.path && ["/login", "/register"].includes(r.path));
-  const catchAllRoute = routes.find((r) => r.path === "*");
+  const commonRoutes = routes.filter((r) => {
+    if (!r.path) return false;
+    const normalizedPath = r.path.startsWith("/") ? r.path : `/${r.path}`;
+    return ["/login", "/register"].includes(normalizedPath);
+  });
+
+  const catchAllRoute = routes.find(
+    (r) => r.path === "*" || r.path === "all" || r.path?.includes("*"),
+  );
 
   return useRoutes([
     {
