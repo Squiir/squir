@@ -23,12 +23,16 @@ export class CreateOfferDto {
 
   @IsOptional()
   @IsUrl()
-  imageUrl?: string;
+  imageUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @IsInt()
   @Min(0)
-  stock?: number;
+  stock?: number | null;
 
   @IsOptional()
   @IsDateString()

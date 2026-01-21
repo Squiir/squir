@@ -1,3 +1,4 @@
+import { AzureStorageService } from "@azure-storage/azure-storage.service";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOfferDto } from "@offers/dto/create-offer.dto";
 import { OfferParamsDto } from "@offers/dto/offers.dto";
@@ -8,7 +9,10 @@ import { haversineDistance } from "@utils/distance";
 
 @Injectable()
 export class OffersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private azureStorageService: AzureStorageService,
+  ) {}
 
   /**
    * Create a new offer
@@ -50,6 +54,7 @@ export class OffersService {
     return this.prisma.offer.create({
       data: {
         ...offerData,
+        stock: offerData.stock,
         squirPrice,
         validUntil: validUntilDate,
         promotionRule: promotionRule
@@ -76,9 +81,16 @@ export class OffersService {
 
     const { promotionRule, ...offerData } = dto;
 
-    // Filter out null values - Prisma doesn't accept null for optional fields
+    if (
+      offerData.imageUrl !== undefined &&
+      existingOffer.imageUrl &&
+      offerData.imageUrl !== existingOffer.imageUrl
+    ) {
+      await this.azureStorageService.deleteFile(existingOffer.imageUrl);
+    }
+
     const filteredData = Object.fromEntries(
-      Object.entries(offerData).filter(([_, value]) => value !== null),
+      Object.entries(offerData).filter(([_, value]) => value !== undefined),
     );
 
     let squirPrice = existingOffer.squirPrice;
@@ -87,12 +99,9 @@ export class OffersService {
         ? offerData.originalPrice
         : existingOffer.originalPrice;
 
-    // Recalculate price logic
     if (promotionRule === null) {
-      // Case 1: Deleting promotion
       squirPrice = effectiveOriginalPrice;
     } else if (promotionRule) {
-      // Case 2: Updating/Creating promotion
       if (
         promotionRule.type === "PERCENTAGE_OFF" &&
         promotionRule.percentageOff
@@ -108,14 +117,12 @@ export class OffersService {
           effectiveOriginalPrice - promotionRule.amountOff,
         );
       } else {
-        // BUY_X_GET_Y doesn't change unit price usually, but let's reset to original just in case
         squirPrice = effectiveOriginalPrice;
       }
     } else if (
       offerData.originalPrice !== undefined &&
       existingOffer.promotionRule
     ) {
-      // Case 3: Only price changed, but promotion exists -> Recalculate
       const currentRule = existingOffer.promotionRule;
       if (currentRule.type === "PERCENTAGE_OFF" && currentRule.percentageOff) {
         squirPrice =
@@ -132,7 +139,6 @@ export class OffersService {
         squirPrice = effectiveOriginalPrice;
       }
     } else if (offerData.originalPrice !== undefined) {
-      // Case 4: Only price changed, no promotion
       squirPrice = effectiveOriginalPrice;
     }
 
@@ -171,7 +177,11 @@ export class OffersService {
    * @param id - Offer ID
    */
   async delete(id: string) {
-    await this.findOne(id);
+    const offer = await this.findOne(id);
+
+    if (offer.imageUrl) {
+      await this.azureStorageService.deleteFile(offer.imageUrl);
+    }
 
     await this.prisma.offer.delete({
       where: { id },

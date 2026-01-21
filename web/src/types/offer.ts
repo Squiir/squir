@@ -16,6 +16,7 @@ export interface Offer {
   originalPrice: number;
   squirPrice: number;
   imageUrl?: string;
+  description?: string | null;
   stock: number;
   validUntil?: string;
   promotionRule?: Partial<PromotionRule>;
@@ -27,17 +28,20 @@ export interface Offer {
 export interface CreateOfferInput {
   name: string;
   originalPrice: number;
-  imageUrl?: string;
-  stock?: number;
+  imageUrl?: string | null;
+  description?: string | null;
+  stock?: number | null;
   validUntil?: string;
-  promotionRule?: Partial<PromotionRule>;
+  promotionRule?: Partial<PromotionRule> | null;
   barId: string;
 }
 
 export interface UpdateOfferInput extends Omit<
   Partial<CreateOfferInput>,
-  "stock" | "promotionRule"
+  "stock" | "promotionRule" | "imageUrl"
 > {
+  imageUrl?: string | null;
+  description?: string | null;
   stock?: number | null;
   promotionRule?: Partial<PromotionRule> | null;
 }

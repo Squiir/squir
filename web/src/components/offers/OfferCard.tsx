@@ -16,8 +16,6 @@ export function OfferCard({ offer, onEdit }: OfferCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cette offre ?")) return;
-
     setIsDeleting(true);
     try {
       await deleteOffer.mutateAsync(offer.id);
@@ -39,12 +37,12 @@ export function OfferCard({ offer, onEdit }: OfferCardProps) {
   const isLowStock = offer.stock && offer.stock < 10;
 
   return (
-    <Card className={isExpired ? "opacity-60" : ""}>
+    <Card className={`flex flex-col h-full ${isExpired ? "opacity-60" : ""}`}>
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <h3 className="font-semibold line-clamp-1">{offer.name}</h3>
-            <div className="flex items-center gap-2 mt-2">
+            <h3 className="font-semibold line-clamp-1 text-lg">{offer.name}</h3>
+            <div className="flex flex-wrap items-center gap-2 mt-2">
               <span className="text-2xl font-bold text-primary">
                 {offer.squirPrice.toFixed(2)}€
               </span>
@@ -53,41 +51,25 @@ export function OfferCard({ offer, onEdit }: OfferCardProps) {
                   <span className="text-sm text-muted-foreground line-through">
                     {offer.originalPrice.toFixed(2)}€
                   </span>
-                  <Badge variant="destructive" className="ml-auto">
-                    -{discount}%
-                  </Badge>
+                  <Badge variant="destructive">-{discount}%</Badge>
                 </>
               )}
             </div>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              {offer.description || "Pas de description pour ce produit"}
+            </p>
           </div>
           {offer.imageUrl && (
-            <img src={offer.imageUrl} alt={offer.name} className="w-16 h-16 object-cover rounded" />
+            <img
+              src={offer.imageUrl}
+              alt={offer.name}
+              className="w-32 h-32 object-cover rounded-md shrink-0"
+            />
           )}
         </div>
       </CardHeader>
 
-      <CardContent className="py-3 space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <Package className="w-4 h-4 text-muted-foreground" />
-          {offer.stock !== null && offer.stock !== undefined ? (
-            <span className={isLowStock ? "text-orange-600 font-medium" : ""}>
-              {offer.stock > 0 ? `${offer.stock} en stock` : "Rupture de stock"}
-            </span>
-          ) : (
-            <span className="text-muted-foreground italic">Stock non défini</span>
-          )}
-        </div>
-
-        {offer.validUntil && (
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar className="w-4 h-4 text-muted-foreground" />
-            <span className={isExpired ? "text-destructive" : ""}>
-              {isExpired ? "Expiré" : "Valide jusqu'au"}{" "}
-              {new Date(offer.validUntil).toLocaleDateString("fr-FR")}
-            </span>
-          </div>
-        )}
-
+      <CardContent className="py-3 space-y-2 flex-1">
         {offer.promotionRule && (
           <div className="flex items-center gap-2 text-sm">
             <Tag className="w-4 h-4 text-muted-foreground" />
@@ -101,6 +83,27 @@ export function OfferCard({ offer, onEdit }: OfferCardProps) {
             </span>
           </div>
         )}
+
+        {offer.validUntil && (
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            <span className={isExpired ? "text-destructive" : ""}>
+              {isExpired ? "Expiré" : "Valide jusqu'au"}{" "}
+              {new Date(offer.validUntil).toLocaleDateString("fr-FR")}
+            </span>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 text-sm">
+          <Package className="w-4 h-4 text-muted-foreground" />
+          {offer.stock !== null && offer.stock !== undefined ? (
+            <span className={isLowStock ? "text-orange-600 font-medium" : ""}>
+              {offer.stock > 0 ? `${offer.stock} en stock` : "Rupture de stock"}
+            </span>
+          ) : (
+            <span className="text-muted-foreground italic">Stock non défini</span>
+          )}
+        </div>
       </CardContent>
 
       <CardFooter className="pt-3 gap-2">

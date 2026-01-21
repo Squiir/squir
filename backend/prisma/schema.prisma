@@ -145,6 +145,7 @@ model Offer {
   originalPrice Float
   squirPrice    Float    // Calculated from originalPrice and promotions
   imageUrl      String?
+  description   String?
   stock         Int?
   validUntil    DateTime?
 
