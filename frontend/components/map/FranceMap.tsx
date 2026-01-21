@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import { Bar } from "@app-types/bar";
-import { QrCode } from "@app-types/qrcode";
+import { Offer } from "@app-types/offer";
+import { BarOffersModal } from "@components/offer/BarOffersModal";
+import { OfferConfirmModal } from "@components/offer/OfferConfirmModal";
 import { Tokens } from "@constants/tokens";
 import { useGetBars } from "@hooks/bars/use-get-bars";
 import { useCreateQrCode } from "@hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@hooks/qrcode/use-get-qr-codes";
-import { QrCodeDto } from "@services/qrcode.service";
+import { formatPrice } from "@utils/format";
 import { MapMarker } from "./MapMarker";
-import { ModalQrPreview } from "./ModalQrPreview";
-import { OfferCardFromMap } from "./OfferCardFromMap";
 
 export type Coordinate = {
 	latitude?: number;
@@ -25,29 +25,53 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 		useCreateQrCode();
 	const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
 	const { data: bars, isPending: isGetBarsPending } = useGetBars();
-	const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
 
-	const [offerOpen, setOfferOpen] = useState(false);
+	// Bar selection modal
+	const [barModalOpen, setBarModalOpen] = useState(false);
 	const [selectedBar, setSelectedBar] = useState<Bar>();
 
-	// modal preview QR (après génération)
-	const [previewOpen, setPreviewOpen] = useState(false);
+	// Offer confirmation modal
+	const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+	const [isSuccess, setIsSuccess] = useState(false);
 
-	const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
-		if (!selectedBar) return;
-		setOfferOpen(false);
-		createQrCode(qrCodeDto, {
-			onSuccess: (data) => {
-				setPreviewedQrCode(data);
-			},
-		});
+	const handleBarSelect = (bar: Bar) => {
+		setSelectedBar(bar);
+		setBarModalOpen(true);
 	};
 
-	useEffect(() => {
-		if (previewedQrCode) {
-			setPreviewOpen(true);
-		}
-	}, [previewedQrCode]);
+	const handleOfferSelect = (offer: Offer) => {
+		// Close bar modal and open confirmation modal
+		setBarModalOpen(false);
+		setIsSuccess(false);
+		// Add bar info to offer for display
+		const offerWithBar = { ...offer, bar: selectedBar };
+		setSelectedOffer(offerWithBar);
+	};
+
+	const handleConfirm = () => {
+		if (!selectedOffer || !selectedBar) return;
+
+		createQrCode(
+			{
+				offerId: selectedOffer.id,
+				label: `${selectedBar.name} • ${selectedOffer.name}${
+					typeof selectedOffer.price === "number"
+						? ` • ${formatPrice(selectedOffer.price)}`
+						: ""
+				}`,
+			},
+			{
+				onSuccess: () => {
+					setIsSuccess(true);
+				},
+			},
+		);
+	};
+
+	const handleCloseConfirmModal = () => {
+		setSelectedOffer(null);
+		setIsSuccess(false);
+	};
 
 	const initialRegion = useMemo(
 		() => ({
@@ -71,14 +95,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 				)}
 
 				{(bars ?? []).map((bar) => (
-					<MapMarker
-						key={bar.id}
-						bar={bar}
-						onSelect={(b) => {
-							setSelectedBar(b);
-							setOfferOpen(true);
-						}}
-					/>
+					<MapMarker key={bar.id} bar={bar} onSelect={handleBarSelect} />
 				))}
 			</MapView>
 
@@ -88,22 +105,24 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 				</View>
 			)}
 
-			{/* ✅ Modal : Choix d'offre */}
-			<OfferCardFromMap
-				offerOpen={offerOpen}
-				setOfferOpen={setOfferOpen}
-				selectedBar={selectedBar}
+			{/* Modal : Bar offers list */}
+			<BarOffersModal
+				visible={barModalOpen}
+				bar={selectedBar}
 				qrcodes={qrcodes ?? null}
-				onCreateQrCode={onCreateQrCode}
-				isCreateQrCodePending={isCreateQrCodePending}
-				isGetMyQrCodesPending={isGetMyQrCodesPending}
+				onClose={() => setBarModalOpen(false)}
+				onSelectOffer={handleOfferSelect}
+				isPending={isCreateQrCodePending || isGetMyQrCodesPending}
 			/>
 
-			{/* ✅ Modal : Preview QR (après génération) */}
-			<ModalQrPreview
-				visible={previewOpen}
-				onClose={() => setPreviewOpen(false)}
-				qrcode={previewedQrCode}
+			{/* Modal : Offer confirmation */}
+			<OfferConfirmModal
+				offer={selectedOffer}
+				visible={!!selectedOffer}
+				onClose={handleCloseConfirmModal}
+				onConfirm={handleConfirm}
+				isPending={isCreateQrCodePending}
+				isSuccess={isSuccess}
 			/>
 		</View>
 	);

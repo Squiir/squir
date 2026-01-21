@@ -7,6 +7,11 @@ export interface Offer {
 	name: string;
 	price: number;
 	createdAt: Date;
+	description?: string;
+	bar?: {
+		id: string;
+		name: string;
+	};
 }
 
 type OfferRangeParams = {
