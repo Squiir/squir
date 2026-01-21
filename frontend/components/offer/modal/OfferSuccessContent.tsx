@@ -18,7 +18,7 @@ export function OfferSuccessContent({ onClose }: Props) {
 			</View>
 			<Text style={styles.title}>QR Code ajouté !</Text>
 			<Text style={styles.subtitle}>
-				Tu peux le retrouver dans l'onglet QR Codes
+				Retrouve le dans l'onglet QR Codes
 			</Text>
 			<Pressable onPress={onClose} style={styles.button}>
 				<Text style={styles.buttonText}>Super !</Text>
