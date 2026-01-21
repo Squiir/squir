@@ -1,9 +1,9 @@
-import { OfferFormBody } from "@/components/offers/form/OfferFormBody";
+import { OfferFormBody } from "@/components/offers/offer-form/OfferFormBody";
 import {
   type UpdateOfferFormData,
   type UpdateOfferFormInput,
   updateOfferSchema,
-} from "@/components/offers/form/offer-schema";
+} from "@/components/offers/offer-form/offer-schema";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

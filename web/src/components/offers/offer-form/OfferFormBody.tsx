@@ -1,6 +1,6 @@
-import { OfferBasicInfo } from "@/components/offers/form/OfferBasicInfo";
-import { OfferImageUpload } from "@/components/offers/form/OfferImageUpload";
-import { OfferPromotionRules } from "@/components/offers/form/OfferPromotionRules";
+import { OfferBasicInfo } from "@/components/offers/offer-form/OfferBasicInfo";
+import { OfferImageUpload } from "@/components/offers/offer-form/OfferImageUpload";
+import { OfferPromotionRules } from "@/components/offers/offer-form/OfferPromotionRules";
 import type { PromotionRule } from "@/types/offer";
 import type { ChangeEvent } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
