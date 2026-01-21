@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
-import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { ActiveQrList } from "@components/qrcode/ActiveQrList";
 import { QrCodeHeader } from "@components/qrcode/QrCodeHeader";
 import { QrCodeHistory } from "@components/qrcode/QrCodeHistory";
@@ -29,38 +28,33 @@ export default function QrCodeScreen() {
 	);
 
 	return (
-		<SwipeableTabWrapper currentRoute="qrcode">
-			<ScrollView
-				style={styles.container}
-				contentContainerStyle={styles.content}
-			>
-				{/* Header */}
-				<QrCodeHeader />
+		<ScrollView style={styles.container} contentContainerStyle={styles.content}>
+			{/* Header */}
+			<QrCodeHeader />
 
-				{/* Scanner Button - PRO/ADMIN only */}
-				<ScannerButton />
+			{/* Scanner Button - PRO/ADMIN only */}
+			<ScannerButton />
 
-				{/* QR codes Section */}
-				<QrSection title="Disponibles">
-					<ActiveQrList
-						groupedQrCodes={groupedQrCodes}
-						isLoading={qrsLoading}
-						isError={qrsError}
-						error={qrsErr}
-						onSelectGroup={setSelectedGroup}
-					/>
-				</QrSection>
-
-				{/* Modal QR */}
-				<QrModal
-					group={selectedGroup}
-					onClose={() => setSelectedGroup(undefined)}
+			{/* QR codes Section */}
+			<QrSection title="Disponibles">
+				<ActiveQrList
+					groupedQrCodes={groupedQrCodes}
+					isLoading={qrsLoading}
+					isError={qrsError}
+					error={qrsErr}
+					onSelectGroup={setSelectedGroup}
 				/>
+			</QrSection>
 
-				{/* Historique */}
-				<QrCodeHistory />
-			</ScrollView>
-		</SwipeableTabWrapper>
+			{/* Modal QR */}
+			<QrModal
+				group={selectedGroup}
+				onClose={() => setSelectedGroup(undefined)}
+			/>
+
+			{/* Historique */}
+			<QrCodeHistory />
+		</ScrollView>
 	);
 }
 

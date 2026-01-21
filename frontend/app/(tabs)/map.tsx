@@ -1,5 +1,4 @@
 import FranceMap from "@components/map/FranceMap";
-import { SwipeableTabWrapper } from "@components/navigation/SwipeableTabWrapper";
 import { Tokens } from "@constants/tokens";
 import * as Location from "expo-location";
 import { Stack } from "expo-router";
@@ -45,19 +44,17 @@ export default function MapScreen() {
 	const longitude = coords?.longitude ?? 2.3522;
 
 	return (
-		<SwipeableTabWrapper currentRoute="map" edgeSwipeOnly>
-			<View style={styles.container}>
-				<Stack.Screen options={{ title: "Ma localisation" }} />
+		<View style={styles.container}>
+			<Stack.Screen options={{ title: "Ma localisation" }} />
 
-				{loading ? (
-					<View style={styles.loadingContainer}>
-						<ActivityIndicator color={Tokens.colors.primary[600]} />
-					</View>
-				) : (
-					<FranceMap latitude={latitude} longitude={longitude} />
-				)}
-			</View>
-		</SwipeableTabWrapper>
+			{loading ? (
+				<View style={styles.loadingContainer}>
+					<ActivityIndicator color={Tokens.colors.primary[600]} />
+				</View>
+			) : (
+				<FranceMap latitude={latitude} longitude={longitude} />
+			)}
+		</View>
 	);
 }
 

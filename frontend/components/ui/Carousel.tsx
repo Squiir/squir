@@ -1,5 +1,6 @@
 import { PropsWithMessage } from "@app-types/props-with-message";
 import { RetryButton } from "@components/ui/RetryButton";
+import { Tokens } from "@constants/tokens";
 import { ContextError } from "@utils/errors/context-error";
 import { createContext, PropsWithChildren, useContext } from "react";
 import {
@@ -46,14 +47,20 @@ export function Carousel({
 }: CarouselProps) {
 	return (
 		<CarouselContext.Provider value={{ title }}>
-			<View style={styles.container} {...props}>
-				{isLoading ? (
-					<Carousel.Skeleton />
-				) : isError ? (
-					<Carousel.Error onPress={onRetry} />
-				) : (
-					children
-				)}
+			<View style={styles.section} {...props}>
+				{/* Title with pink dot - outside bubble */}
+				<Carousel.Title />
+
+				{/* Bubble container */}
+				<View style={styles.bubble}>
+					{isLoading ? (
+						<Carousel.Skeleton />
+					) : isError ? (
+						<Carousel.Error onPress={onRetry} />
+					) : (
+						children
+					)}
+				</View>
 			</View>
 		</CarouselContext.Provider>
 	);
@@ -61,7 +68,12 @@ export function Carousel({
 
 function Title({ style }: TextProps) {
 	const { title } = useCarouselContext();
-	return <Text style={[styles.title, style]}>{title}</Text>;
+	return (
+		<View style={styles.titleContainer}>
+			<View style={styles.dot} />
+			<Text style={[styles.title, style]}>{title}</Text>
+		</View>
+	);
 }
 
 function Scroll({ style, children, ...props }: ScrollViewProps) {
@@ -80,14 +92,11 @@ function Scroll({ style, children, ...props }: ScrollViewProps) {
 function Skeleton({ children }: PropsWithChildren) {
 	const { title } = useCarouselContext();
 	return (
-		<>
-			<Carousel.Title />
-			<Carousel.Scroll>
-				{Array.from({ length: 3 }).map((_, i) => (
-					<View key={`${title}-skeleton-item-${i}`}>{children}</View>
-				))}
-			</Carousel.Scroll>
-		</>
+		<Carousel.Scroll>
+			{Array.from({ length: 3 }).map((_, i) => (
+				<View key={`${title}-skeleton-item-${i}`}>{children}</View>
+			))}
+		</Carousel.Scroll>
 	);
 }
 
@@ -108,31 +117,48 @@ Carousel.Skeleton = Skeleton;
 Carousel.Error = Error;
 
 const styles = StyleSheet.create({
-	container: {
-		marginBottom: 24,
-		paddingLeft: 16,
+	section: {
+		marginTop: Tokens.spacing[6],
+		paddingHorizontal: Tokens.spacing[4],
+	},
+	titleContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: Tokens.spacing[3],
+	},
+	dot: {
+		width: 8,
+		height: 8,
+		borderRadius: 4,
+		backgroundColor: Tokens.appColors.light.primary,
+		marginRight: Tokens.spacing[2],
 	},
 	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-		marginBottom: 12,
-		color: "#1a1a1a",
+		fontSize: Tokens.typography.sizes.lg,
+		fontWeight: Tokens.typography.weights.bold,
+		color: Tokens.colors.white,
+	},
+	bubble: {
+		padding: Tokens.spacing[4],
+		backgroundColor: `${Tokens.colors.pink[400]}15`,
+		borderRadius: Tokens.borderRadius["2xl"],
+		borderWidth: 1,
+		borderColor: `${Tokens.colors.pink[300]}40`,
 	},
 	scroll: {
 		overflow: "visible",
 	},
 	errorContainer: {
-		padding: 20,
-		backgroundColor: "#fff5f5",
-		borderRadius: 12,
-		marginRight: 16,
+		padding: Tokens.spacing[5],
+		backgroundColor: Tokens.colors.pink[50],
+		borderRadius: Tokens.borderRadius.xl,
 		alignItems: "center",
 		borderWidth: 1,
-		borderColor: "#feb2b2",
+		borderColor: Tokens.colors.pink[200],
 	},
 	errorText: {
-		color: "#c53030",
-		fontSize: 14,
+		color: Tokens.colors.pink[600],
+		fontSize: Tokens.typography.sizes.sm,
 		textAlign: "center",
 	},
 });
