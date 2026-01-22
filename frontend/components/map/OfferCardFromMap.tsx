@@ -33,7 +33,9 @@ function OfferItem({
 		onCreateQrCode({
 			offerId: offer.id,
 			label: `${selectedBar.name} • ${offer.name}${
-				typeof offer.price === "number" ? ` • ${formatPrice(offer.price)}` : ""
+				typeof offer.squirPrice === "number"
+					? ` • ${formatPrice(offer.squirPrice)}`
+					: ""
 			}`,
 		});
 	};
@@ -54,8 +56,8 @@ function OfferItem({
 					<Text style={styles.offerStock}>En stock: x{quantity}</Text>
 				)}
 			</View>
-			{typeof offer.price === "number" && (
-				<Text style={styles.offerPrice}>{formatPrice(offer.price)}</Text>
+			{typeof offer.squirPrice === "number" && (
+				<Text style={styles.offerPrice}>{formatPrice(offer.squirPrice)}</Text>
 			)}
 		</Pressable>
 	);

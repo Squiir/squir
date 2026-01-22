@@ -61,7 +61,9 @@ function Name({ style }: TextProps) {
 
 function Price({ style }: TextProps) {
 	const { offer } = useOfferCardContext();
-	return <Text style={[styles.price, style]}>{formatPrice(offer.price)}</Text>;
+	return (
+		<Text style={[styles.price, style]}>{formatPrice(offer.squirPrice)}</Text>
+	);
 }
 
 function CreatedAt({ style }: TextProps) {

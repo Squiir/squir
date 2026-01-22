@@ -20,8 +20,8 @@ export function OfferListItem({ offer, quantity, disabled, onPress }: Props) {
 			<View style={styles.row}>
 				<View style={styles.info}>
 					<Text style={styles.name}>{offer.name}</Text>
-					{typeof offer.price === "number" && (
-						<Text style={styles.price}>{formatPrice(offer.price)}</Text>
+					{typeof offer.squirPrice === "number" && (
+						<Text style={styles.price}>{formatPrice(offer.squirPrice)}</Text>
 					)}
 				</View>
 				{quantity > 0 && (

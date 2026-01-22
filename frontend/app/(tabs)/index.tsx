@@ -27,8 +27,8 @@ export default function HomeScreen() {
 			{
 				offerId: selectedOffer.id,
 				label: `${selectedOffer.bar?.name ?? "Offre"} • ${selectedOffer.name}${
-					typeof selectedOffer.price === "number"
-						? ` • ${formatPrice(selectedOffer.price)}`
+					typeof selectedOffer.squirPrice === "number"
+						? ` • ${formatPrice(selectedOffer.squirPrice)}`
 						: ""
 				}`,
 			},
