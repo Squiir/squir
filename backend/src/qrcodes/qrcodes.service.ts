@@ -285,13 +285,27 @@ export class QrCodesService {
     // Notify the QR code owner via WebSocket
     this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
 
+    const qrDetails = await this.prisma.qRCode.findUnique({
+      where: { id },
+      include: {
+        offer: true,
+        user: true,
+      },
+    });
+
+    if (!qrDetails) {
+      throw new NotFoundException("QR Code details not found");
+    }
+
     return {
       message: "QR code consumed successfully",
       qrCode: {
-        id: qr.id,
-        offerId: qr.offerId,
-        label: qr.label,
-        createdAt: qr.createdAt,
+        id: qrDetails.id,
+        offerId: qrDetails.offerId,
+        label: qrDetails.label,
+        createdAt: qrDetails.createdAt,
+        offer: qrDetails.offer,
+        user: qrDetails.user,
       },
     };
   }

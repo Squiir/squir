@@ -1,6 +1,7 @@
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ScannedHistory } from "@/components/scanner/ScannedHistory";
 import { ScannerCameraSelector } from "@/components/scanner/ScannerCameraSelector";
+import { ScannerResult } from "@/components/scanner/ScannerResult";
 import { ScannerViewfinder } from "@/components/scanner/ScannerViewfinder";
 import { useScanner } from "@/hooks/scanner/use-scanner";
 import { useMe } from "@/hooks/user/use-me";
@@ -13,8 +14,15 @@ import { toast } from "sonner";
 export default function ProfessionalScannerPage() {
   const navigate = useNavigate();
   const { data: user, isLoading: isUserLoading } = useMe();
-  const { cameras, selectedCameraId, permissionError, handleCameraChange, handleRetry } =
-    useScanner();
+  const {
+    cameras,
+    selectedCameraId,
+    permissionError,
+    handleCameraChange,
+    handleRetry,
+    scannedData,
+    resetScan,
+  } = useScanner();
 
   useEffect(() => {
     if (!isUserLoading && user) {
@@ -35,27 +43,33 @@ export default function ProfessionalScannerPage() {
         </aside>
 
         <main className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-y-auto">
-          <div className="flex flex-col items-center gap-4 mb-8">
-            <div className="p-4 bg-background rounded-2xl shadow-sm">
-              <QrCode className="w-8 h-8 text-primary" />
-            </div>
-            <div className="text-center space-y-1">
-              <h1 className="text-2xl font-bold tracking-tight">Scanner</h1>
-              <p className="text-muted-foreground text-sm">Placez le QR Code dans le cadre</p>
-            </div>
-          </div>
+          {scannedData ? (
+            <ScannerResult data={scannedData} onScanAnother={resetScan} />
+          ) : (
+            <>
+              <div className="flex flex-col items-center gap-4 mb-8">
+                <div className="p-4 bg-background rounded-2xl shadow-sm">
+                  <QrCode className="w-8 h-8 text-primary" />
+                </div>
+                <div className="text-center space-y-1">
+                  <h1 className="text-2xl font-bold tracking-tight">Scanner</h1>
+                  <p className="text-muted-foreground text-sm">Placez le QR Code dans le cadre</p>
+                </div>
+              </div>
 
-          <ScannerViewfinder permissionError={permissionError} onRetry={handleRetry} />
+              <ScannerViewfinder permissionError={permissionError} onRetry={handleRetry} />
 
-          <ScannerCameraSelector
-            cameras={cameras}
-            selectedCameraId={selectedCameraId}
-            onCameraChange={handleCameraChange}
-          />
+              <ScannerCameraSelector
+                cameras={cameras}
+                selectedCameraId={selectedCameraId}
+                onCameraChange={handleCameraChange}
+              />
 
-          <div className="lg:hidden w-full max-w-md mt-8">
-            <ScannedHistory />
-          </div>
+              <div className="lg:hidden w-full max-w-md mt-8">
+                <ScannedHistory />
+              </div>
+            </>
+          )}
         </main>
       </div>
     </RequireAuth>

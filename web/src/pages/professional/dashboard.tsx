@@ -1,13 +1,52 @@
-import { LayoutDashboard } from "lucide-react";
+import { useMe } from "@/hooks/user/use-me";
+import { barService } from "@/services/bar.service";
+import { useQuery } from "@tanstack/react-query";
+
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardStats } from "@/components/dashboard/DashboardStats";
+import { RevenueChart } from "@/components/dashboard/RevenueChart";
 
 export default function ProfessionalDashboardPage() {
-  return (
-    <div className="flex flex-col items-center justify-center h-full space-y-4">
-      <div className="p-4 bg-background rounded-full">
-        <LayoutDashboard className="w-12 h-12 text-primary" />
+  const { data: user } = useMe();
+  const barId = user?.barId;
+
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ["dashboard-stats", barId],
+    queryFn: () => (barId ? barService.getDashboardStats(barId) : null),
+    enabled: !!barId,
+  });
+
+  const handleOpenStripeDashboard = async () => {
+    if (!barId) return;
+    try {
+      const url = await barService.getStripeDashboardLink(barId);
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Failed to get Stripe dashboard link", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Chargement des données...</p>
       </div>
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <p className="text-muted-foreground">Placeholder for Dashboard</p>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Aucune donnée disponible.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8 p-8 h-full overflow-y-auto">
+      <DashboardHeader onOpenStripeDashboard={handleOpenStripeDashboard} />
+      <DashboardStats stats={stats} />
+      <RevenueChart data={stats.revenueHistory} />
     </div>
   );
 }

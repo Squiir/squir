@@ -2,13 +2,12 @@ import { QR_HOSTNAME, QR_PROTOCOL, SCAN_DEBOUNCE_MS } from "@/constants/scanner"
 import { useConsumeQrCode } from "@/hooks/qrcode/use-consume-qr-code";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export function useScanner() {
-  const navigate = useNavigate();
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
+  const [scannedData, setScannedData] = useState<any>(null);
   const [cameras, setCameras] = useState<Array<{ id: string; label: string }>>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [permissionError, setPermissionError] = useState(false);
@@ -18,6 +17,7 @@ export function useScanner() {
 
   const isPendingRef = useRef(isPending);
   const scannedRef = useRef(scanned);
+  const processingRef = useRef(false);
 
   useEffect(() => {
     isPendingRef.current = isPending;
@@ -98,7 +98,8 @@ export function useScanner() {
           aspectRatio: 1.0,
         },
         async (decodedText) => {
-          if (scannedRef.current || isPendingRef.current) return;
+          if (scannedRef.current || isPendingRef.current || processingRef.current) return;
+          processingRef.current = true;
           setScanned(true);
 
           try {
@@ -114,24 +115,28 @@ export function useScanner() {
 
             if (!qrId) {
               toast.error("Ce QR Code n'est pas un code SQUIR valide");
+              processingRef.current = false;
               setTimeout(() => setScanned(false), SCAN_DEBOUNCE_MS);
               return;
             }
 
-            scannerRef.current?.pause(true);
+            if (scannerRef.current?.isScanning) {
+              await scannerRef.current.stop();
+            }
 
             const result = await consumeQrCode(qrId);
             toast.success(result.message || "QR Code validé !");
-
-            setTimeout(() => {
-              if (isMountedRef.current) navigate(-1);
-            }, 1500);
+            setScannedData(result);
           } catch (error: any) {
             console.error(error);
             toast.error(error?.response?.data?.message || "Erreur lors de la validation");
             setScanned(false);
+            processingRef.current = false;
+
             try {
-              scannerRef.current?.resume();
+              if (scannerRef.current && !scannerRef.current.isScanning && selectedCameraId) {
+                await startScanner(selectedCameraId);
+              }
             } catch (e) {
               console.warn("Failed to resume scanner after error", e);
             }
@@ -165,13 +170,37 @@ export function useScanner() {
     }
   };
 
+  const resetScan = () => {
+    setScanned(false);
+    setScannedData(null);
+    processingRef.current = false;
+
+    setTimeout(() => {
+      try {
+        if (scannerRef.current?.getState() === 2) {
+          scannerRef.current?.resume();
+        } else {
+          throw new Error("Scanner not paused");
+        }
+      } catch (e) {
+        if (selectedCameraId) {
+          startScanner(selectedCameraId);
+        } else {
+          startScanner({ facingMode: "environment" });
+        }
+      }
+    }, SCAN_DEBOUNCE_MS);
+  };
+
   return {
     cameras,
     selectedCameraId,
     permissionError,
     scanned,
+    scannedData,
     handleCameraChange,
     handleRetry,
+    resetScan,
     init,
   };
 }
