@@ -56,6 +56,12 @@ export class QrCodesController {
     return this.qr.getHistory(userId);
   }
 
+  @Get("scanned-history")
+  @Roles(UserRole.PROFESSIONAL)
+  getScannedHistory(@CurrentUserId() userId: string) {
+    return this.qr.getScannedHistory(userId);
+  }
+
   @Post(":id/consume")
   @Roles(UserRole.ADMIN, UserRole.PROFESSIONAL)
   async consumeQrcode(

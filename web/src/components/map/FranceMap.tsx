@@ -110,7 +110,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
         selectedBar={selectedBar}
         qrcodes={qrcodes ?? null}
         onSelectOffer={(offer) => {
-          if (offer.price > 0) {
+          if (offer.squirPrice > 0) {
             setSelectedOffer(offer);
             setPaymentOpen(true);
             setOfferOpen(false);
@@ -133,7 +133,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
           onClose={() => setPaymentOpen(false)}
           barId={selectedBar.id}
           offerId={selectedOffer.id}
-          amount={selectedOffer.price}
+          amount={selectedOffer.squirPrice}
           onSuccess={() => {
             setPaymentOpen(false);
             onCreateQrCode({

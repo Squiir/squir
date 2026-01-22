@@ -29,4 +29,11 @@ export const qrCodeService = {
     const { data } = await api.get<QrCode[]>("/qrcodes/history");
     return data;
   },
+
+  async getScannedHistory() {
+    const { data } = await api.get<import("@/types/qrcode").ScannedQrCode[]>(
+      "/qrcodes/scanned-history",
+    );
+    return data;
+  },
 };

@@ -8,6 +8,7 @@ export function useConsumeQrCode() {
     mutationFn: (id: string) => qrCodeService.consumeQrCode(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
+      queryClient.invalidateQueries({ queryKey: ["scanned-history"] });
     },
   });
 }
