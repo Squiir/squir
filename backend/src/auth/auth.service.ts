@@ -1,3 +1,4 @@
+import { BarsService } from "@bars/bars.service";
 import {
   ConflictException,
   ForbiddenException,
@@ -5,8 +6,10 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "@prisma/prisma.service";
+import { StripeService } from "@stripe/stripe.service";
 import { iso8601ToDateTime } from "@utils/date";
 import * as bcrypt from "bcrypt";
+import { RegisterProfessionalDto } from "./dto/register-professional.dto";
 import { RegisterDto } from "./dto/register.dto";
 
 @Injectable()
@@ -14,6 +17,8 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private barsService: BarsService,
+    private stripeService: StripeService,
   ) {}
 
   /**
@@ -48,6 +53,63 @@ export class AuthService {
 
     const tokens = await this.generateTokens(user.id);
     return tokens;
+  }
+
+  /**
+   * Register a new professional user with bar
+   * @param dto - Professional registration data including user and bar information
+   * @returns Access tokens and Stripe onboarding URL
+   * @throws ConflictException if email or username already exists
+   */
+  async registerProfessional(dto: RegisterProfessionalDto) {
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existingEmail) throw new ConflictException("Email already used");
+
+    const existingUsername = await this.prisma.user.findUnique({
+      where: { username: dto.username },
+    });
+    if (existingUsername) throw new ConflictException("Username already used");
+
+    const hashed = await bcrypt.hash(dto.password, 10);
+
+    const bar = await this.barsService.create({
+      name: dto.barName,
+      address: dto.barAddress,
+      arrondissement: dto.arrondissement,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+    });
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        username: dto.username,
+        password: hashed,
+        birthDate: new Date(),
+        role: "PROFESSIONAL",
+        barId: bar.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const tokens = await this.generateTokens(user.id);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+
+    const stripeOnboardingUrl = await this.stripeService.createOnboardingLink(
+      bar.id,
+      `${process.env.FRONTEND_URL}/register/professional?error=stripe`,
+      `${process.env.FRONTEND_URL}/dashboard`,
+    );
+
+    return {
+      ...tokens,
+      stripeOnboardingUrl,
+      barId: bar.id,
+    };
   }
 
   /**

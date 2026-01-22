@@ -1,9 +1,28 @@
+import { CreateEstablishmentDto } from "@bars/dto/create-establishment.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "@prisma/prisma.service";
 
 @Injectable()
 export class BarsService {
   constructor(private prisma: PrismaService) {}
+
+  /**
+   * Create a new bar with provided coordinates
+   * @param dto - Bar creation data including manual coordinates
+   * @returns Created bar
+   */
+  async create(dto: CreateEstablishmentDto) {
+    return this.prisma.bar.create({
+      data: {
+        name: dto.name,
+        address: dto.address,
+        arrondissement: dto.arrondissement,
+        latitude: dto.latitude,
+        longitude: dto.longitude,
+        color: "",
+      },
+    });
+  }
 
   /**
    * Get all bars with their offers

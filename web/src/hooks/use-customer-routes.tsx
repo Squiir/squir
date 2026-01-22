@@ -5,7 +5,7 @@ import routes from "~react-pages";
 const isAuthRoute = (path?: string) => {
   if (!path) return false;
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return ["/login", "/register"].includes(normalizedPath);
+  return ["/login", "/register", "/register/professional"].includes(normalizedPath);
 };
 
 export function useCustomerRoutes() {

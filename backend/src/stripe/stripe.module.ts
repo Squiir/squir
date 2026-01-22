@@ -8,5 +8,6 @@ import { StripeService } from "@stripe/stripe.service";
   imports: [ConfigModule, PrismaModule],
   controllers: [StripeController],
   providers: [StripeService],
+  exports: [StripeService],
 })
 export class StripeModule {}
