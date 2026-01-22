@@ -26,9 +26,10 @@ export function OfferCard({ offer, onEdit }: OfferCardProps) {
     }
   };
 
-  const discount = Math.round(
-    ((offer.originalPrice - offer.squirPrice) / offer.originalPrice) * 100,
-  );
+  const discount =
+    offer.originalPrice > 0
+      ? Math.round(((offer.originalPrice - offer.squirPrice) / offer.originalPrice) * 100)
+      : 0;
 
   const hasDiscount = discount > 0;
 

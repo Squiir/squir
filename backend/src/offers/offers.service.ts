@@ -4,7 +4,9 @@ import { CreateOfferDto } from "@offers/dto/create-offer.dto";
 import { OfferParamsDto } from "@offers/dto/offers.dto";
 import { UpdateOfferDto } from "@offers/dto/update-offer.dto";
 import { ExtendedOfferWithParams } from "@offers/offers.type";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
+import { parseValidUntil } from "@utils/date";
 import { haversineDistance } from "@utils/distance";
 
 @Injectable()
@@ -42,14 +44,7 @@ export class OffersService {
       }
     }
 
-    let validUntilDate: Date | undefined = undefined;
-    if (validUntil) {
-      const dateStr =
-        validUntil.includes(":") && validUntil.split(":").length === 2
-          ? `${validUntil}:00`
-          : validUntil;
-      validUntilDate = new Date(dateStr);
-    }
+    const validUntilDate = parseValidUntil(validUntil);
 
     return this.prisma.offer.create({
       data: {
@@ -142,7 +137,9 @@ export class OffersService {
       squirPrice = effectiveOriginalPrice;
     }
 
-    let promotionRuleUpdate: any = undefined;
+    let promotionRuleUpdate:
+      | Prisma.PromotionRuleUpdateOneWithoutOfferNestedInput
+      | undefined = undefined;
     if (promotionRule === null) {
       if (existingOffer.promotionRule) {
         promotionRuleUpdate = {

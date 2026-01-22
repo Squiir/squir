@@ -41,8 +41,4 @@ export const offerService = {
     });
     return data.imageUrl;
   },
-
-  async deleteOfferImage(imageUrl: string) {
-    await api.delete("/offers/delete-image", { data: { imageUrl } });
-  },
 };
