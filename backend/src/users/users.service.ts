@@ -287,4 +287,75 @@ export class UsersService {
       savedOffers,
     };
   }
+
+  /**
+   * Get user wallet with active tickets and history
+   * @param userId - User ID
+   * @returns Object with active and history tickets
+   */
+  async getWallet(userId: string) {
+    const qrCodes = await this.prisma.qRCode.findMany({
+      where: { userId },
+      include: {
+        offer: {
+          include: {
+            bar: { select: { name: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const activeTickets: any[] = [];
+    const historyTickets: any[] = [];
+
+    const activeGroups = new Map<
+      string,
+      { offer: any; count: number; qrCodes: any[] }
+    >();
+
+    for (const qr of qrCodes) {
+      if (qr.used || qr.consumedAt) {
+        historyTickets.push({
+          id: qr.id,
+          offerName: qr.offer.name,
+          usedAt: qr.consumedAt,
+          status: `Utilisé le ${qr.consumedAt ? new Date(qr.consumedAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }) : "N/A"}`,
+        });
+      } else {
+        if (!activeGroups.has(qr.offerId)) {
+          activeGroups.set(qr.offerId, {
+            offer: qr.offer,
+            count: 0,
+            qrCodes: [],
+          });
+        }
+        const group = activeGroups.get(qr.offerId)!;
+        group.count++;
+        group.qrCodes.push(qr);
+      }
+    }
+
+    for (const group of activeGroups.values()) {
+      activeTickets.push({
+        offerId: group.offer.id,
+        offerName: group.offer.name,
+        offerDescription: group.offer.description,
+        offerImageUrl: group.offer.imageUrl,
+        quantity: group.count,
+        qrCodes: group.qrCodes.map((q) => ({ id: q.id, label: q.label })),
+      });
+    }
+
+    historyTickets.sort((a, b) => {
+      const dateA = a.usedAt ? new Date(a.usedAt).getTime() : 0;
+      const dateB = b.usedAt ? new Date(b.usedAt).getTime() : 0;
+      return dateB - dateA;
+    });
+
+    return {
+      active: activeTickets,
+      history: historyTickets,
+    };
+  }
 }

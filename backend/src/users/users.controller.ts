@@ -119,4 +119,10 @@ export class UsersController {
   getFavorites(@CurrentUserId() userId: string) {
     return this.users.getFavorites(userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("wallet")
+  getWallet(@CurrentUserId() userId: string) {
+    return this.users.getWallet(userId);
+  }
 }
