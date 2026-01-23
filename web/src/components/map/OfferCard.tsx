@@ -6,11 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useFavorites } from "@/hooks/useFavorites";
 import type { Bar } from "@/types/bar";
 import type { Offer } from "@/types/offer";
 import type { QrCode } from "@/types/qrcode";
 import clsx from "clsx";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 
 interface OfferCardProps {
   offerOpen: boolean;
@@ -32,12 +33,32 @@ export function OfferCard({
   isGetMyQrCodesPending,
 }: OfferCardProps) {
   const offers = selectedBar?.offers ?? [];
+  const { isOfferSaved, toggleOffer, isVenueFavorite, toggleVenue } = useFavorites();
 
   return (
     <Dialog open={offerOpen} onOpenChange={setOfferOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{selectedBar?.name ?? "Offres"}</DialogTitle>
+          <div className="flex items-center justify-between pr-8">
+            <DialogTitle>{selectedBar?.name ?? "Offres"}</DialogTitle>
+            {selectedBar && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className={clsx(
+                  "hover:text-yellow-400 transition-colors",
+                  isVenueFavorite(selectedBar.id)
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-400",
+                )}
+                onClick={() => toggleVenue(selectedBar.id)}
+              >
+                <Star
+                  className={clsx("h-5 w-5", isVenueFavorite(selectedBar.id) && "fill-current")}
+                />
+              </Button>
+            )}
+          </div>
           <DialogDescription>Choisis une offre pour générer le QR code</DialogDescription>
         </DialogHeader>
 
@@ -63,8 +84,26 @@ export function OfferCard({
                   onSelectOffer(offer);
                 }}
               >
-                <div>
-                  <h4 className="font-semibold">{offer.name}</h4>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-semibold">{offer.name}</h4>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={clsx(
+                        "h-8 w-8 -mt-1 -mr-2 hover:text-yellow-400 transition-colors",
+                        isOfferSaved(offer.id)
+                          ? "text-yellow-400 fill-yellow-400"
+                          : "text-gray-400",
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleOffer(offer.id);
+                      }}
+                    >
+                      <Star className={clsx("h-5 w-5", isOfferSaved(offer.id) && "fill-current")} />
+                    </Button>
+                  </div>
                   {typeof offer.squirPrice === "number" && (
                     <p className="text-sm text-gray-500">{offer.squirPrice} €</p>
                   )}

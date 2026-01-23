@@ -1,5 +1,6 @@
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { ProfileActions } from "@/components/profile/ProfileActions";
+import { ProfileFavorites } from "@/components/profile/ProfileFavorites";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileLoyaltyPoints } from "@/components/profile/ProfileLoyaltyPoints";
 import { ProfileQrCodes } from "@/components/profile/ProfileQrCodes";
@@ -17,6 +18,8 @@ export default function ProfilePage() {
           <ProfileLoyaltyPoints user={user} isLoading={isLoading} />
 
           <ProfileQrCodes />
+
+          <ProfileFavorites />
 
           <ProfileActions />
         </div>

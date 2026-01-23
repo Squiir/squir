@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 export default function AppLayout() {
   return (
-    <div className="flex flex-col h-screen bg-muted">
+    <div className="flex flex-col bg-muted">
       <Navbar />
 
       <main className="flex-1 w-full">
