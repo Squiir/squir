@@ -95,4 +95,28 @@ export class UsersController {
   share(@Param("username") username: string) {
     return this.users.shareByUsername(username);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("favorites/venues/:id")
+  toggleFavoriteVenue(
+    @CurrentUserId() userId: string,
+    @Param("id") barId: string,
+  ) {
+    return this.users.toggleFavoriteVenue(userId, barId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("favorites/offers/:id")
+  toggleSavedOffer(
+    @CurrentUserId() userId: string,
+    @Param("id") offerId: string,
+  ) {
+    return this.users.toggleSavedOffer(userId, offerId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("profile/favorites")
+  getFavorites(@CurrentUserId() userId: string) {
+    return this.users.getFavorites(userId);
+  }
 }
