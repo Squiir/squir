@@ -51,15 +51,13 @@ export function Navbar() {
                   </NavLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              {canScan && (
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                    <NavLink to="/scanner">
-                      <span className="font-bold text-md">Scanner</span>
-                    </NavLink>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              )}
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <NavLink to="/wallet">
+                    <span className="font-bold text-md">Wallet</span>
+                  </NavLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         )}

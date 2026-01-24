@@ -2,6 +2,7 @@ import { api } from "@/services/api.service";
 import type { Bar } from "@/types/bar";
 import type { Offer } from "@/types/offer";
 import type { User } from "@/types/user";
+import type { WalletResponse } from "@/types/wallet";
 
 export const userService = {
   async getCurrentUser() {
@@ -52,6 +53,11 @@ export const userService = {
         venueName: string;
       })[];
     }>("/users/profile/favorites");
+    return data;
+  },
+
+  async getWallet() {
+    const { data } = await api.get<WalletResponse>("/users/wallet");
     return data;
   },
 };
