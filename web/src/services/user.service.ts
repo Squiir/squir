@@ -49,7 +49,10 @@ export const userService = {
   async getFavorites() {
     const { data } = await api.get<{
       favoriteVenues: Pick<Bar, "id" | "name" | "address" | "arrondissement">[];
-      savedOffers: (Pick<Offer, "id" | "name" | "squirPrice" | "validUntil" | "imageUrl"> & {
+      savedOffers: (Pick<
+        Offer,
+        "id" | "name" | "squirPrice" | "validUntil" | "imageUrl" | "barId" | "originalPrice"
+      > & {
         venueName: string;
       })[];
     }>("/users/profile/favorites");
