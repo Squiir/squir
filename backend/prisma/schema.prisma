@@ -44,6 +44,7 @@ model User {
   updatedAt          DateTime            @updatedAt
   userFavoriteVenues UserFavoriteVenue[]
   userSavedOffers    UserSavedOffer[]
+  notifications      Notification[]
 }
 
 model QRCode {
@@ -210,4 +211,27 @@ model UserSavedOffer {
 
   @@id([userId, offerId])
   @@index([offerId])
+}
+
+enum NotificationType {
+  NEW_GROUP
+  NEW_MESSAGE
+  BUY_QR_CODE
+  QR_CODE_SCANNED
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  description String
+  read        Boolean  @default(false)
+  data        Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
