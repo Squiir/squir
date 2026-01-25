@@ -53,8 +53,6 @@ export default function RegisterProfessionalPage() {
     registerProfessional(
       {
         ...values,
-        firstName: undefined,
-        lastName: undefined,
       },
       {
         onSuccess: (data) => {

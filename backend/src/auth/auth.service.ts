@@ -87,7 +87,6 @@ export class AuthService {
         email: dto.email,
         username: dto.username,
         password: hashed,
-        birthDate: new Date(),
         role: "PROFESSIONAL",
         barId: bar.id,
       },

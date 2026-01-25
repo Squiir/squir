@@ -20,7 +20,7 @@ model User {
   avatarUrl String?
   status    String?
 
-  birthDate DateTime
+  birthDate DateTime?
   firstName String?
   lastName  String?
 
