@@ -20,10 +20,12 @@ export function ScannerViewfinder({ permissionError, onRetry }: ScannerViewfinde
         <div className="absolute bottom-8 left-8 w-10 h-10 border-l-[6px] border-b-[6px] border-white rounded-bl-xl shadow-sm" />
         <div className="absolute bottom-8 right-8 w-10 h-10 border-r-[6px] border-b-[6px] border-white rounded-br-xl shadow-sm" />
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center opacity-50">
-          <div className="absolute w-full h-1 bg-white/80 rounded-full" />
-          <div className="absolute h-full w-1 bg-white/80 rounded-full" />
-        </div>
+        {!permissionError && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center opacity-50">
+            <div className="absolute w-full h-1 bg-white/80 rounded-full" />
+            <div className="absolute h-full w-1 bg-white/80 rounded-full" />
+          </div>
+        )}
       </div>
     </div>
   );

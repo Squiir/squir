@@ -18,3 +18,18 @@ export interface QrCode {
     id: string;
   };
 }
+
+export interface ScannedQrCode {
+  id: string;
+  consumedAt: string;
+  offer: {
+    name: string;
+    imageUrl: string | null;
+    squirPrice: number;
+    originalPrice: number;
+  };
+  user: {
+    username: string;
+    avatarUrl: string | null;
+  };
+}

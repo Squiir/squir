@@ -323,6 +323,55 @@ export class QrCodesService {
   }
 
   /**
+   * Retrieves the history of scanned QR codes for a professional's bar
+   * @param userId - ID of the professional user
+   * @returns Array of scanned QR codes (limited to 10 most recent)
+   */
+  async getScannedHistory(userId: string) {
+    if (!userId) throw new BadRequestException("Missing userId");
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { barId: true, role: true },
+    });
+
+    if (!user || user.role !== UserRole.PROFESSIONAL || !user.barId) {
+      throw new ForbiddenException(
+        "Only professionals attached to a bar can view scanned history",
+      );
+    }
+
+    return this.prisma.qRCode.findMany({
+      where: {
+        offer: {
+          barId: user.barId,
+        },
+        consumedAt: { not: null },
+      },
+      orderBy: { consumedAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        offer: {
+          select: {
+            name: true,
+            imageUrl: true,
+            squirPrice: true,
+            originalPrice: true,
+          },
+        },
+        user: {
+          select: {
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        consumedAt: true,
+      },
+    });
+  }
+
+  /**
    * Deletes QR codes older than 48 hours
    * Intended for scheduled cleanup (e.g., cron job)
    * @returns Object containing the number of deleted QR codes
