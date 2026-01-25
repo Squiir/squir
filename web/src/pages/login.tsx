@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useLogin } from "@/hooks/auth/use-login";
+import { useMe } from "@/hooks/user/use-me";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Navigate } from "react-router";
@@ -18,6 +19,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const { isLoggedIn } = useAuth();
+  const { data: user, isLoading: isUserLoading } = useMe();
 
   const { mutate: login, isPending } = useLogin();
 
@@ -36,7 +38,11 @@ export default function LoginPage() {
     });
   }
 
-  if (isLoggedIn) return <Navigate to="/home" replace />;
+  if (isLoggedIn) {
+    if (isUserLoading) return null;
+    if (user?.role === "PROFESSIONAL") return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted">

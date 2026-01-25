@@ -5,7 +5,8 @@ import { Range } from "@app-types/range";
 export interface Offer {
 	id: string;
 	name: string;
-	price: number;
+	originalPrice: number;
+	squirPrice: number;
 	createdAt: Date;
 	description?: string;
 	bar?: {

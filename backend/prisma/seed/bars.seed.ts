@@ -10,8 +10,24 @@ const PARIS_BARS = [
     color: "#FF4D6D",
     ownerUsername: "bar1er", // Owner is the PROFESSIONAL user "bar1er"
     offers: [
-      { name: "Bière pression 25cl", price: 4.5 },
-      { name: "Mojito", price: 9.0 },
+      {
+        name: "Bière pression 25cl",
+        originalPrice: 6.0,
+        squirPrice: 6.0,
+        stock: 100,
+        description: "Une bière pression 25cl",
+        imageUrl: null,
+        validUntil: null,
+      },
+      {
+        name: "Mojito",
+        originalPrice: 11.0,
+        squirPrice: 11.0,
+        stock: 50,
+        description: "Une mojito",
+        imageUrl: null,
+        validUntil: null,
+      },
     ],
   },
   {
@@ -23,8 +39,24 @@ const PARIS_BARS = [
     color: "#FF8FAB",
     ownerUsername: "bar2em", // Owner is the PROFESSIONAL user "bar2em"
     offers: [
-      { name: "Verre de vin", price: 6.0 },
-      { name: "Spritz", price: 8.5 },
+      {
+        name: "Verre de vin",
+        originalPrice: 8.0,
+        squirPrice: 8.0,
+        stock: 75,
+        description: "Un verre de vin",
+        imageUrl: null,
+        validUntil: null,
+      },
+      {
+        name: "Spritz",
+        originalPrice: 10.0,
+        squirPrice: 10.0,
+        stock: 60,
+        description: "Un spritz",
+        imageUrl: null,
+        validUntil: null,
+      },
     ],
   },
   {
@@ -35,8 +67,24 @@ const PARIS_BARS = [
     longitude: 2.3615,
     color: "#FFD6A5",
     offers: [
-      { name: "Cocktail classique", price: 10.0 },
-      { name: "Cocktail spécial", price: 12.0 },
+      {
+        name: "Cocktail classique",
+        originalPrice: 12.0,
+        squirPrice: 12.0,
+        stock: 40,
+        description: "Un cocktail classique",
+        imageUrl: null,
+        validUntil: null,
+      },
+      {
+        name: "Cocktail spécial",
+        originalPrice: 15.0,
+        squirPrice: 15.0,
+        stock: 30,
+        description: "Un cocktail spécial",
+        imageUrl: null,
+        validUntil: null,
+      },
     ],
   },
   {
@@ -47,8 +95,24 @@ const PARIS_BARS = [
     longitude: 2.3622,
     color: "#FDFFB6",
     offers: [
-      { name: "Ptite Garbiche", price: 5.0 },
-      { name: "Whisky", price: 11.0 },
+      {
+        name: "Ptite Garbiche",
+        originalPrice: 6.5,
+        squirPrice: 6.5,
+        stock: 80,
+        description: "Une ptite garbiche",
+        imageUrl: null,
+        validUntil: null,
+      },
+      {
+        name: "Whisky",
+        originalPrice: 13.0,
+        squirPrice: 13.0,
+        stock: 45,
+        description: "Un whisky",
+        imageUrl: null,
+        validUntil: null,
+      },
     ],
   },
   {
@@ -59,8 +123,24 @@ const PARIS_BARS = [
     longitude: 2.347,
     color: "#CAFFBF",
     offers: [
-      { name: "Snus", price: 7.5 },
-      { name: "Long drink", price: 9.5 },
+      {
+        name: "Snus",
+        originalPrice: 9.0,
+        squirPrice: 9.0,
+        stock: 55,
+        description: "Un snus",
+        imageUrl: null,
+        validUntil: null,
+      },
+      {
+        name: "Long drink",
+        originalPrice: 11.5,
+        squirPrice: 11.5,
+        stock: 65,
+        description: "Un long drink",
+        imageUrl: null,
+        validUntil: null,
+      },
     ],
   },
   {

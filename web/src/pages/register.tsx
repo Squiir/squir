@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useRegister } from "@/hooks/auth/use-register";
+import { useMe } from "@/hooks/user/use-me";
 import { authService } from "@/services/auth.service";
 import { registerSchema, type RegisterFormValues } from "@/types/register";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -86,7 +87,11 @@ export default function RegisterPage() {
     );
   };
 
-  if (isLoggedIn) return <Navigate to="/home" replace />;
+  if (isLoggedIn) {
+    const { data: user } = useMe();
+    if (user?.role === "PROFESSIONAL") return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted">

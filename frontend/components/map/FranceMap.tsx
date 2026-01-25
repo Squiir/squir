@@ -55,8 +55,8 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 			{
 				offerId: selectedOffer.id,
 				label: `${selectedBar.name} • ${selectedOffer.name}${
-					typeof selectedOffer.price === "number"
-						? ` • ${formatPrice(selectedOffer.price)}`
+					typeof selectedOffer.squirPrice === "number"
+						? ` • ${formatPrice(selectedOffer.squirPrice)}`
 						: ""
 				}`,
 			},

@@ -32,9 +32,9 @@ export function OfferDetailsContent({
 				subtitle={offer.bar?.name ?? "Offre spéciale"}
 			/>
 
-			{typeof offer.price === "number" && (
+			{typeof offer.squirPrice === "number" && (
 				<View style={styles.priceBadge}>
-					<Text style={styles.priceText}>{formatPrice(offer.price)}</Text>
+					<Text style={styles.priceText}>{formatPrice(offer.squirPrice)}</Text>
 				</View>
 			)}
 
