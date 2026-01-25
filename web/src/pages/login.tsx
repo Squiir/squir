@@ -65,6 +65,12 @@ export default function LoginPage() {
                 S'inscrire
               </a>
             </div>
+            <div className="text-center text-sm text-muted-foreground">
+              Vous êtes un professionnel ?{" "}
+              <a href="/register/professional" className="underline hover:text-primary">
+                S'inscrire en tant que professionnel
+              </a>
+            </div>
           </form>
         </CardContent>
       </Card>

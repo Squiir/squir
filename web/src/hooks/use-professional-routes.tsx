@@ -9,7 +9,7 @@ export function useProfessionalRoutes() {
   const commonRoutes = routes.filter((r) => {
     if (!r.path) return false;
     const normalizedPath = r.path.startsWith("/") ? r.path : `/${r.path}`;
-    return ["/login", "/register"].includes(normalizedPath);
+    return ["/login", "/register", "/register/professional"].includes(normalizedPath);
   });
 
   const catchAllRoute = routes.find(

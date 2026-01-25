@@ -1,5 +1,9 @@
 import { useAuthStore } from "@/store/auth.store";
 import type { LoginResponseDto } from "@/types/auth";
+import type {
+  RegisterProfessionalFormValues,
+  RegisterProfessionalResponse,
+} from "@/types/register-professional";
 import axios from "axios";
 
 export const API_URL = import.meta.env.VITE_API_URL;
@@ -15,6 +19,15 @@ export const authService = {
 
   async register(dto: import("@/types/auth").RegisterRequestDto) {
     const { data } = await api.post<LoginResponseDto>("/auth/register", dto);
+    useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+    return data;
+  },
+
+  async registerProfessional(dto: RegisterProfessionalFormValues) {
+    const { data } = await api.post<RegisterProfessionalResponse>(
+      "/auth/register/professional",
+      dto,
+    );
     useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
     return data;
   },

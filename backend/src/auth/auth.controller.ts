@@ -1,5 +1,6 @@
 import { AuthService } from "@auth/auth.service";
 import type { AuthDto } from "@auth/dto/auth.dto";
+import { RegisterProfessionalDto } from "@auth/dto/register-professional.dto";
 import { RegisterDto } from "@auth/dto/register.dto";
 import { JwtAuthGuard } from "@auth/jwt-auth.guard";
 import { JwtRefreshTokenGuard } from "@auth/jwt-refresh-token.guard";
@@ -14,6 +15,11 @@ export class AuthController {
   @Post("register")
   register(@Body() dto: RegisterDto) {
     return this.auth.register(dto);
+  }
+
+  @Post("register/professional")
+  registerProfessional(@Body() dto: RegisterProfessionalDto) {
+    return this.auth.registerProfessional(dto);
   }
 
   @UseGuards(LocalAuthGuard)
