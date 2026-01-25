@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
+import type { Path, UseFormReturn } from "react-hook-form";
 
 interface Props<
   T extends {
@@ -26,7 +26,7 @@ export function RegisterCredentials<
   return (
     <>
       <div className="space-y-2">
-        <Input placeholder="Email" type="email" {...form.register("email" as any)} />
+        <Input placeholder="Email" type="email" {...form.register("email" as Path<T>)} />
         {form.formState.errors.email && (
           <p className="text-destructive text-xs">
             {form.formState.errors.email.message as string}
@@ -34,7 +34,7 @@ export function RegisterCredentials<
         )}
       </div>
       <div className="space-y-2">
-        <Input placeholder="Nom d'utilisateur" {...form.register("username" as any)} />
+        <Input placeholder="Nom d'utilisateur" {...form.register("username" as Path<T>)} />
         {form.formState.errors.username && (
           <p className="text-destructive text-xs">
             {form.formState.errors.username.message as string}
@@ -42,7 +42,11 @@ export function RegisterCredentials<
         )}
       </div>
       <div className="space-y-2">
-        <Input placeholder="Mot de passe" type="password" {...form.register("password" as any)} />
+        <Input
+          placeholder="Mot de passe"
+          type="password"
+          {...form.register("password" as Path<T>)}
+        />
         {form.formState.errors.password && (
           <p className="text-destructive text-xs">
             {form.formState.errors.password.message as string}
@@ -54,7 +58,7 @@ export function RegisterCredentials<
           <label className="text-xs font-medium pl-1 text-muted-foreground">
             Date de naissance
           </label>
-          <Input type="date" {...form.register("birthDate" as any)} />
+          <Input type="date" {...form.register("birthDate" as Path<T>)} />
           {form.formState.errors.birthDate && (
             <p className="text-destructive text-xs">
               {form.formState.errors.birthDate.message as string}

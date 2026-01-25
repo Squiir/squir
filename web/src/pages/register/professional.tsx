@@ -53,8 +53,6 @@ export default function RegisterProfessionalPage() {
     registerProfessional(
       {
         ...values,
-        firstName: undefined,
-        lastName: undefined,
       },
       {
         onSuccess: (data) => {
@@ -65,7 +63,7 @@ export default function RegisterProfessionalPage() {
             toast.error("Erreur: Lien Stripe manquant");
           }
         },
-        onError: (err: any) => {
+        onError: (err) => {
           const messages = err.response?.data?.message;
           if (messages) {
             if (Array.isArray(messages)) {
