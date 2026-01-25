@@ -65,8 +65,8 @@ export function OfferCard({
               >
                 <div>
                   <h4 className="font-semibold">{offer.name}</h4>
-                  {typeof offer.price === "number" && (
-                    <p className="text-sm text-gray-500">{offer.price} €</p>
+                  {typeof offer.squirPrice === "number" && (
+                    <p className="text-sm text-gray-500">{offer.squirPrice} €</p>
                   )}
                 </div>
                 {alreadyHas && (
