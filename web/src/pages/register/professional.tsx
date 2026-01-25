@@ -9,6 +9,7 @@ import {
   type RegisterProfessionalFormValues,
 } from "@/types/register-professional";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -63,7 +64,7 @@ export default function RegisterProfessionalPage() {
             toast.error("Erreur: Lien Stripe manquant");
           }
         },
-        onError: (err) => {
+        onError: (err: AxiosError<any>) => {
           const messages = err.response?.data?.message;
           if (messages) {
             if (Array.isArray(messages)) {
