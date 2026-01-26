@@ -9,6 +9,7 @@ export function useConsumeQrCode() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
       queryClient.invalidateQueries({ queryKey: ["scanned-history"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
   });
 }

@@ -113,4 +113,17 @@ export class StripeService {
       webhookSecret!,
     );
   }
+
+  async createLoginLink(barId: string) {
+    const bar = await this.prisma.bar.findUnique({ where: { id: barId } });
+    if (!bar || !bar.stripeAccountId) {
+      throw new Error("Bar not found or not connected to Stripe");
+    }
+
+    const loginLink = await this.stripe.accounts.createLoginLink(
+      bar.stripeAccountId,
+    );
+
+    return loginLink.url;
+  }
 }

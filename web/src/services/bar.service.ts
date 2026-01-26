@@ -1,4 +1,5 @@
 import type { Bar } from "@/types/bar";
+import type { DashboardStats } from "@/types/dashboard";
 import { api } from "./api.service";
 
 export const barService = {
@@ -9,6 +10,16 @@ export const barService = {
 
   async getBar(id: string) {
     const { data } = await api.get<Bar>(`/bars/${id}`);
+    return data;
+  },
+
+  async getDashboardStats(barId: string) {
+    const { data } = await api.get<DashboardStats>(`/bars/${barId}/dashboard-stats`);
+    return data;
+  },
+
+  async getStripeDashboardLink(barId: string) {
+    const { data } = await api.get<string>(`/bars/${barId}/stripe-dashboard-link`);
     return data;
   },
 };

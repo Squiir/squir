@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useBarOffers } from "@/hooks/offers/use-offers";
-import { userService } from "@/services/user.service";
+import { useMe } from "@/hooks/user/use-me";
 import type { Offer } from "@/types/offer";
-import { useQuery } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { CreateOfferDialog } from "./CreateOfferDialog";
@@ -13,10 +12,7 @@ export function ProfessionalOfferView() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
 
-  const { data: user, isLoading: isLoadingUser } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: () => userService.getCurrentUser(),
-  });
+  const { data: user, isLoading: isLoadingUser } = useMe();
 
   const { data: offers, isLoading: isLoadingOffers, error } = useBarOffers(user?.barId || "");
 
