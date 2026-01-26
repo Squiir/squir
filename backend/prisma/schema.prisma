@@ -20,7 +20,7 @@ model User {
   avatarUrl String?
   status    String?
 
-  birthDate DateTime
+  birthDate DateTime?
   firstName String?
   lastName  String?
 
@@ -143,10 +143,10 @@ model Bar {
 }
 
 model Offer {
-  id            String    @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
   originalPrice Float
-  squirPrice    Float // Calculated from originalPrice and promotions
+  squirPrice    Float    // Calculated from originalPrice and promotions
   imageUrl      String?
   description   String?
   stock         Int?
@@ -155,8 +155,8 @@ model Offer {
   qrCodes       QRCode[]
   promotionRule PromotionRule?
 
-  barId String
-  bar   Bar    @relation(fields: [barId], references: [id], onDelete: Cascade)
+  barId     String
+  bar       Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
 
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -182,21 +182,8 @@ model PromotionRule {
   offerId String @unique
   offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model UserFavoriteVenue {
-  userId String
-  barId  String
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
-
-  @@id([userId, barId])
-  @@index([barId])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model UserSavedOffer {
@@ -210,4 +197,17 @@ model UserSavedOffer {
 
   @@id([userId, offerId])
   @@index([offerId])
+}
+
+model UserFavoriteVenue {
+  userId String
+  barId  String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
+
+  @@id([userId, barId])
+  @@index([barId])
 }
