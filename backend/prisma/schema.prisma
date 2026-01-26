@@ -184,20 +184,6 @@ model PromotionRule {
 
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  userSavedOffers UserSavedOffer[]
-}
-
-model UserFavoriteVenue {
-  userId String
-  barId  String
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
-
-  @@id([userId, barId])
-  @@index([barId])
 }
 
 model UserSavedOffer {
@@ -211,4 +197,17 @@ model UserSavedOffer {
 
   @@id([userId, offerId])
   @@index([offerId])
+}
+
+model UserFavoriteVenue {
+  userId String
+  barId  String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
+
+  @@id([userId, barId])
+  @@index([barId])
 }

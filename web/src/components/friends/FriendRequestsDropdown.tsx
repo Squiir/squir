@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,15 +16,14 @@ export function FriendRequestsDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative text-muted-foreground hover:text-foreground"
+        >
           <Bell className="w-5 h-5" />
           {data.length > 0 && (
-            <Badge
-              className="absolute h-5 px-1 text-xs rounded-full -top-1 -right-1 min-w-5"
-              variant="destructive"
-            >
-              {data.length}
-            </Badge>
+            <span className="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-background" />
           )}
         </Button>
       </DropdownMenuTrigger>

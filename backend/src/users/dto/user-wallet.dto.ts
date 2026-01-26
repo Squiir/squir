@@ -29,6 +29,17 @@ export class WalletActiveItemDto {
   @IsNumber()
   quantity!: number;
 
+  @IsNumber()
+  squirPrice!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  barName!: string;
+
+  @IsString()
+  @IsOptional()
+  barAddress?: string;
+
   @IsArray()
   qrCodes!: QRCode[];
 }
@@ -41,6 +52,25 @@ export class WalletHistoryItemDto {
   @IsString()
   @IsNotEmpty()
   offerName!: string;
+
+  @IsString()
+  @IsOptional()
+  offerDescription?: string;
+
+  @IsString()
+  @IsOptional()
+  offerImageUrl?: string;
+
+  @IsNumber()
+  squirPrice!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  barName!: string;
+
+  @IsString()
+  @IsOptional()
+  barAddress?: string;
 
   @IsDate()
   @Type(() => Date)

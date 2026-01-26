@@ -4,8 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import * as bcrypt from "bcrypt";
+import {
+  UserWalletDto,
+  WalletActiveItemDto,
+  WalletHistoryItemDto,
+} from "./dto/user-wallet.dto";
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -293,33 +299,52 @@ export class UsersService {
    * @param userId - User ID
    * @returns Object with active and history tickets
    */
-  async getWallet(userId: string) {
+  async getWallet(userId: string): Promise<UserWalletDto> {
     const qrCodes = await this.prisma.qRCode.findMany({
       where: { userId },
       include: {
         offer: {
           include: {
-            bar: { select: { name: true } },
+            bar: { select: { name: true, address: true } },
           },
         },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    const activeTickets: any[] = [];
-    const historyTickets: any[] = [];
+    type QRCodeWithRelations = Prisma.QRCodeGetPayload<{
+      include: {
+        offer: {
+          include: {
+            bar: { select: { name: true; address: true } };
+          };
+        };
+      };
+    }>;
+
+    const activeTickets: WalletActiveItemDto[] = [];
+    const historyTickets: WalletHistoryItemDto[] = [];
 
     const activeGroups = new Map<
       string,
-      { offer: any; count: number; qrCodes: any[] }
+      {
+        offer: QRCodeWithRelations["offer"];
+        count: number;
+        qrCodes: QRCodeWithRelations[];
+      }
     >();
 
-    for (const qr of qrCodes) {
+    for (const qr of qrCodes as QRCodeWithRelations[]) {
       if (qr.used || qr.consumedAt) {
         historyTickets.push({
           id: qr.id,
           offerName: qr.offer.name,
-          usedAt: qr.consumedAt,
+          offerDescription: qr.offer.description || undefined,
+          offerImageUrl: qr.offer.imageUrl || undefined,
+          squirPrice: qr.offer.squirPrice,
+          barName: qr.offer.bar.name,
+          barAddress: qr.offer.bar.address,
+          usedAt: qr.consumedAt!,
           status: `Utilisé le ${qr.consumedAt ? new Date(qr.consumedAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }) : "N/A"}`,
         });
       } else {
@@ -340,10 +365,13 @@ export class UsersService {
       activeTickets.push({
         offerId: group.offer.id,
         offerName: group.offer.name,
-        offerDescription: group.offer.description,
-        offerImageUrl: group.offer.imageUrl,
+        offerDescription: group.offer.description || undefined,
+        offerImageUrl: group.offer.imageUrl || undefined,
+        squirPrice: group.offer.squirPrice,
+        barName: group.offer.bar.name,
+        barAddress: group.offer.bar.address,
         quantity: group.count,
-        qrCodes: group.qrCodes.map((q) => ({ id: q.id, label: q.label })),
+        qrCodes: group.qrCodes,
       });
     }
 
