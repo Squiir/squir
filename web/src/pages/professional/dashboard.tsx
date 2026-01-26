@@ -1,20 +1,15 @@
-import { useMe } from "@/hooks/user/use-me";
-import { barService } from "@/services/bar.service";
-import { useQuery } from "@tanstack/react-query";
-
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
+import { useDasboardStat } from "@/hooks/dashboard/use-dashboard-stat";
+import { useMe } from "@/hooks/user/use-me";
+import { barService } from "@/services/bar.service";
 
 export default function ProfessionalDashboardPage() {
   const { data: user } = useMe();
   const barId = user?.barId;
 
-  const { data: stats, isLoading } = useQuery({
-    queryKey: ["dashboard-stats", barId],
-    queryFn: () => (barId ? barService.getDashboardStats(barId) : null),
-    enabled: !!barId,
-  });
+  const { data: stats, isLoading } = useDasboardStat(barId);
 
   const handleOpenStripeDashboard = async () => {
     if (!barId) return;

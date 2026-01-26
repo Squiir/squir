@@ -14,12 +14,12 @@ export const barService = {
   },
 
   async getDashboardStats(barId: string) {
-    const response = await api.get<DashboardStats>(`/bars/${barId}/dashboard-stats`);
-    return response.data;
+    const { data } = await api.get<DashboardStats>(`/bars/${barId}/dashboard-stats`);
+    return data;
   },
 
   async getStripeDashboardLink(barId: string) {
-    const response = await api.get<string>(`/bars/${barId}/stripe-dashboard-link`);
-    return response.data;
+    const { data } = await api.get<string>(`/bars/${barId}/stripe-dashboard-link`);
+    return data;
   },
 };
