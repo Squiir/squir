@@ -1,4 +1,6 @@
 import { api } from "@/services/api.service";
+import type { Bar } from "@/types/bar";
+import type { Offer } from "@/types/offer";
 import type { User } from "@/types/user";
 
 export const userService = {
@@ -30,6 +32,26 @@ export const userService = {
         "Content-Type": "multipart/form-data",
       },
     });
+    return data;
+  },
+
+  async toggleFavoriteVenue(barId: string) {
+    const { data } = await api.post<{ isFavorite: boolean }>(`/users/favorites/venues/${barId}`);
+    return data;
+  },
+
+  async toggleSavedOffer(offerId: string) {
+    const { data } = await api.post<{ isSaved: boolean }>(`/users/favorites/offers/${offerId}`);
+    return data;
+  },
+
+  async getFavorites() {
+    const { data } = await api.get<{
+      favoriteVenues: Pick<Bar, "id" | "name" | "address" | "arrondissement">[];
+      savedOffers: (Pick<Offer, "id" | "name" | "squirPrice" | "validUntil" | "imageUrl"> & {
+        venueName: string;
+      })[];
+    }>("/users/profile/favorites");
     return data;
   },
 };

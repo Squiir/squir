@@ -158,29 +158,6 @@ model Offer {
   barId     String
   bar       Bar      @relation(fields: [barId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum PromotionType {
-  BUY_X_GET_Y
-  PERCENTAGE_OFF
-  FIXED_AMOUNT_OFF
-}
-
-model PromotionRule {
-  id        String        @id @default(uuid())
-  type      PromotionType
-
-  buyQuantity Int?
-  getQuantity Int?
-
-  percentageOff Float?
-  amountOff Float?
-
-  offerId   String @unique
-  offer     Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
-
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   userSavedOffers UserSavedOffer[]

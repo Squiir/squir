@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export function useScanner() {
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
-  const [scannedData, setScannedData] = useState<ScannedDataProps>(undefined);
+  const [scannedData, setScannedData] = useState<ScannedDataProps | undefined>(undefined);
   const [cameras, setCameras] = useState<Array<{ id: string; label: string }>>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [permissionError, setPermissionError] = useState(false);
