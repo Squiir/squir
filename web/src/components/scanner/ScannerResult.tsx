@@ -68,7 +68,7 @@ export function ScannerResult({ data, onScanAnother }: ScannerResultProps) {
               <span className="text-xs font-medium text-muted-foreground uppercase">Client</span>
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10 border">
-                  <AvatarImage src={consumer.avatarUrl} />
+                  <AvatarImage src={consumer.avatarUrl || undefined} />
                   <AvatarFallback>
                     <User className="h-5 w-5 opacity-50" />
                   </AvatarFallback>
