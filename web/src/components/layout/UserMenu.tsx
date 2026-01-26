@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useLogout } from "@/hooks/auth/use-logout";
 import { useMe } from "@/hooks/user/use-me";
-import { LogOut, User } from "lucide-react";
+import { ChevronDown, LogOut, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 export function UserMenu() {
@@ -40,12 +40,15 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-4 outline-none">
-          <span className="font-medium text-md">{user.username}</span>
-          <Avatar className="w-12 h-12">
+        <button className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-secondary/50 border border-border/50 backdrop-blur-sm transition-colors hover:bg-secondary/80 outline-none group data-[state=open]:bg-secondary/80">
+          <Avatar className="w-9 h-9 border border-border/50">
             <AvatarImage src={user.avatarUrl ?? undefined} />
             <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
           </Avatar>
+          <div className="flex flex-col items-start text-sm leading-none">
+            <span className="font-bold text-foreground">{user.username}</span>
+          </div>
+          <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors ml-1" />
         </button>
       </DropdownMenuTrigger>
 

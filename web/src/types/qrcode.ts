@@ -24,12 +24,17 @@ export interface ScannedQrCode {
   consumedAt: string;
   offer: {
     name: string;
-    imageUrl: string | null;
+    imageUrl?: string;
     squirPrice: number;
     originalPrice: number;
   };
   user: {
     username: string;
-    avatarUrl: string | null;
+    avatarUrl?: string;
   };
+}
+
+export interface ScannedDataProps {
+  message: string;
+  qrCode: ScannedQrCode;
 }

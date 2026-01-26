@@ -4,8 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import * as bcrypt from "bcrypt";
+import {
+  UserWalletDto,
+  WalletActiveItemDto,
+  WalletHistoryItemDto,
+} from "./dto/user-wallet.dto";
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -178,6 +184,206 @@ export class UsersService {
     return {
       ...user,
       shareUrl: `app://user/${user.username}`,
+    };
+  }
+
+  /**
+   * Toggle favorite venue (Bar) for a user
+   * @param userId - User ID
+   * @param barId - Bar ID
+   * @returns Object identifying if it is now favorite
+   */
+  async toggleFavoriteVenue(userId: string, barId: string) {
+    const existing = await this.prisma.userFavoriteVenue.findUnique({
+      where: { userId_barId: { userId, barId } },
+    });
+
+    if (existing) {
+      await this.prisma.userFavoriteVenue.delete({
+        where: { userId_barId: { userId, barId } },
+      });
+      return { isFavorite: false };
+    } else {
+      await this.prisma.userFavoriteVenue.create({
+        data: { userId, barId },
+      });
+      return { isFavorite: true };
+    }
+  }
+
+  /**
+   * Toggle saved offer (Wishlist) for a user
+   * @param userId - User ID
+   * @param offerId - Offer ID
+   * @returns Object identifying if it is now saved
+   */
+  async toggleSavedOffer(userId: string, offerId: string) {
+    const existing = await this.prisma.userSavedOffer.findUnique({
+      where: { userId_offerId: { userId, offerId } },
+    });
+
+    if (existing) {
+      await this.prisma.userSavedOffer.delete({
+        where: { userId_offerId: { userId, offerId } },
+      });
+      return { isSaved: false };
+    } else {
+      await this.prisma.userSavedOffer.create({
+        data: { userId, offerId },
+      });
+      return { isSaved: true };
+    }
+  }
+
+  /**
+   * Get user favorites and saved offers populated
+   * @param userId - User ID
+   * @returns Object with favoriteVenues and savedOffers
+   */
+  async getFavorites(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        userFavoriteVenues: {
+          include: {
+            bar: {
+              select: {
+                id: true,
+                name: true,
+                address: true,
+                arrondissement: true,
+              },
+            },
+          },
+        },
+        userSavedOffers: {
+          include: {
+            offer: {
+              select: {
+                id: true,
+                name: true,
+                squirPrice: true,
+                validUntil: true,
+                imageUrl: true,
+                bar: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException("User not found");
+
+    const favoriteVenues = user.userFavoriteVenues.map((fv) => ({
+      ...fv.bar,
+    }));
+
+    const savedOffers = user.userSavedOffers.map((so) => ({
+      ...so.offer,
+      venueName: so.offer.bar.name,
+    }));
+
+    return {
+      favoriteVenues,
+      savedOffers,
+    };
+  }
+
+  /**
+   * Get user wallet with active tickets and history
+   * @param userId - User ID
+   * @returns Object with active and history tickets
+   */
+  async getWallet(userId: string): Promise<UserWalletDto> {
+    const qrCodes = await this.prisma.qRCode.findMany({
+      where: { userId },
+      include: {
+        offer: {
+          include: {
+            bar: { select: { name: true, address: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    type QRCodeWithRelations = Prisma.QRCodeGetPayload<{
+      include: {
+        offer: {
+          include: {
+            bar: { select: { name: true; address: true } };
+          };
+        };
+      };
+    }>;
+
+    const activeTickets: WalletActiveItemDto[] = [];
+    const historyTickets: WalletHistoryItemDto[] = [];
+
+    const activeGroups = new Map<
+      string,
+      {
+        offer: QRCodeWithRelations["offer"];
+        count: number;
+        qrCodes: QRCodeWithRelations[];
+      }
+    >();
+
+    for (const qr of qrCodes as QRCodeWithRelations[]) {
+      if (qr.used || qr.consumedAt) {
+        historyTickets.push({
+          id: qr.id,
+          offerName: qr.offer.name,
+          offerDescription: qr.offer.description || undefined,
+          offerImageUrl: qr.offer.imageUrl || undefined,
+          squirPrice: qr.offer.squirPrice,
+          barName: qr.offer.bar.name,
+          barAddress: qr.offer.bar.address,
+          usedAt: qr.consumedAt!,
+          status: `Utilisé le ${qr.consumedAt ? new Date(qr.consumedAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }) : "N/A"}`,
+        });
+      } else {
+        if (!activeGroups.has(qr.offerId)) {
+          activeGroups.set(qr.offerId, {
+            offer: qr.offer,
+            count: 0,
+            qrCodes: [],
+          });
+        }
+        const group = activeGroups.get(qr.offerId)!;
+        group.count++;
+        group.qrCodes.push(qr);
+      }
+    }
+
+    for (const group of activeGroups.values()) {
+      activeTickets.push({
+        offerId: group.offer.id,
+        offerName: group.offer.name,
+        offerDescription: group.offer.description || undefined,
+        offerImageUrl: group.offer.imageUrl || undefined,
+        squirPrice: group.offer.squirPrice,
+        barName: group.offer.bar.name,
+        barAddress: group.offer.bar.address,
+        quantity: group.count,
+        qrCodes: group.qrCodes,
+      });
+    }
+
+    historyTickets.sort((a, b) => {
+      const dateA = a.usedAt ? new Date(a.usedAt).getTime() : 0;
+      const dateB = b.usedAt ? new Date(b.usedAt).getTime() : 0;
+      return dateB - dateA;
+    });
+
+    return {
+      active: activeTickets,
+      history: historyTickets,
     };
   }
 }
