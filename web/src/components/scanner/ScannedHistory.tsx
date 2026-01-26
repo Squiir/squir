@@ -3,16 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useScannedHistory } from "@/hooks/qrcode/use-scanned-history";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { History, Loader2 } from "lucide-react";
+import { FileExclamationPoint, History, Loader2 } from "lucide-react";
 
 export function ScannedHistory() {
-  const { data: history, isLoading } = useScannedHistory();
+  const { data: history, isLoading, isError } = useScannedHistory();
 
   if (isLoading) {
     return (
       <Card className="w-full h-full border-none shadow-none bg-transparent">
         <CardContent className="pt-6 flex justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="w-full h-full border-none shadow-none bg-transparent flex flex-col">
+        <CardContent className="pt-6 flex justify-center">
+          <FileExclamationPoint className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     );
@@ -39,7 +49,7 @@ export function ScannedHistory() {
                 <Avatar className="w-8 h-8 border border-muted">
                   <AvatarImage src={scan.user.avatarUrl || undefined} />
                   <AvatarFallback className="text-xs">
-                    {scan.user.username[0]?.toUpperCase()}
+                    {scan.user.username[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
 
