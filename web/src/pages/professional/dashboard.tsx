@@ -9,6 +9,14 @@ export default function ProfessionalDashboardPage() {
   const { data: user } = useMe();
   const barId = user?.barId;
 
+  if (!barId) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Aucun établissement associé à cet utilisateur.</p>
+      </div>
+    );
+  }
+
   const { data: stats, isLoading } = useDasboardStat(barId);
 
   const handleOpenStripeDashboard = async () => {

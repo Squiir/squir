@@ -40,8 +40,10 @@ model User {
 
   groupMemberships GroupMember[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  userFavoriteVenues UserFavoriteVenue[]
+  userSavedOffers    UserSavedOffer[]
 }
 
 model QRCode {
@@ -125,18 +127,19 @@ model GroupMember {
 }
 
 model Bar {
-  id              String   @id @default(uuid())
-  name            String
-  address         String
-  arrondissement  Int
-  latitude        Float
-  longitude       Float
-  color           String
-  users           User[]   @relation("BarUsers")
-  offers          Offer[]
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  stripeAccountId String?
+  id                 String              @id @default(uuid())
+  name               String
+  address            String
+  arrondissement     Int
+  latitude           Float
+  longitude          Float
+  color              String
+  users              User[]              @relation("BarUsers")
+  offers             Offer[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  stripeAccountId    String?
+  userFavoriteVenues UserFavoriteVenue[]
 }
 
 model Offer {
@@ -178,6 +181,56 @@ model PromotionRule {
   offerId   String @unique
   offer     Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
 
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userSavedOffers UserSavedOffer[]
+}
+
+enum PromotionType {
+  BUY_X_GET_Y
+  PERCENTAGE_OFF
+  FIXED_AMOUNT_OFF
+}
+
+model PromotionRule {
+  id   String        @id @default(uuid())
+  type PromotionType
+
+  buyQuantity Int?
+  getQuantity Int?
+
+  percentageOff Float?
+  amountOff     Float?
+
+  offerId String @unique
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model UserFavoriteVenue {
+  userId String
+  barId  String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
+
+  @@id([userId, barId])
+  @@index([barId])
+}
+
+model UserSavedOffer {
+  userId  String
+  offerId String
+
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@id([userId, offerId])
+  @@index([offerId])
 }

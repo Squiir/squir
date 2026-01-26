@@ -180,4 +180,111 @@ export class UsersService {
       shareUrl: `app://user/${user.username}`,
     };
   }
+
+  /**
+   * Toggle favorite venue (Bar) for a user
+   * @param userId - User ID
+   * @param barId - Bar ID
+   * @returns Object identifying if it is now favorite
+   */
+  async toggleFavoriteVenue(userId: string, barId: string) {
+    const existing = await this.prisma.userFavoriteVenue.findUnique({
+      where: { userId_barId: { userId, barId } },
+    });
+
+    if (existing) {
+      await this.prisma.userFavoriteVenue.delete({
+        where: { userId_barId: { userId, barId } },
+      });
+      return { isFavorite: false };
+    } else {
+      await this.prisma.userFavoriteVenue.create({
+        data: { userId, barId },
+      });
+      return { isFavorite: true };
+    }
+  }
+
+  /**
+   * Toggle saved offer (Wishlist) for a user
+   * @param userId - User ID
+   * @param offerId - Offer ID
+   * @returns Object identifying if it is now saved
+   */
+  async toggleSavedOffer(userId: string, offerId: string) {
+    const existing = await this.prisma.userSavedOffer.findUnique({
+      where: { userId_offerId: { userId, offerId } },
+    });
+
+    if (existing) {
+      await this.prisma.userSavedOffer.delete({
+        where: { userId_offerId: { userId, offerId } },
+      });
+      return { isSaved: false };
+    } else {
+      await this.prisma.userSavedOffer.create({
+        data: { userId, offerId },
+      });
+      return { isSaved: true };
+    }
+  }
+
+  /**
+   * Get user favorites and saved offers populated
+   * @param userId - User ID
+   * @returns Object with favoriteVenues and savedOffers
+   */
+  async getFavorites(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        userFavoriteVenues: {
+          include: {
+            bar: {
+              select: {
+                id: true,
+                name: true,
+                address: true,
+                arrondissement: true,
+              },
+            },
+          },
+        },
+        userSavedOffers: {
+          include: {
+            offer: {
+              select: {
+                id: true,
+                name: true,
+                squirPrice: true,
+                validUntil: true,
+                imageUrl: true,
+                bar: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException("User not found");
+
+    const favoriteVenues = user.userFavoriteVenues.map((fv) => ({
+      ...fv.bar,
+    }));
+
+    const savedOffers = user.userSavedOffers.map((so) => ({
+      ...so.offer,
+      venueName: so.offer.bar.name,
+    }));
+
+    return {
+      favoriteVenues,
+      savedOffers,
+    };
+  }
 }

@@ -5,5 +5,22 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "moduleNameMapper": {
+    "^@prisma/(prisma\\..*)$": "<rootDir>/../prisma/$1",
+    "^@auth/(.*)$": "<rootDir>/../src/auth/$1",
+    "^@bars/(.*)$": "<rootDir>/../src/bars/$1",
+    "^@friends/(.*)$": "<rootDir>/../src/friends/$1",
+    "^@messages/(.*)$": "<rootDir>/../src/messages/$1",
+    "^@groups/(.*)$": "<rootDir>/../src/groups/$1",
+    "^@offers/(.*)$": "<rootDir>/../src/offers/$1",
+    "^@purchases/(.*)$": "<rootDir>/../src/purchases/$1",
+    "^@qrcodes/(.*)$": "<rootDir>/../src/qrcodes/$1",
+    "^@users/(.*)$": "<rootDir>/../src/users/$1",
+    "^@utils/(.*)$": "<rootDir>/../src/utils/$1",
+    "^@constants/(.*)$": "<rootDir>/../src/constants/$1",
+    "^@stripe/(.*)$": "<rootDir>/../src/stripe/$1",
+    "^@azure-storage/(.*)$": "<rootDir>/../src/azure-storage/$1"
+  },
+  "transformIgnorePatterns": ["node_modules/(?!(uuid)/)"]
 }
