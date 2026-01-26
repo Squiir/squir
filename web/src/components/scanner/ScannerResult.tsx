@@ -2,10 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPrice } from "@/lib/utils";
+import type { ScannedDataProps } from "@/types/qrcode";
 import { Check, Image, User } from "lucide-react";
 
 interface ScannerResultProps {
-  data: any;
+  data: ScannedDataProps;
   onScanAnother: () => void;
 }
 

@@ -33,3 +33,8 @@ export interface ScannedQrCode {
     avatarUrl: string | null;
   };
 }
+
+export interface ScannedDataProps {
+  message: string;
+  qrCode: ScannedQrCode;
+}
