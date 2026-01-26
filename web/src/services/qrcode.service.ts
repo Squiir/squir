@@ -1,4 +1,4 @@
-import type { QrCode } from "@/types/qrcode";
+import type { QrCode, ScannedDataProps } from "@/types/qrcode";
 import { api } from "./api.service";
 
 export interface QrCodeDto {
@@ -18,10 +18,7 @@ export const qrCodeService = {
   },
 
   async consumeQrCode(id: string) {
-    const { data } = await api.post<{
-      message: string;
-      qrCode: QrCode;
-    }>(`/qrcodes/${id}/consume`);
+    const { data } = await api.post<ScannedDataProps>(`/qrcodes/${id}/consume`);
     return data;
   },
 
