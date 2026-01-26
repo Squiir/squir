@@ -1,13 +1,15 @@
 import { QR_HOSTNAME, QR_PROTOCOL, SCAN_DEBOUNCE_MS } from "@/constants/scanner";
 import { useConsumeQrCode } from "@/hooks/qrcode/use-consume-qr-code";
+import type { ScannedDataProps } from "@/types/qrcode";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
+
 export function useScanner() {
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
-  const [scannedData, setScannedData] = useState<any>(null);
+  const [scannedData, setScannedData] = useState<ScannedDataProps>(null);
   const [cameras, setCameras] = useState<Array<{ id: string; label: string }>>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [permissionError, setPermissionError] = useState(false);
