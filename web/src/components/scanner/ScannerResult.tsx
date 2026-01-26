@@ -2,10 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatPrice } from "@/lib/utils";
+import type { ScannedDataProps } from "@/types/qrcode";
 import { Check, Image, User } from "lucide-react";
 
 interface ScannerResultProps {
-  data: any;
+  data: ScannedDataProps;
   onScanAnother: () => void;
 }
 
@@ -67,7 +68,7 @@ export function ScannerResult({ data, onScanAnother }: ScannerResultProps) {
               <span className="text-xs font-medium text-muted-foreground uppercase">Client</span>
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10 border">
-                  <AvatarImage src={consumer.avatarUrl} />
+                  <AvatarImage src={consumer.avatarUrl || undefined} />
                   <AvatarFallback>
                     <User className="h-5 w-5 opacity-50" />
                   </AvatarFallback>

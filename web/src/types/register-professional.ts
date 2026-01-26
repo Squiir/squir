@@ -4,9 +4,6 @@ export const registerProfessionalSchema = z.object({
   email: z.string().email("Email invalide"),
   username: z.string().min(3, "3 caractères minimum").max(30, "30 caractères maximum"),
   password: z.string().min(8, "8 caractères minimum"),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-
   barName: z.string().min(2, "2 caractères minimum").max(100, "100 caractères maximum"),
   barAddress: z.string().min(5, "5 caractères minimum").max(200, "200 caractères maximum"),
   arrondissement: z

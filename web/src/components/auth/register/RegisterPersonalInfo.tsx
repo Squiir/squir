@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
+import type { Path, UseFormReturn } from "react-hook-form";
 
 interface Props<T extends { firstName?: string; lastName?: string }> {
   form: UseFormReturn<T>;
@@ -22,10 +22,10 @@ export function RegisterPersonalInfo<T extends { firstName?: string; lastName?: 
   return (
     <>
       <div className="space-y-2">
-        <Input placeholder="Prénom (optionnel)" {...form.register("firstName" as any)} />
+        <Input placeholder="Prénom (optionnel)" {...form.register("firstName" as Path<T>)} />
       </div>
       <div className="space-y-2">
-        <Input placeholder="Nom (optionnel)" {...form.register("lastName" as any)} />
+        <Input placeholder="Nom (optionnel)" {...form.register("lastName" as Path<T>)} />
       </div>
 
       <div className="flex gap-2 pt-2">

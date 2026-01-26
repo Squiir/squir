@@ -65,9 +65,6 @@ export function RegisterEstablishmentInfo({
         {errors.arrondissement && (
           <p className="text-sm text-destructive">{errors.arrondissement.message as string}</p>
         )}
-        {errors.arrondissement && (
-          <p className="text-sm text-destructive">{errors.arrondissement.message as string}</p>
-        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
