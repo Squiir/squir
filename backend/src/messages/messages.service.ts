@@ -1,9 +1,13 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
+import { NotificationsService } from "@notifications/notifications.service";
 import { PrismaService } from "@prisma/prisma.service";
 
 @Injectable()
 export class MessagesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async verifyFriendship(userId: string, friendId: string): Promise<void> {
     const friendship = await this.prisma.friend.findFirst({
@@ -33,14 +37,30 @@ export class MessagesService {
 
     await this.verifyFriendship(senderId, receiverId);
 
-    return this.prisma.message.create({
+    const message = await this.prisma.message.create({
       data: {
         senderId,
         receiverId,
         content,
         readAt: options?.read ? new Date() : null,
       },
+      include: {
+        sender: { select: { username: true, avatarUrl: true } },
+      },
     });
+
+    await this.notificationsService.createNotification(
+      receiverId,
+      "NEW_MESSAGE",
+      `Nouveau message de ${message.sender.username}`,
+      `${content}`,
+      {
+        userId: senderId,
+        avatarUrl: message.sender.avatarUrl,
+      },
+    );
+
+    return message;
   }
 
   async getConversation(userId: string, friendId: string) {

@@ -31,6 +31,9 @@ export class NotificationsGateway
   constructor(private jwtService: JwtService) {}
 
   private extractToken(client: Socket): string | null {
+    if (client.handshake.auth?.accessToken) {
+      return client.handshake.auth.accessToken;
+    }
     const authHeader = client.handshake.headers.authorization;
     if (authHeader && authHeader.split(" ")[1]) {
       return authHeader.split(" ")[1];
@@ -57,8 +60,6 @@ export class NotificationsGateway
       this.userSockets.set(userId, sockets);
 
       client.data = { userId };
-
-      console.log(`User ${userId} connected. Notification Socket ID: ${client.id}`);
     } catch (error) {
       console.error("Connection error:", error);
       client.disconnect();
@@ -76,7 +77,6 @@ export class NotificationsGateway
       } else {
         this.userSockets.set(userId, updatedSockets);
       }
-      console.log(`User ${userId} disconnected. Notification Socket ID: ${client.id}`);
     }
   }
 

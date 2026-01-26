@@ -1,5 +1,8 @@
 import { authService } from "@/services/auth.service";
-import type { RegisterProfessionalFormValues, RegisterProfessionalResponse } from "@/types/register-professional";
+import type {
+  RegisterProfessionalFormValues,
+  RegisterProfessionalResponse,
+} from "@/types/register-professional";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 

@@ -8,6 +8,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { NotificationsService } from "@notifications/notifications.service";
 import { UserRole } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import { QrCodeGateway } from "@qrcodes/qrcode.gateway";
@@ -18,6 +19,7 @@ export class QrCodesService {
   constructor(
     private prisma: PrismaService,
     private qrCodeGateway: QrCodeGateway,
+    private notificationsService: NotificationsService,
   ) {}
 
   /**
@@ -65,7 +67,7 @@ export class QrCodesService {
       },
     });
 
-    return {
+    const result = {
       id: qr.id,
       used: qr.used,
       createdAt: qr.createdAt,
@@ -74,6 +76,21 @@ export class QrCodesService {
       value: this.qrValue(qr.id),
       url: `/qrcodes/${qr.id}.png`,
     };
+
+    const offer = await this.prisma.offer.findUnique({
+      where: { id: offerId },
+      select: { name: true },
+    });
+
+    await this.notificationsService.createNotification(
+      userId,
+      "BUY_QR_CODE",
+      "Offre achetée",
+      `Vous avez acheté ${offer?.name || "une offre"}`,
+      { qrCodeId: qr.id, offerId: offerId },
+    );
+
+    return result;
   }
 
   /**
@@ -88,7 +105,7 @@ export class QrCodesService {
     return this.prisma.qRCode.findMany({
       where: {
         userId,
-        consumedAt: null, // Only active QR codes
+        consumedAt: null,
       },
       include: {
         offer: true,
@@ -232,6 +249,7 @@ export class QrCodesService {
           consumedAt: true,
           offer: {
             select: {
+              name: true,
               barId: true,
             },
           },
@@ -282,8 +300,15 @@ export class QrCodesService {
       data: { consumedAt: new Date() },
     });
 
-    // Notify the QR code owner via WebSocket
     this.qrCodeGateway.notifyQrCodeConsumed(qr.userId, qr.id);
+
+    await this.notificationsService.createNotification(
+      qr.userId,
+      "QR_CODE_SCANNED",
+      "QR Code Scanné",
+      `Votre QR code pour ${qr.offer.name || "une offre"} a été scanné`,
+      { qrCodeId: qr.id },
+    );
 
     const qrDetails = await this.prisma.qRCode.findUnique({
       where: { id },

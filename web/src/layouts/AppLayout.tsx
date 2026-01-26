@@ -7,7 +7,7 @@ export default function AppLayout() {
       <Navbar />
 
       <main className="flex-1 w-full">
-        <div className="px-4 py-6 mx-auto">
+        <div className="mx-auto">
           <Outlet />
         </div>
       </main>

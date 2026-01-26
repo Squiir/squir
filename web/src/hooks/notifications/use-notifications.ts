@@ -7,7 +7,7 @@ import { io, Socket } from "socket.io-client";
 
 export function useNotifications() {
   const queryClient = useQueryClient();
-  const accessToken = useAuthStore.getState().accessToken;
+  const accessToken = useAuthStore((state) => state.accessToken);
   const socketRef = useRef<Socket | null>(null);
 
   const { data: notifications = [], isLoading } = useQuery({
@@ -37,7 +37,15 @@ export function useNotifications() {
     });
 
     socket.on("notification", (newNotification: Notification) => {
-      console.log("New notification:", newNotification);
+      if (newNotification.type === "QR_CODE_SCANNED" || newNotification.type === "BUY_QR_CODE") {
+        queryClient.invalidateQueries({ queryKey: ["wallet"] });
+        queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
+      }
+
+      if (newNotification.type === "NEW_GROUP") {
+        queryClient.invalidateQueries({ queryKey: ["groups"] });
+      }
+
       queryClient.setQueryData(["notifications"], (old: Notification[] = []) => {
         const updatedList = [newNotification, ...old];
         return updatedList;

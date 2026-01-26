@@ -58,13 +58,13 @@ export function NotificationItem({ notification, onClick }: NotificationItemProp
           getIcon()
         )}
       </div>
-      <div className="flex-1 space-y-1">
+      <div className="flex-1 space-y-1 max-w-[280px]">
         <p
           className={cn("text-sm font-medium leading-none", !notification.read && "font-semibold")}
         >
           {notification.title}
         </p>
-        <p className="text-sm text-muted-foreground line-clamp-2">{notification.description}</p>
+        <p className="text-sm text-muted-foreground truncate">{notification.description}</p>
         <p className="text-xs text-muted-foreground/60">
           {new Date(notification.createdAt).toLocaleDateString()}
         </p>

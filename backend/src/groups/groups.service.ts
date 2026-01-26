@@ -5,14 +5,14 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { NotificationsService } from "@notifications/notifications.service";
 import { PrismaService } from "@prisma/prisma.service";
-// import { SocialGateway } from "@social/social.gateway";
 
 @Injectable()
 export class GroupsService {
   constructor(
     private prisma: PrismaService,
-    // private socket: SocialGateway,
+    private notificationsService: NotificationsService,
   ) {}
 
   async create(userId: string, dto: CreateGroupDto) {
@@ -55,16 +55,16 @@ export class GroupsService {
       },
     });
 
-    // const creator = group.members.find((m) => m.userId === userId)!.user;
-
     for (const member of group.members) {
       if (member.userId === userId) continue;
 
-      // this.socket.notifyGroupInvite(member.userId, {
-      //   groupId: group.id,
-      //   groupName: group.name,
-      //   invitedBy: creator,
-      // });
+      await this.notificationsService.createNotification(
+        member.userId,
+        "NEW_GROUP",
+        "Nouveau groupe",
+        `Vous avez été ajouté au groupe: ${group.name}`,
+        { groupId: group.id },
+      );
     }
 
     return group;
@@ -112,6 +112,17 @@ export class GroupsService {
         groupId,
       })),
     });
+
+    // Notify new members
+    for (const memberId of newMemberIds) {
+      await this.notificationsService.createNotification(
+        memberId,
+        "NEW_GROUP",
+        "New Group Invitation",
+        `You have been added to a group`,
+        { groupId },
+      );
+    }
 
     return {
       groupId,

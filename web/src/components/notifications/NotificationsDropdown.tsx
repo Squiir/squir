@@ -1,3 +1,4 @@
+import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,7 +9,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/notifications/use-notifications";
 import { Bell } from "lucide-react";
 import { useState } from "react";
-import { NotificationItem } from "./NotificationItem";
 
 export function NotificationsDropdown() {
   const { notifications, markAllAsRead, markAsRead } = useNotifications();
@@ -33,7 +33,7 @@ export function NotificationsDropdown() {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80 p-0">
+      <DropdownMenuContent align="end" className="w-96 p-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <span className="font-semibold">Notifications</span>
           {unreadCount > 0 && (
