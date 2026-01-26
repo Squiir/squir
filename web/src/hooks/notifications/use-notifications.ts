@@ -1,13 +1,13 @@
 import { notificationsService } from "@/services/notifications.service";
 import { useAuthStore } from "@/store/auth.store";
-import { type Notification } from "@/types/notification";
+import type { Notification } from "@/types/notification";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 
 export function useNotifications() {
   const queryClient = useQueryClient();
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const accessToken = useAuthStore.getState().accessToken;
   const socketRef = useRef<Socket | null>(null);
 
   const { data: notifications = [], isLoading } = useQuery({
@@ -22,7 +22,7 @@ export function useNotifications() {
     const socketUrl = `${import.meta.env.VITE_API_URL}/notifications`;
 
     socketRef.current = io(socketUrl, {
-      query: { token: accessToken },
+      auth: { accessToken },
       transports: ["websocket", "polling"],
     });
 
@@ -51,7 +51,7 @@ export function useNotifications() {
 
   const markAsReadMutation = useMutation({
     mutationFn: notificationsService.markAsRead,
-    onSuccess: (updatedNotification) => {
+    onSuccess: (updatedNotification: Notification) => {
       queryClient.setQueryData(["notifications"], (old: Notification[] = []) => {
         return old.map((n) => (n.id === updatedNotification.id ? updatedNotification : n));
       });

@@ -10,7 +10,12 @@ import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({
   cors: {
-    origin: "*",
+    origin: [
+      "http://localhost:8081",
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://happy-sky-087b9e503.6.azurestaticapps.net",
+    ],
   },
   namespace: "notifications",
 })
@@ -24,6 +29,15 @@ export class NotificationsGateway
   private userSockets: Map<string, string[]> = new Map();
 
   constructor(private jwtService: JwtService) {}
+
+  private extractToken(client: Socket): string | null {
+    const authHeader = client.handshake.headers.authorization;
+    if (authHeader && authHeader.split(" ")[1]) {
+      return authHeader.split(" ")[1];
+    }
+    const token = client.handshake.query.token as string;
+    return token || null;
+  }
 
   async handleConnection(client: Socket) {
     try {
@@ -44,7 +58,7 @@ export class NotificationsGateway
 
       client.data = { userId };
 
-      console.log(`User ${userId} connected. Socket ID: ${client.id}`);
+      console.log(`User ${userId} connected. Notification Socket ID: ${client.id}`);
     } catch (error) {
       console.error("Connection error:", error);
       client.disconnect();
@@ -62,7 +76,7 @@ export class NotificationsGateway
       } else {
         this.userSockets.set(userId, updatedSockets);
       }
-      console.log(`User ${userId} disconnected. Socket ID: ${client.id}`);
+      console.log(`User ${userId} disconnected. Notification Socket ID: ${client.id}`);
     }
   }
 
@@ -73,14 +87,5 @@ export class NotificationsGateway
         this.server.to(socketId).emit("notification", notification);
       });
     }
-  }
-
-  private extractToken(client: Socket): string | null {
-    const authHeader = client.handshake.headers.authorization;
-    if (authHeader && authHeader.split(" ")[1]) {
-      return authHeader.split(" ")[1];
-    }
-    const token = client.handshake.query.token as string;
-    return token || null;
   }
 }
