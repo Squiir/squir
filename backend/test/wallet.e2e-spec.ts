@@ -1,8 +1,8 @@
 import { INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Test, TestingModule } from "@nestjs/testing";
+import { PrismaService } from "@prisma/prisma.service";
 import request from "supertest";
-import { PrismaService } from "../prisma/prisma.service";
 import { AppModule } from "./../src/app.module";
 
 describe("Wallet (e2e)", () => {
