@@ -16,7 +16,7 @@ import { useAuth } from "@/hooks/auth/use-auth";
 import { useLogout } from "@/hooks/auth/use-logout";
 import { useGetFriends } from "@/hooks/friends/use-friends";
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/user/use-favorites";
 import { useMe } from "@/hooks/user/use-me";
 import { Link } from "react-router-dom";
 

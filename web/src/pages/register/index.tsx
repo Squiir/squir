@@ -70,7 +70,7 @@ export default function RegisterPage() {
         onSuccess: () => {
           toast.success("Compte créé avec succès !");
         },
-        onError: (err: any) => {
+        onError: (err) => {
           console.error(err);
           const messages = err.response?.data?.message;
           if (messages) {

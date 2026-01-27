@@ -6,6 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from "@nestjs/websockets";
+import { Notification } from "@prisma/client";
 import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({
@@ -80,7 +81,7 @@ export class NotificationsGateway
     }
   }
 
-  sendNotificationToUser(userId: string, notification: any) {
+  sendNotificationToUser(userId: string, notification: Notification) {
     const sockets = this.userSockets.get(userId);
     if (sockets) {
       sockets.forEach((socketId) => {

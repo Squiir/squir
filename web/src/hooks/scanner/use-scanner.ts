@@ -54,7 +54,7 @@ export function useScanner() {
       scannerRef.current = scanner;
 
       await startScanner({ facingMode: "environment" });
-    } catch (err: any) {
+    } catch (err) {
       console.error("Initialization error", err);
       if (
         err?.name === "NotAllowedError" ||
@@ -132,7 +132,7 @@ export function useScanner() {
             const result = await consumeQrCode(qrId);
             toast.success(result.message || "QR Code validé !");
             setScannedData(result);
-          } catch (error: any) {
+          } catch (error) {
             console.error(error);
             toast.error(error?.response?.data?.message || "Erreur lors de la validation");
             setScanned(false);

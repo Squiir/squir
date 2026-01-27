@@ -15,7 +15,7 @@ export class NotificationsService {
     type: NotificationType,
     title: string,
     description: string,
-    data?: any,
+    data?: Record<string, any>,
   ) {
     const notification = await this.prisma.notification.create({
       data: {
