@@ -1,34 +1,18 @@
 import { WalletQRCodeModal } from "@/components/wallet/WalletQRCodeModal";
 import { WalletTicketCard } from "@/components/wallet/WalletTicketCard";
+import { useWallet } from "@/hooks/user/use-wallet";
 import { cn } from "@/lib/utils";
-import { userService } from "@/services/user.service";
-import type { WalletActiveItem, WalletResponse } from "@/types/wallet";
+import type { WalletActiveItem } from "@/types/wallet";
 import { QrCode } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Tab = "active" | "history";
 
 export default function WalletPage() {
   const [activeTab, setActiveTab] = useState<Tab>("active");
-  const [walletData, setWalletData] = useState<WalletResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: walletData, isLoading: loading } = useWallet();
   const [selectedTicket, setSelectedTicket] = useState<WalletActiveItem | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    fetchWallet();
-  }, []);
-
-  const fetchWallet = async () => {
-    try {
-      const data = await userService.getWallet();
-      setWalletData(data);
-    } catch (error) {
-      console.error("Failed to fetch wallet", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleTicketClick = (item: WalletActiveItem) => {
     setSelectedTicket(item);

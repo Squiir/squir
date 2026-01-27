@@ -37,7 +37,8 @@
       "@utils/*": ["src/utils/*"],
       "@constants/*": ["src/constants/*"],
       "@stripe/*": ["src/stripe/*"],
-      "@azure-storage/*": ["src/azure-storage/*"]
+      "@azure-storage/*": ["src/azure-storage/*"],
+      "@notifications/*": ["src/notifications/*"]
     }
   }
 }

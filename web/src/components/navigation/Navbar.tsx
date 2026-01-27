@@ -1,9 +1,10 @@
 import { FriendRequestsDropdown } from "@/components/friends/FriendRequestsDropdown";
 import { UserMenu } from "@/components/layout/UserMenu";
 import { NavPill } from "@/components/navigation/NavPill";
+import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import { SavedItemsDropdown } from "@/components/saved/SavedItemsDropdown";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { Home, Map as MapIcon, Users, Wallet } from "lucide-react";
+import { Home, Map as MapIcon, User, Users, Wallet } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export function Navbar() {
@@ -16,10 +17,10 @@ export function Navbar() {
       <div className="flex h-16 items-center px-6">
         <div className="flex-1">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-purple-600 shadow-lg shadow-primary/20">
-              <span className="text-xl font-bold text-white">S</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/20">
+              <span className="text-white font-black text-xl italic">S</span>
             </div>
-            <span className="text-2xl font-black tracking-tight">SHƎERS</span>
+            <span className="text-2xl font-bold bg-clip-text tracking-tight">SHƎERS</span>
           </Link>
         </div>
 
@@ -48,9 +49,20 @@ export function Navbar() {
           {isLoggedIn && (
             <>
               <SavedItemsDropdown />
+              <NotificationsDropdown />
               <FriendRequestsDropdown />
               {!isProfilePage && <UserMenu />}
             </>
+          )}
+          {!isLoggedIn && (
+            <nav className="flex items-center gap-1 p-1.5 rounded-full bg-secondary/50 border border-border/50 backdrop-blur-sm">
+              <NavPill
+                to="/login"
+                icon={User}
+                label="Connexion"
+                active={location.pathname === "/login"}
+              />
+            </nav>
           )}
         </div>
       </div>

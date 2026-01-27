@@ -5,7 +5,6 @@ import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-
 export function useScanner() {
   const { mutateAsync: consumeQrCode, isPending } = useConsumeQrCode();
   const [scanned, setScanned] = useState(false);
@@ -55,7 +54,7 @@ export function useScanner() {
       scannerRef.current = scanner;
 
       await startScanner({ facingMode: "environment" });
-    } catch (err: any) {
+    } catch (err) {
       console.error("Initialization error", err);
       if (
         err?.name === "NotAllowedError" ||
@@ -113,10 +112,14 @@ export function useScanner() {
               }
             } catch (e) {
               console.warn("Failed to parse scanned text as URL", decodedText, e);
+              const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+              if (uuidRegex.test(decodedText)) {
+                qrId = decodedText;
+              }
             }
 
             if (!qrId) {
-              toast.error("Ce QR Code n'est pas un code SQUIR valide");
+              toast.error("Ce QR Code n'est pas un code Sheers valide");
               processingRef.current = false;
               setTimeout(() => setScanned(false), SCAN_DEBOUNCE_MS);
               return;
@@ -129,7 +132,7 @@ export function useScanner() {
             const result = await consumeQrCode(qrId);
             toast.success(result.message || "QR Code validé !");
             setScannedData(result);
-          } catch (error: any) {
+          } catch (error) {
             console.error(error);
             toast.error(error?.response?.data?.message || "Erreur lors de la validation");
             setScanned(false);

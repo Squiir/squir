@@ -35,15 +35,7 @@ export function FriendItem({
         </Avatar>
 
         <div className="flex-1 min-w-0 space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-base truncate">{conversation.friend.username}</span>
-            {conversation.unreadCount > 0 && (
-              <span className="flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white bg-primary rounded-full">
-                {conversation.unreadCount}
-              </span>
-            )}
-          </div>
-
+          <span className="font-semibold text-base truncate">{conversation.friend.username}</span>
           {conversation.lastMessage && (
             <p
               className={clsx(
@@ -53,6 +45,14 @@ export function FriendItem({
             >
               {conversation.lastMessage}
             </p>
+          )}
+        </div>
+
+        <div className="flex items-center justify-center">
+          {conversation.unreadCount > 0 && (
+            <span className="flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-xs font-bold text-white bg-primary rounded-full">
+              {conversation.unreadCount}
+            </span>
           )}
         </div>
       </button>

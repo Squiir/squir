@@ -6,6 +6,7 @@ import { GroupsModule } from "@groups/groups.module";
 import { MessagesModule } from "@messages/messages.module";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { NotificationsModule } from "@notifications/notifications.module";
 import { OffersModule } from "@offers/offers.module";
 import { PrismaModule } from "@prisma/prisma.module";
 import { PurchasesModule } from "@purchases/purchases.module";
@@ -33,6 +34,7 @@ import { AppService } from "./app.service";
     MessagesModule,
     StripeModule,
     AzureStorageModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

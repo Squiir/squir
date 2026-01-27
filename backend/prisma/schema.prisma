@@ -44,6 +44,7 @@ model User {
   updatedAt          DateTime            @updatedAt
   userFavoriteVenues UserFavoriteVenue[]
   userSavedOffers    UserSavedOffer[]
+  notifications      Notification[]
 }
 
 model QRCode {
@@ -186,6 +187,19 @@ model PromotionRule {
   updatedAt       DateTime         @updatedAt
 }
 
+model UserFavoriteVenue {
+  userId String
+  barId  String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
+
+  @@id([userId, barId])
+  @@index([barId])
+}
+
 model UserSavedOffer {
   userId  String
   offerId String
@@ -199,15 +213,25 @@ model UserSavedOffer {
   @@index([offerId])
 }
 
-model UserFavoriteVenue {
-  userId String
-  barId  String
+enum NotificationType {
+  NEW_GROUP
+  NEW_MESSAGE
+  BUY_QR_CODE
+  QR_CODE_SCANNED
+}
 
-  createdAt DateTime @default(now())
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  description String
+  read        Boolean  @default(false)
+  data        Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bar  Bar  @relation(fields: [barId], references: [id], onDelete: Cascade)
 
-  @@id([userId, barId])
-  @@index([barId])
+  @@index([userId])
 }

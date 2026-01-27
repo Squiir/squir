@@ -12,7 +12,7 @@ export function FriendList({
   const { data = [], isLoading } = useConversations();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1 min-h-0">
       <h3 className="mb-4 text-lg font-semibold text-foreground">Conversations</h3>
 
       {isLoading && <AppSkeleton />}

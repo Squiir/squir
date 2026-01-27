@@ -15,9 +15,13 @@ export function ProfileToggleMode({ singleIcon }: Props) {
 
   if (singleIcon) {
     return (
-      <div className="flex items-center w-full">
-        {isDark ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
-        <span className="flex-1">Thème</span>
+      <div className="flex items-center w-full gap-2">
+        {isDark ? <Moon className="h-4 w-4 mr-3" /> : <Sun className="h-4 w-4 mr-3" />}
+        {isDark ? (
+          <span className="flex-1 text-sm">Thème sombre</span>
+        ) : (
+          <span className="flex-1 text-sm">Thème clair</span>
+        )}
         <Switch
           id="theme-mode-single"
           checked={isDark}

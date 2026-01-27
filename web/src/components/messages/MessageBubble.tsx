@@ -11,8 +11,10 @@ export function MessageBubble({ message, showRead }: { message: Message; showRea
     <div>
       <div
         className={clsx(
-          "max-w-[50%] px-3 py-2 rounded-lg text-sm",
-          isMine ? "ml-auto bg-primary text-primary-foreground" : "mr-auto bg-muted",
+          "max-w-[85%] md:max-w-[70%] lg:max-w-[500px] px-4 py-2 rounded-2xl text-sm break-words whitespace-pre-wrap shadow-sm",
+          isMine
+            ? "ml-auto bg-primary text-primary-foreground rounded-br-none"
+            : "mr-auto bg-background border rounded-bl-none",
         )}
       >
         {message.content}
