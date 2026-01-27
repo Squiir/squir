@@ -263,11 +263,15 @@ export class UsersService {
                 id: true,
                 name: true,
                 squirPrice: true,
+                originalPrice: true,
                 validUntil: true,
                 imageUrl: true,
+                description: true,
                 bar: {
                   select: {
                     name: true,
+                    address: true,
+                    arrondissement: true,
                   },
                 },
               },
@@ -286,6 +290,8 @@ export class UsersService {
     const savedOffers = user.userSavedOffers.map((so) => ({
       ...so.offer,
       venueName: so.offer.bar.name,
+      venueAddress: so.offer.bar.address,
+      venueArrondissement: so.offer.bar.arrondissement,
     }));
 
     return {

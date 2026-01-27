@@ -17,6 +17,8 @@ export interface User {
   status?: string;
   loyaltyPoints: number;
   role: UserRole;
+  firstName?: string;
+  lastName?: string;
 
   barId?: string;
   qrCodes: QrCode[];

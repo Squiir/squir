@@ -1,5 +1,5 @@
-import { ProfileToggleMode } from "@/components/profile/ProfileToggleMode";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { ThemeToggleMode } from "@/components/user-menu/ThemeToggleMode";
 import { CircleHelp, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export function UserMenuSystemSection() {
 
       <div className="px-2 py-1.5 flex items-center w-full outline-none hover:bg-accent hover:text-accent-foreground rounded-sm transition-colors cursor-default">
         <div className="flex flex-1 items-center">
-          <ProfileToggleMode singleIcon />
+          <ThemeToggleMode singleIcon />
         </div>
       </div>
 

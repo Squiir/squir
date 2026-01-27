@@ -7,7 +7,6 @@ interface Props {
 }
 
 export function ProfileWallet({ user }: Props) {
-  // Mock logic for gamification
   const points = user?.loyaltyPoints ?? 0;
   const nextLevel = 2000;
   const remaining = nextLevel - points;
@@ -15,10 +14,8 @@ export function ProfileWallet({ user }: Props) {
 
   return (
     <Card className="relative overflow-hidden border-none rounded-3xl text-white shadow-2xl">
-      {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-violet-900 via-indigo-900 to-purple-900" />
 
-      {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
 
@@ -39,7 +36,6 @@ export function ProfileWallet({ user }: Props) {
           </div>
         </div>
 
-        {/* Progress Section */}
         <div className="space-y-2 mt-8">
           <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-white/50">
             <span>Gold</span>
