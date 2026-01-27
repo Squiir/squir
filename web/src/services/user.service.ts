@@ -51,9 +51,18 @@ export const userService = {
       favoriteVenues: Pick<Bar, "id" | "name" | "address" | "arrondissement">[];
       savedOffers: (Pick<
         Offer,
-        "id" | "name" | "squirPrice" | "validUntil" | "imageUrl" | "barId" | "originalPrice"
+        | "id"
+        | "name"
+        | "squirPrice"
+        | "validUntil"
+        | "imageUrl"
+        | "barId"
+        | "originalPrice"
+        | "description"
       > & {
         venueName: string;
+        venueAddress: string;
+        venueArrondissement: number;
       })[];
     }>("/users/profile/favorites");
     return data;

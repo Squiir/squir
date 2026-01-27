@@ -8,7 +8,7 @@ interface Props {
   singleIcon?: boolean;
 }
 
-export function ProfileToggleMode({ singleIcon }: Props) {
+export function ThemeToggleMode({ singleIcon }: Props) {
   const { theme, setTheme } = useTheme();
 
   const isDark = theme === "dark";
