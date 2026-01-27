@@ -1,24 +1,32 @@
-import { ProfileToggleMode } from "@/components/profile/ProfileToggleMode";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UserMenuBusinessSection } from "@/components/user-menu/UserMenuBusinessSection";
+import { UserMenuFooter } from "@/components/user-menu/UserMenuFooter";
+import { UserMenuHeader } from "@/components/user-menu/UserMenuHeader";
+import { UserMenuPersonalSection } from "@/components/user-menu/UserMenuPersonalSection";
+import { UserMenuSystemSection } from "@/components/user-menu/UserMenuSystemSection";
+import { UserMenuTrigger } from "@/components/user-menu/UserMenuTrigger";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useLogout } from "@/hooks/auth/use-logout";
+import { useGetFriends } from "@/hooks/friends/use-friends";
+import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
+import { useFavorites } from "@/hooks/useFavorites";
 import { useMe } from "@/hooks/user/use-me";
-import { ChevronDown, LogOut, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function UserMenu() {
   const { isLoggedIn } = useAuth();
-  const navigate = useNavigate();
   const { mutate: logout } = useLogout();
   const { data: user, isLoading } = useMe();
+  const { data: friends } = useGetFriends();
+  const { favoriteVenues } = useFavorites();
+  const { data: tickets } = useGetMyQrCodes();
 
   if (!isLoggedIn) {
     return (
@@ -37,35 +45,32 @@ export function UserMenu() {
     );
   }
 
+  const friendsCount = friends?.length ?? 0;
+  const favoritesCount = favoriteVenues.length;
+  const ticketsCount = tickets?.length ?? 0;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-secondary/50 border border-border/50 backdrop-blur-sm transition-colors hover:bg-secondary/80 outline-none group data-[state=open]:bg-secondary/80">
-          <Avatar className="w-9 h-9 border border-border/50">
-            <AvatarImage src={user.avatarUrl ?? undefined} />
-            <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-start text-sm leading-none">
-            <span className="font-bold text-foreground">{user.username}</span>
-          </div>
-          <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors ml-1" />
-        </button>
+        <UserMenuTrigger user={user} />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-44">
-        <DropdownMenuItem onClick={() => navigate("/profile")}>
-          <User className="w-4 h-4 mr-2" />
-          Profil
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="w-80 p-0 animate-in fade-in slide-in-from-top-2">
+        <UserMenuHeader user={user} />
 
-        <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-          <ProfileToggleMode singleIcon />
-        </DropdownMenuItem>
+        <UserMenuPersonalSection favoritesCount={favoritesCount} friendsCount={friendsCount} />
 
-        <DropdownMenuItem onClick={() => logout()} className="text-red-600 focus:text-red-600">
-          <LogOut className="w-4 h-4 mr-2" />
-          Déconnexion
-        </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-border/50" />
+
+        <UserMenuBusinessSection ticketsCount={ticketsCount} userRole={user.role} />
+
+        <DropdownMenuSeparator className="bg-border/50" />
+
+        <UserMenuSystemSection />
+
+        <DropdownMenuSeparator className="bg-border/50" />
+
+        <UserMenuFooter onLogout={() => logout()} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

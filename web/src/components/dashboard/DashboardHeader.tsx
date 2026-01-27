@@ -14,7 +14,7 @@ export function DashboardHeader({ onOpenStripeDashboard }: DashboardHeaderProps)
       </div>
       <Button onClick={onOpenStripeDashboard} className="gap-2">
         <CreditCard className="w-4 h-4" />
-        Dashboard Financier
+        Dashboard Stripe
       </Button>
     </div>
   );
