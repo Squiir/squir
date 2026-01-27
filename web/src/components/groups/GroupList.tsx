@@ -9,7 +9,7 @@ export function GroupList() {
   }
 
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="flex-shrink-0 max-h-[40%] overflow-auto">
       <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Groupes</h3>
       {isLoading && <div className="text-sm">Chargement…</div>}
 

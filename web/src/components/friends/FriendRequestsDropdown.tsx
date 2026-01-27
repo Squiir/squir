@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePendingFriends } from "@/hooks/friends/use-pending-friends";
 import { useRespondFriend } from "@/hooks/friends/use-respond-friend";
-import { Bell } from "lucide-react";
+import { UserPlus } from "lucide-react";
 
 export function FriendRequestsDropdown() {
   const { data = [], isLoading } = usePendingFriends();
@@ -21,7 +21,7 @@ export function FriendRequestsDropdown() {
           size="icon"
           className="relative text-muted-foreground hover:text-foreground"
         >
-          <Bell className="w-5 h-5" />
+          <UserPlus className="w-5 h-5" />
           {data.length > 0 && (
             <span className="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-background" />
           )}

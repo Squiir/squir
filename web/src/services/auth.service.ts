@@ -28,7 +28,10 @@ export const authService = {
       "/auth/register/professional",
       dto,
     );
-    useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
+    localStorage.setItem("access_token", data.accessToken);
+    if (data.refreshToken) {
+      localStorage.setItem("refresh_token", data.refreshToken);
+    }
     return data;
   },
 

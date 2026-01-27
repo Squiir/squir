@@ -92,7 +92,7 @@ export function WalletQRCodeModal({ open, onOpenChange, item }: Props) {
                 <QRCode
                   size={256}
                   style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                  value={currentQR?.id || "error"}
+                  value={currentQR?.id ? `squir://redeem?qr=${currentQR.id}` : "error"}
                   viewBox={`0 0 256 256`}
                 />
               </div>

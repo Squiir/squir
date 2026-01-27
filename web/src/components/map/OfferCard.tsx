@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/user/use-favorites";
 import type { Bar } from "@/types/bar";
 import type { Offer } from "@/types/offer";
 import type { QrCode } from "@/types/qrcode";

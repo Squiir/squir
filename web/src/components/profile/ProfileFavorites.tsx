@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavorites } from "@/hooks/user/use-favorites";
 import { MapPin, Star } from "lucide-react";
 
 export function ProfileFavorites() {
