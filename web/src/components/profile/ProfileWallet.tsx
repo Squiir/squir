@@ -5,7 +5,7 @@ import { Gem } from "lucide-react";
 interface Props {
   user?: User;
 }
-
+TODO: Keep or remove Loyalty Point for POC ?
 export function ProfileWallet({ user }: Props) {
   const points = user?.loyaltyPoints ?? 0;
   const nextLevel = 2000;
