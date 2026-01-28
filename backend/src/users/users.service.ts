@@ -183,7 +183,7 @@ export class UsersService {
 
     return {
       ...user,
-      shareUrl: `app://user/${user.username}`,
+      shareUrl: `${process.env.FRONTEND_URL}/users/${user.username}/share`,
     };
   }
 

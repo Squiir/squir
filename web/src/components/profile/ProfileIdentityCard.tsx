@@ -116,3 +116,142 @@ export function ProfileIdentityCard({ user, friendsCount = 0 }: Props) {
     </>
   );
 }
+
+
+// import { useState } from 'react';
+// import { Share2, Lock, LogOut, UserPlus, Check, Copy } from 'lucide-react';
+// import { toast } from 'sonner';
+// import { User } from '@/types/user';
+// import { useAuth } from '@/hooks/auth/use-auth';
+// import { useAddFriend } from '@/hooks/friends/use-add-friend'; // Assure-toi d'avoir ce hook ou service
+// import { Button } from '@/components/ui/button';
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { Badge } from '@/components/ui/badge';
+// import { StatusEditDialog } from './StatusEditDialog';
+
+// interface ProfileIdentityCardProps {
+//   user: Partial<User>; // Partial car le profil partagé n'a pas toutes les infos
+//   isOwnProfile?: boolean;
+// }
+
+// export function ProfileIdentityCard({ user, isOwnProfile = false }: ProfileIdentityCardProps) {
+//   const { logout } = useAuth();
+//   const { mutate: addFriend, isPending } = useAddFriend();
+//   const [hasCopied, setHasCopied] = useState(false);
+
+//   const handleShare = async () => {
+//     // Génère le lien : https://squir.app/users/dydou/share
+//     const shareUrl = `${window.location.origin}/users/${user.username}/share`;
+
+//     try {
+//       await navigator.clipboard.writeText(shareUrl);
+//       setHasCopied(true);
+//       toast.success("Lien du profil copié !");
+//       setTimeout(() => setHasCopied(false), 2000);
+//     } catch (err) {
+//       toast.error("Impossible de copier le lien");
+//     }
+//   };
+
+//   const handleAddFriend = () => {
+//     if (user.username) {
+//       // On suppose que l'API addFriend accepte un username ou qu'on a l'ID
+//       // Si ton backend shareByUsername ne renvoie pas l'ID, il faudra l'ajouter au select backend !
+//       addFriend(user.username);
+//     }
+//   };
+
+//   return (
+//     <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-sm sticky top-6">
+
+//       {/* Header Profil */}
+//       <div className="flex flex-col items-center text-center space-y-4">
+//         <div className="relative group cursor-pointer">
+//           {/* Anneau de statut */}
+//           <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-pink-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+//           <Avatar className="relative w-32 h-32 border-4 border-white dark:border-gray-900">
+//             <AvatarImage src={user.avatarUrl || undefined} alt={user.username} className="object-cover" />
+//             <AvatarFallback className="text-4xl font-bold bg-gray-100 dark:bg-gray-800">
+//               {user.username?.substring(0, 2).toUpperCase()}
+//             </AvatarFallback>
+//           </Avatar>
+
+//           {/* Indicateur en ligne (décoratif) */}
+//           <div className="absolute bottom-1 right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white dark:border-gray-900 flex items-center justify-center">
+//             <div className="w-full h-full rounded-full animate-pulse bg-green-400 opacity-50 absolute"></div>
+//           </div>
+//         </div>
+
+//         <div>
+//           <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+//             {user.username}
+//           </h1>
+//           {isOwnProfile && (
+//             <div className="mt-2">
+//                <StatusEditDialog currentStatus={user.status} />
+//             </div>
+//           )}
+//           {!isOwnProfile && user.status && (
+//              <p className="text-sm text-gray-500 mt-1">"{user.status}"</p>
+//           )}
+//         </div>
+
+//         {/* Badges (Exemple) */}
+//         <div className="flex flex-wrap gap-2 justify-center">
+//           <Badge variant="secondary" className="bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
+//             SQUIR Member
+//           </Badge>
+//         </div>
+
+//         {/* Stats (Optionnel, si dispo dans user) */}
+//         {/* <div className="flex items-center gap-4 text-sm text-gray-500 py-2 border-t border-gray-100 dark:border-gray-800 w-full justify-center mt-4">
+//            <span><b>142</b> Amis</span>
+//         </div> */}
+//       </div>
+
+//       {/* Actions Principales */}
+//       <div className="mt-8 space-y-3">
+
+//         {isOwnProfile ? (
+//           // --- VUE PROPRIÉTAIRE ---
+//           <>
+//             <Button
+//               variant="default"
+//               className="w-full bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900"
+//               onClick={handleShare}
+//             >
+//               {hasCopied ? <Check size={18} className="mr-2" /> : <Share2 size={18} className="mr-2" />}
+//               {hasCopied ? "Copié !" : "Partager mon profil"}
+//             </Button>
+
+//             <div className="grid grid-cols-2 gap-3">
+//                <Button variant="outline" className="w-full" size="sm">
+//                 <Lock size={16} className="mr-2" /> Mdp
+//               </Button>
+//               <Button
+//                 variant="outline"
+//                 className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 border-red-200 dark:border-red-900/30"
+//                 size="sm"
+//                 onClick={logout}
+//               >
+//                 <LogOut size={16} className="mr-2" />
+//                 Déconnexion
+//               </Button>
+//             </div>
+//           </>
+//         ) : (
+//           // --- VUE VISITEUR ---
+//           <Button
+//             className="w-full bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-500/25"
+//             onClick={handleAddFriend}
+//             disabled={isPending}
+//           >
+//             <UserPlus size={18} className="mr-2" />
+//             {isPending ? "Demande envoyée" : "Ajouter en ami"}
+//           </Button>
+//         )}
+
+//       </div>
+//     </div>
+//   );
+// }
