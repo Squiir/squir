@@ -74,20 +74,21 @@ export const userService = {
   },
 
   async updateUsername(username: string) {
-    const { data } = await api.patch<User>('/users/me/username', { username });
+    const { data } = await api.patch<User>("/users/me/username", { username });
     return data;
   },
 
-  async updatePassword(newPassword: string, oldPassword?: string) {
-    const { data } = await api.patch<User>('/users/me/password', { newPassword, oldPassword });
-    return data
+  async updatePassword(payload: { newPassword: string; oldPassword?: string }) {
+    const { data } = await api.patch<User>("/users/me/password", payload);
+    return data;
   },
-  
+
   async deleteMe() {
-    return api.delete<{ success: boolean }>('/users/me');
+    return api.delete<{ success: boolean }>("/users/me");
   },
 
   async getProfileByUsername(username: string) {
-    return api.get<Partial<User>>(`/users/${username}/share`);
+    const { data } = await api.get<User & { shareUrl: string }>(`/users/${username}/share`);
+    return data;
   },
 };
