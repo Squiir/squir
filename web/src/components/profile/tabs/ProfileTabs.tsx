@@ -34,7 +34,6 @@ export function ProfileTabs({ favoriteVenues, savedOffers }: ProfileTabsProps) {
 
   return (
     <div className="space-y-6">
-      {/* Tabs Header */}
       <div className="flex items-center gap-8 border-b border-border/50 pb-1">
         <button
           onClick={() => setActiveTab("bars")}
@@ -62,7 +61,6 @@ export function ProfileTabs({ favoriteVenues, savedOffers }: ProfileTabsProps) {
         </button>
       </div>
 
-      {/* Content */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in zoom-in-95 duration-300">
         {activeTab === "bars" && (
           <>
