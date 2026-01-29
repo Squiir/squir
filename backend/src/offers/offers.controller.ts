@@ -40,6 +40,29 @@ export class OffersController {
     return this.offers.findByBar(barId);
   }
 
+  @Get("best-selling")
+  getBestSelling() {
+    return this.offers.findBestSelling();
+  }
+
+  @Get("nearby")
+  getNearby(
+    @Query("latitude") latitude: number,
+    @Query("longitude") longitude: number,
+  ) {
+    return this.offers.findNearby(Number(latitude), Number(longitude));
+  }
+
+  @Get("recommendations")
+  getRecommendations() {
+    return this.offers.findRecommendations();
+  }
+
+  @Get("search")
+  search(@Query("q") query: string) {
+    return this.offers.search(query);
+  }
+
   @Get(":id")
   async getOffer(@Param("id") id: string) {
     return this.offers.findOne(id);
