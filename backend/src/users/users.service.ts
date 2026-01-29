@@ -177,13 +177,30 @@ export class UsersService {
   async shareByUsername(username: string) {
     const user = await this.prisma.user.findUnique({
       where: { username },
-      select: { username: true, avatarUrl: true, status: true },
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+        status: true,
+        firstName: true,
+        lastName: true,
+        _count: {
+          select: {
+            sentFriendRequests: { where: { status: "ACCEPTED" } },
+            receivedFriendRequests: { where: { status: "ACCEPTED" } },
+          },
+        },
+      },
     });
     if (!user) throw new NotFoundException("User not found");
 
+    const friendsCount =
+      user._count.sentFriendRequests + user._count.receivedFriendRequests;
+
     return {
       ...user,
-      shareUrl: `app://user/${user.username}`,
+      friendsCount,
+      shareUrl: `${process.env.FRONTEND_URL}/share/${user.username}`,
     };
   }
 

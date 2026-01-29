@@ -1,3 +1,3 @@
-export default function HomePage() {
+export default function PresentationPage() {
   return <div>Présentation</div>;
 }

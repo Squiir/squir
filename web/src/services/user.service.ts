@@ -72,4 +72,25 @@ export const userService = {
     const { data } = await api.get<WalletResponse>("/users/wallet");
     return data;
   },
+
+  async updateUsername(username: string) {
+    const { data } = await api.patch<User>("/users/me/username", { username });
+    return data;
+  },
+
+  async updatePassword(payload: { newPassword: string; oldPassword?: string }) {
+    const { data } = await api.patch<User>("/users/me/password", payload);
+    return data;
+  },
+
+  async deleteMe() {
+    return api.delete<{ success: boolean }>("/users/me");
+  },
+
+  async getProfileByUsername(username: string) {
+    const { data } = await api.get<User & { shareUrl: string; friendsCount: number }>(
+      `/users/${username}/share`,
+    );
+    return data;
+  },
 };
