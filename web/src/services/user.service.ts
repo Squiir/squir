@@ -88,7 +88,9 @@ export const userService = {
   },
 
   async getProfileByUsername(username: string) {
-    const { data } = await api.get<User & { shareUrl: string }>(`/users/${username}/share`);
+    const { data } = await api.get<User & { shareUrl: string; friendsCount: number }>(
+      `/users/${username}/share`,
+    );
     return data;
   },
 };

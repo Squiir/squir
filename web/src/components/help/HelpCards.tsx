@@ -10,7 +10,7 @@ export function HelpCards() {
           <CardTitle className="flex items-center gap-2 text-violet-700 dark:text-violet-400">
             <MessageCircle size={20} /> Besoin d'aide ?
           </CardTitle>
-          <CardDescription>Notre équipe est disponible du Lundi au Samedi.</CardDescription>
+          <CardDescription>Notre équipe est disponible du Lundi au Vendredi.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button className="w-full bg-violet-600 hover:bg-violet-700 gap-2">

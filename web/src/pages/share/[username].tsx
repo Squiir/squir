@@ -46,7 +46,7 @@ export default function SharedProfile() {
           <aside className="lg:col-span-4 space-y-6">
             <ProfileIdentityCard
               user={sharedUser}
-              friendsCount={(sharedUser as any).friendsCount}
+              friendsCount={sharedUser.friendsCount}
               isOwnProfile={false}
               isFriend={isFriend}
             />
