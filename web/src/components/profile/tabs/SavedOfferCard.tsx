@@ -11,7 +11,7 @@ interface Props {
     | "squirPrice"
     | "validUntil"
     | "imageUrl"
-    | "barId"
+    | "bar"
     | "originalPrice"
     | "description"
   > & {

@@ -18,7 +18,7 @@ interface ProfileTabsProps {
     | "squirPrice"
     | "validUntil"
     | "imageUrl"
-    | "barId"
+    | "bar"
     | "originalPrice"
     | "description"
   > & {

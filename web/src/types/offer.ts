@@ -1,3 +1,5 @@
+import type { Bar } from "@/types/bar";
+
 export interface PromotionRule {
   id: string;
   type: "BUY_X_GET_Y" | "PERCENTAGE_OFF" | "FIXED_AMOUNT_OFF" | undefined;
@@ -20,6 +22,7 @@ export interface Offer {
   stock: number;
   validUntil?: string;
   promotionRule?: Partial<PromotionRule>;
+  bar: Bar;
   barId: string;
   createdAt: string;
   updatedAt: string;

@@ -56,7 +56,7 @@ export const userService = {
         | "squirPrice"
         | "validUntil"
         | "imageUrl"
-        | "barId"
+        | "bar"
         | "originalPrice"
         | "description"
       > & {
