@@ -74,8 +74,9 @@ export function OfferCard({
                 className={clsx(
                   "p-4 rounded-xl border flex justify-between items-center cursor-pointer transition-colors",
                   alreadyHas
-                    ? "bg-gray-100 border-gray-200 cursor-not-allowed"
-                    : "bg-blue-50 border-blue-200 hover:bg-blue-100",
+                    ? "bg-muted border-border cursor-not-allowed opacity-60"
+                    : "bg-card border-border hover:bg-accent/50",
+                  "text-card-foreground",
                   isCreateQrCodePending && "opacity-50 pointer-events-none",
                 )}
                 onClick={() => {
@@ -91,10 +92,10 @@ export function OfferCard({
                       variant="ghost"
                       size="icon"
                       className={clsx(
-                        "h-8 w-8 -mt-1 -mr-2 hover:text-yellow-400 transition-colors",
+                        "h-8 w-8 -mt-1 -mr-2 transition-colors",
                         isOfferSaved(offer.id)
-                          ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-400",
+                          ? "text-yellow-400 fill-yellow-400 hover:text-yellow-500"
+                          : "text-muted-foreground hover:text-foreground",
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -105,11 +106,11 @@ export function OfferCard({
                     </Button>
                   </div>
                   {typeof offer.squirPrice === "number" && (
-                    <p className="text-sm text-gray-500">{offer.squirPrice} €</p>
+                    <p className="text-sm text-muted-foreground">{offer.squirPrice} €</p>
                   )}
                 </div>
                 {alreadyHas && (
-                  <span className="text-xs font-medium text-gray-500">Déjà en stock</span>
+                  <span className="text-xs font-medium text-muted-foreground">Déjà en stock</span>
                 )}
               </div>
             );

@@ -52,12 +52,10 @@ export function HomeOfferCard({ offer }: HomeOfferCardProps) {
       <div className="space-y-1">
         <div className="flex justify-between items-start gap-2">
           <h3 className="font-bold leading-tight truncate text-lg flex-1">{offer.name}</h3>
-          <div className="flex flex-col items-end shrink-0">
+          <div className="flex flex-col items-end shrink-0 text-primary">
             <span className="font-bold">{offer.squirPrice}€</span>
             {offer.originalPrice > offer.squirPrice && (
-              <span className="text-xs text-muted-foreground line-through">
-                {offer.originalPrice}€
-              </span>
+              <span className="text-xs line-through">{offer.originalPrice}€</span>
             )}
           </div>
         </div>

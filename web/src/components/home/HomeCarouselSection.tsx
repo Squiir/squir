@@ -19,7 +19,7 @@ export function HomeCarouselSection({ title, offers }: HomeCarouselSectionProps)
   return (
     <div className="py-6 space-y-4">
       <div className="px-4 md:px-8">
-        <h2 className="text-xl md:text-2xl font-bold tracking-tight">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-primary">{title}</h2>
       </div>
 
       <div className="relative">
