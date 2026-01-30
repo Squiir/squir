@@ -10,7 +10,7 @@ import {
   createBarIcon,
   userIcon,
 } from "@/constants/map";
-import { useGetBars } from "@/hooks/bars/use-get-bars";
+import { useBars } from "@/hooks/bars/use-bars";
 import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
 import type { QrCodeDto } from "@/services/qrcode.service";
@@ -26,7 +26,7 @@ import { MapContainer, Marker, TileLayer } from "react-leaflet";
 export default function FranceMap({ latitude, longitude }: Coordinate) {
   const { mutate: createQrCode, isPending: isCreateQrCodePending } = useCreateQrCode();
   const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
-  const { data: bars, isPending: isGetBarsPending } = useGetBars();
+  const { data: bars, isPending: isGetBarsPending } = useBars();
   const queryClient = useQueryClient();
 
   const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();

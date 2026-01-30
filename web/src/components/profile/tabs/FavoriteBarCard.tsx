@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import type { Bar } from "@/types/bar";
-import { Wine } from "lucide-react";
+import { Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -16,7 +16,7 @@ export function FavoriteBarCard({ bar }: Props) {
       onClick={() => navigate(`/bars/${bar.id}`)}
     >
       <div className="w-24 h-24 shrink-0 bg-muted/20 rounded-xl overflow-hidden flex items-center justify-center p-6">
-        <Wine className="w-full h-full text-muted-foreground/50" />
+        <Store className="w-full h-full text-muted-foreground/50" />
       </div>
       <div className="flex-1 flex flex-col justify-center overflow-hidden">
         <div className="space-y-1.5">

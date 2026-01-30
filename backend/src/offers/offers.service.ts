@@ -302,4 +302,80 @@ export class OffersService {
 
     return offer;
   }
+
+  async findBestSelling() {
+    return this.prisma.offer.findMany({
+      include: {
+        bar: true,
+        promotionRule: true,
+        _count: {
+          select: { qrCodes: true },
+        },
+      },
+      orderBy: {
+        qrCodes: {
+          _count: "desc",
+        },
+      },
+      take: 10,
+    });
+  }
+
+  async findNearby(latitude: number, longitude: number) {
+    if (!latitude || !longitude) return [];
+
+    const offers = await this.prisma.offer.findMany({
+      include: { bar: true, promotionRule: true },
+    });
+
+    const results = offers
+      .map((offer) => {
+        let distance: number | undefined;
+        if (offer.bar.latitude !== null && offer.bar.longitude !== null) {
+          distance = haversineDistance(
+            latitude,
+            longitude,
+            offer.bar.latitude,
+            offer.bar.longitude,
+          );
+        }
+        return { ...offer, distance };
+      })
+      .filter((o) => o.distance !== undefined)
+      .sort((a, b) => a.distance! - b.distance!)
+      .slice(0, 10);
+
+    return results;
+  }
+
+  async findRecommendations() {
+    return this.prisma.offer.findMany({
+      include: {
+        bar: true,
+        promotionRule: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 10,
+    });
+  }
+
+  async search(query: string) {
+    if (!query || query.trim().length === 0) return [];
+
+    return this.prisma.offer.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { bar: { name: { contains: query, mode: "insensitive" } } },
+        ],
+      },
+      include: {
+        bar: true,
+        promotionRule: true,
+      },
+      take: 10,
+    });
+  }
 }

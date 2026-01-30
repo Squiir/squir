@@ -41,4 +41,24 @@ export const offerService = {
     });
     return data.imageUrl;
   },
+
+  getBestSelling: async () => {
+    const { data } = await api.get<Offer[]>("/offers/best-selling");
+    return data;
+  },
+
+  getNearby: async (lat: number, lng: number) => {
+    const { data } = await api.get<Offer[]>(`/offers/nearby?latitude=${lat}&longitude=${lng}`);
+    return data;
+  },
+
+  getRecommendations: async () => {
+    const { data } = await api.get<Offer[]>("/offers/recommendations");
+    return data;
+  },
+
+  search: async (query: string) => {
+    const { data } = await api.get<Offer[]>(`/offers/search?q=${encodeURIComponent(query)}`);
+    return data;
+  },
 };

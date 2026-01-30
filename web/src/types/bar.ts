@@ -1,4 +1,4 @@
-import type { Offer } from "./offer";
+import type { Offer } from "@/types/offer";
 
 export interface Bar {
   id: string;
