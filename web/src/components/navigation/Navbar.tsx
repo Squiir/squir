@@ -13,7 +13,7 @@ export function Navbar() {
   const isProfilePage = location.pathname === "/profile";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/40 backdrop-blur supports-[backdrop-filter]:bg-background/40">
       <div className="flex h-16 items-center px-6">
         <div className="flex-1">
           <Link to="/" className="flex items-center gap-2">

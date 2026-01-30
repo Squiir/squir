@@ -21,7 +21,7 @@ export const createBarIcon = (type: string) =>
         ${type}
         <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/80 rotate-45"></div>
       </div>
-      <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center" style="background-color: #fdcba2ff">
+      <div class="w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center bg-primary/60">
         <span class="text-base leading-none">🍻</span>
       </div>
     </div>

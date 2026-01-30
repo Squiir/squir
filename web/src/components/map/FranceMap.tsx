@@ -10,6 +10,7 @@ import {
   createBarIcon,
   userIcon,
 } from "@/constants/map";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { useBars } from "@/hooks/bars/use-bars";
 import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
@@ -28,6 +29,7 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
   const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
   const { data: bars, isPending: isGetBarsPending } = useBars();
   const queryClient = useQueryClient();
+  const { theme } = useTheme();
 
   const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
   const [offerOpen, setOfferOpen] = useState(false);
@@ -35,6 +37,19 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+
+  const [isSystemDark, setIsSystemDark] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => setIsSystemDark(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  const isDark = theme === "dark" || (theme === "system" && isSystemDark);
 
   const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
     if (!selectedBar) return;
@@ -56,9 +71,9 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
   }, [previewedQrCode]);
 
   return (
-    <div className="relative z-0 w-full h-full bg-slate-100">
+    <div className="relative z-0 w-full h-full bg-slate-100 dark:bg-slate-900">
       {isGetBarsPending && (
-        <div className="absolute inset-0 flex items-center justify-center z-1000 bg-white/50 backdrop-blur-sm">
+        <div className="absolute inset-0 flex items-center justify-center z-1000 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
           <div className="w-8 h-8 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
         </div>
       )}
@@ -77,7 +92,11 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
       >
         <TileLayer
           attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url={
+            isDark
+              ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          }
           subdomains="abcd"
           maxZoom={20}
         />
