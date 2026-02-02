@@ -1,0 +1,21 @@
+FROM node:20-alpine
+WORKDIR /app
+
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
+COPY package*.json ./
+COPY prisma ./prisma/
+
+RUN npm config set strict-ssl false
+
+RUN npm install
+RUN npm install -g @nestjs/cli
+RUN npm install prisma dotenv
+
+COPY . .
+
+RUN npx prisma generate
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:dev"]

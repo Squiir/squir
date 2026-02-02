@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: app-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: app-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://app:app@postgres:5432/app
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  web:
+    build: ./web
+    container_name: app-web
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    env_file:
+      - ./web/.env
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
