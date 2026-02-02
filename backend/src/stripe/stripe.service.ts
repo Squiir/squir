@@ -16,7 +16,7 @@ export class StripeService {
       console.warn("STRIPE_SECRET_KEY is not defined");
     }
     this.stripe = new Stripe(secretKey || "", {
-      apiVersion: "2025-12-15.clover",
+      apiVersion: "2026-01-28.clover",
     });
   }
 
