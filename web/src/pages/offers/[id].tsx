@@ -10,6 +10,8 @@ import { useOffer } from "@/hooks/offers/use-offer";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import { useMyId } from "@/hooks/user/use-my-id";
 import { cn } from "@/lib/utils";
+import NotFoundPage from "@/pages/error/404";
+import ApiErrorPage from "@/pages/error/api-error";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ArrowLeft, Bookmark } from "lucide-react";
@@ -54,13 +56,16 @@ export default function OfferDetailPage() {
     return <OfferDetailSkeleton />;
   }
 
-  if (error || !offer) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 p-4">
-        <h2 className="text-xl font-semibold">Offre introuvable</h2>
-        <Button onClick={() => navigate(-1)}>Retour</Button>
-      </div>
-    );
+  if (error) {
+    // @ts-ignore - API Error handling
+    if (error.response?.status === 404) {
+      return <NotFoundPage type="offer" />;
+    }
+    return <ApiErrorPage />;
+  }
+
+  if (!offer) {
+    return <NotFoundPage type="offer" />;
   }
 
   const discountPercentage = Math.round(

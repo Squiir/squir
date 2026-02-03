@@ -12,6 +12,8 @@ import { ShareButton } from "@/components/ui/ShareButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBar } from "@/hooks/bars/use-bar";
 import { useFavorites } from "@/hooks/user/use-favorites";
+import NotFoundPage from "@/pages/error/404";
+import ApiErrorPage from "@/pages/error/api-error";
 import { ArrowLeft, Clock, MapPin, Store } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -37,14 +39,16 @@ export default function BarDetailPage() {
     return <BarDetailSkeleton />;
   }
 
-  if (error || !bar) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <h2 className="text-xl font-semibold mb-2">Une erreur est survenue</h2>
-        <p className="text-muted-foreground mb-4">Impossible de charger les informations du bar.</p>
-        <Button onClick={handleBack}>Retour</Button>
-      </div>
-    );
+  if (error) {
+    // @ts-ignore - API Error handling
+    if (error.response?.status === 404) {
+      return <NotFoundPage type="bar" />;
+    }
+    return <ApiErrorPage />;
+  }
+
+  if (!bar) {
+    return <NotFoundPage type="bar" />;
   }
 
   return (
