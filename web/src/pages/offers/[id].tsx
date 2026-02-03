@@ -1,5 +1,6 @@
 import { HostedByCard } from "@/components/offer/HostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
+import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ui/ShareButton";
@@ -22,6 +23,7 @@ export default function OfferDetailPage() {
   const { toggleOffer, isOfferSaved } = useFavorites();
   const { data: userData } = useMyId();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const isExpired = offer?.validUntil ? new Date(offer.validUntil) < new Date() : false;
@@ -202,11 +204,16 @@ export default function OfferDetailPage() {
           amount={offer.squirPrice}
           onSuccess={() => {
             setIsPaymentModalOpen(false);
-            toast.success("Paiement réussi !");
-            navigate("/tickets"); // Redirect to tickets/wallet page after purchase
+            setIsSuccessModalOpen(true);
           }}
         />
       )}
+
+      <PurchaseSuccessModal
+        open={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
+
       <ShareButton path={window.location.pathname} className="bottom-24" />
     </div>
   );
