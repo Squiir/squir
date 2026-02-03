@@ -2,6 +2,7 @@ import { HostedByCard } from "@/components/offer/HostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ShareButton } from "@/components/ui/ShareButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useOffer } from "@/hooks/offers/use-offer";
 import { useFavorites } from "@/hooks/user/use-favorites";
@@ -206,6 +207,7 @@ export default function OfferDetailPage() {
           }}
         />
       )}
+      <ShareButton path={window.location.pathname} className="bottom-24" />
     </div>
   );
 }

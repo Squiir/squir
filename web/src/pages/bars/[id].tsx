@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { ShareButton } from "@/components/ui/ShareButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBar } from "@/hooks/bars/use-bar";
 import { useFavorites } from "@/hooks/user/use-favorites";
@@ -155,6 +156,7 @@ export default function BarDetailPage() {
           )}
         </section>
       </div>
+      <ShareButton path={window.location.pathname} />
     </div>
   );
 }
