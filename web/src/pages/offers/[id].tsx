@@ -1,3 +1,4 @@
+import FranceMap from "@/components/map/FranceMap";
 import { HostedByCard } from "@/components/offer/HostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
 import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";
@@ -11,7 +12,7 @@ import { useMyId } from "@/hooks/user/use-my-id";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { ArrowLeft, Bookmark, MapPin } from "lucide-react";
+import { ArrowLeft, Bookmark } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -68,13 +69,12 @@ export default function OfferDetailPage() {
 
   return (
     <div className="bg-background min-h-screen pb-24">
-      {/* Header */}
       <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b sm:hidden">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="-ml-2">
           <ArrowLeft className="w-6 h-6" />
         </Button>
         <span className="font-semibold truncate max-w-[200px]">{offer.name}</span>
-        <div className="w-10" /> {/* Spacer for balance */}
+        <div className="w-10" />
       </div>
 
       <div className="max-w-3xl mx-auto sm:pt-8 w-full">
@@ -85,7 +85,6 @@ export default function OfferDetailPage() {
           <h1 className="text-2xl font-bold">Détails de l'offre</h1>
         </div>
 
-        {/* Hero Image */}
         <div className="relative aspect-video w-full overflow-hidden sm:rounded-xl bg-muted">
           {!imageLoaded && <Skeleton className="absolute inset-0 w-full h-full" />}
           {offer.imageUrl && (
@@ -109,7 +108,6 @@ export default function OfferDetailPage() {
         </div>
 
         <div className="p-4 space-y-6">
-          {/* Info Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-start gap-4">
               <h1 className="text-2xl font-bold leading-tight">{offer.name}</h1>
@@ -143,7 +141,6 @@ export default function OfferDetailPage() {
             </div>
           </div>
 
-          {/* Description */}
           {offer.description && (
             <div className="space-y-2">
               <h3 className="font-semibold text-lg">Description</h3>
@@ -153,26 +150,21 @@ export default function OfferDetailPage() {
             </div>
           )}
 
-          {/* Hosted By */}
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Proposé par</h3>
             <HostedByCard bar={offer.bar} />
           </div>
-
-          {/* Map Placeholder */}
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Localisation</h3>
-            <div className="bg-muted h-48 rounded-xl flex items-center justify-center text-muted-foreground border">
-              <div className="flex flex-col items-center gap-2">
-                <MapPin className="h-8 w-8 opacity-50" />
-                <span className="text-sm">Carte indisponible pour le moment</span>
-              </div>
+            <div className="bg-muted h-48 rounded-xl overflow-hidden border relative z-0">
+              {offer.bar && (
+                <FranceMap readOnly latitude={offer.bar.latitude} longitude={offer.bar.longitude} />
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sticky Actions Footer */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t z-50 safe-area-bottom">
         <div className="max-w-3xl mx-auto flex gap-3">
           <Button
