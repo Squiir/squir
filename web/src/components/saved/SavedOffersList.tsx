@@ -33,7 +33,7 @@ export function SavedOffersList({ offers, isLoading, onToggleOffer }: SavedOffer
         return (
           <Link
             key={offer.id}
-            to={`/bar/${offer.bar.id}`}
+            to={`/bars/${offer.bar.id}`}
             className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors border-b last:border-0 group"
           >
             <div className="flex flex-col gap-1 overflow-hidden flex-1 mr-2">
