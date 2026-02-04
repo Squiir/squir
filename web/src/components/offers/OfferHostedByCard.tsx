@@ -4,11 +4,11 @@ import type { Bar } from "@/types/bar";
 import { ChevronRight, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface HostedByCardProps {
+interface OfferHostedByCardProps {
   bar: Bar;
 }
 
-export function HostedByCard({ bar }: HostedByCardProps) {
+export function OfferHostedByCard({ bar }: OfferHostedByCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -28,8 +28,8 @@ export function HostedByCard({ bar }: HostedByCardProps) {
             <span className="text-xs">{bar.address}</span>
           </div>
         </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground" />
       </div>
-      <ChevronRight className="h-5 w-5 text-muted-foreground" />
     </Card>
   );
 }

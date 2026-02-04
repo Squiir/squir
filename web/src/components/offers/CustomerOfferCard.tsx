@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/auth/use-auth";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import { cn } from "@/lib/utils";
 import type { Offer } from "@/types/offer";
-import { Calendar, Heart, Package, Tag } from "lucide-react";
+import { Bookmark, Calendar, Package, Tag, Wine } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface CustomerOfferCardProps {
@@ -57,12 +57,12 @@ export function CustomerOfferCard({ offer }: CustomerOfferCardProps) {
           />
         ) : (
           <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground">
-            <Package className="h-10 w-10 opacity-20" />
+            <Wine className="h-10 w-10 opacity-20" />
           </div>
         )}
 
         {hasDiscount && (
-          <Badge variant="destructive" className="absolute top-2 left-2 z-10">
+          <Badge variant="destructive" className="absolute top-2 left-2 z-10 text-sm">
             -{discount}%
           </Badge>
         )}
@@ -70,20 +70,23 @@ export function CustomerOfferCard({ offer }: CustomerOfferCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 z-10 bg-background/50 hover:bg-background/80 backdrop-blur-sm rounded-full h-8 w-8"
+          className="absolute top-2 right-2 z-10 bg-background/50 hover:bg-background/80 backdrop-blur-sm rounded-full h-12 w-12"
           onClick={handleFavoriteClick}
           disabled={!isLoggedIn}
           title={!isLoggedIn ? "Connectez-vous pour ajouter aux favoris" : ""}
         >
-          <Heart
-            className={cn("h-4 w-4", isFav ? "fill-red-500 text-red-500" : "text-foreground")}
+          <Bookmark
+            className={cn("h-5 w-5", isFav ? "fill-primary text-primary" : "text-foreground")}
           />
         </Button>
       </div>
 
       <CardContent className="flex-1 p-3 space-y-2">
         <div>
-          <h3 className="font-semibold text-base line-clamp-1">{offer.name}</h3>
+          <h3 className="font-semibold text-base line-clamp-1 text-xl">{offer.name}</h3>
+          { offer.description && (
+            <span className="text-muted-foreground text-sm">{offer.description}</span>
+          )}
           <div className="flex items-center gap-2 mt-1">
             <span className="text-lg font-bold text-primary">{offer.squirPrice.toFixed(2)}€</span>
             {hasDiscount && (
