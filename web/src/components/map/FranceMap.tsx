@@ -1,8 +1,6 @@
 import { MapController } from "@/components/map/MapController";
-import { ModalQrPreview } from "@/components/map/ModalQrPreview";
 import { OfferCard } from "@/components/map/OfferCard";
 import { ZoomControlWithSlider } from "@/components/map/ZoomControlWithSlider";
-import { PaymentModal } from "@/components/payment/PaymentModal";
 import {
   DEFAULT_PARIS_CENTER,
   DEFAULT_ZOOM,
@@ -12,14 +10,8 @@ import {
 } from "@/constants/map";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useBars } from "@/hooks/bars/use-bars";
-import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
-import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
-import type { QrCodeDto } from "@/services/qrcode.service";
 import type { Bar } from "@/types/bar";
 import type { Coordinate } from "@/types/map";
-import type { Offer } from "@/types/offer";
-import type { QrCode } from "@/types/qrcode";
-import { useQueryClient } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
@@ -29,18 +21,11 @@ export default function FranceMap({
   longitude,
   readOnly = false,
 }: Coordinate & { readOnly?: boolean }) {
-  const { mutate: createQrCode, isPending: isCreateQrCodePending } = useCreateQrCode();
-  const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
   const { data: bars, isPending: isGetBarsPending } = useBars();
-  const queryClient = useQueryClient();
   const { theme } = useTheme();
 
-  const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
   const [offerOpen, setOfferOpen] = useState(false);
   const [selectedBar, setSelectedBar] = useState<Bar | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [paymentOpen, setPaymentOpen] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
@@ -54,25 +39,6 @@ export default function FranceMap({
   }, []);
 
   const isDark = theme === "dark" || (theme === "system" && isSystemDark);
-
-  const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
-    if (!selectedBar) return;
-    setOfferOpen(false);
-    createQrCode(qrCodeDto, {
-      onSuccess: (data) => {
-        setPreviewedQrCode(data);
-      },
-      onError: (err) => {
-        console.error(err);
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (previewedQrCode) {
-      setPreviewOpen(true);
-    }
-  }, [previewedQrCode]);
 
   const handleOverlayClick = () => {
     if (readOnly && latitude && longitude) {
@@ -136,7 +102,7 @@ export default function FranceMap({
         )}
 
         {!readOnly &&
-          (bars ?? []).map((bar) => (
+          (bars ?? []).map((bar: Bar) => (
             <Marker
               key={bar.id}
               position={[bar.latitude, bar.longitude]}
@@ -156,35 +122,8 @@ export default function FranceMap({
           offerOpen={offerOpen}
           setOfferOpen={setOfferOpen}
           selectedBar={selectedBar}
-          qrcodes={qrcodes ?? null}
-          isCreateQrCodePending={isCreateQrCodePending}
-          isGetMyQrCodesPending={isGetMyQrCodesPending}
         />
       )}
-
-      {selectedBar && selectedOffer && (
-        <PaymentModal
-          open={paymentOpen}
-          onClose={() => setPaymentOpen(false)}
-          barId={selectedBar.id}
-          offerId={selectedOffer.id}
-          amount={selectedOffer.squirPrice}
-          onSuccess={() => {
-            setPaymentOpen(false);
-            onCreateQrCode({
-              offerId: selectedOffer.id,
-              label: `${selectedBar.name} • ${selectedOffer.name}`,
-            });
-            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
-          }}
-        />
-      )}
-
-      <ModalQrPreview
-        visible={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        qrcode={previewedQrCode}
-      />
     </div>
   );
 }
