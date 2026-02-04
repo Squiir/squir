@@ -5,8 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useOffer } from "@/hooks/offers/use-offer";
+import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import { cn } from "@/lib/utils";
+import type { QrCodeDto } from "@/services/qrcode.service";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ArrowLeft, Bookmark, MapPin, Wine } from "lucide-react";
@@ -19,7 +22,9 @@ export default function OfferDetailPage() {
   const navigate = useNavigate();
   const { data: offer, isLoading, error } = useOffer(id);
   const { toggleOffer, isOfferSaved } = useFavorites();
+  const { mutate: createQrCode } = useCreateQrCode();
   const { isLoggedIn } = useAuth();
+  const queryClient = useQueryClient();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -44,6 +49,20 @@ export default function OfferDetailPage() {
     }
     setIsPaymentModalOpen(true);
   };
+
+  const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
+      if (!offer.bar.id) return;
+      createQrCode(qrCodeDto, {
+        onError: (err) => {
+          console.error(err);
+          toast.error("Erreur lors de la génération de votre Qr code");
+        },
+        onSuccess: () => {
+          toast.success("Paiement réussi !");
+          navigate("/wallet");
+        }
+      });
+    };
 
   if (isLoading) {
     return <OfferDetailSkeleton />;
@@ -197,8 +216,11 @@ export default function OfferDetailPage() {
           amount={offer.squirPrice}
           onSuccess={() => {
             setIsPaymentModalOpen(false);
-            toast.success("Paiement réussi !");
-            navigate("/wallet");
+            onCreateQrCode({
+              offerId: offer.id,
+              label: `${offer.bar.name} • ${offer.name}`,
+            });
+            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
           }}
         />
       )}
