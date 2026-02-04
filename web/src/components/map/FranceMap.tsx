@@ -1,8 +1,6 @@
 import { MapController } from "@/components/map/MapController";
-import { ModalQrPreview } from "@/components/map/ModalQrPreview";
 import { OfferCard } from "@/components/map/OfferCard";
 import { ZoomControlWithSlider } from "@/components/map/ZoomControlWithSlider";
-import { PaymentModal } from "@/components/payment/PaymentModal";
 import {
   DEFAULT_PARIS_CENTER,
   DEFAULT_ZOOM,
@@ -12,31 +10,22 @@ import {
 } from "@/constants/map";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useBars } from "@/hooks/bars/use-bars";
-import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
-import { useGetMyQrCodes } from "@/hooks/qrcode/use-get-qr-codes";
-import type { QrCodeDto } from "@/services/qrcode.service";
 import type { Bar } from "@/types/bar";
 import type { Coordinate } from "@/types/map";
-import type { Offer } from "@/types/offer";
-import type { QrCode } from "@/types/qrcode";
-import { useQueryClient } from "@tanstack/react-query";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
-export default function FranceMap({ latitude, longitude }: Coordinate) {
-  const { mutate: createQrCode, isPending: isCreateQrCodePending } = useCreateQrCode();
-  const { data: qrcodes, isPending: isGetMyQrCodesPending } = useGetMyQrCodes();
+export default function FranceMap({
+  latitude,
+  longitude,
+  readOnly = false,
+}: Coordinate & { readOnly?: boolean }) {
   const { data: bars, isPending: isGetBarsPending } = useBars();
-  const queryClient = useQueryClient();
   const { theme } = useTheme();
 
-  const [previewedQrCode, setPreviewedQrCode] = useState<QrCode>();
   const [offerOpen, setOfferOpen] = useState(false);
   const [selectedBar, setSelectedBar] = useState<Bar | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [paymentOpen, setPaymentOpen] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
   const [isSystemDark, setIsSystemDark] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
@@ -51,39 +40,39 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 
   const isDark = theme === "dark" || (theme === "system" && isSystemDark);
 
-  const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
-    if (!selectedBar) return;
-    setOfferOpen(false);
-    createQrCode(qrCodeDto, {
-      onSuccess: (data) => {
-        setPreviewedQrCode(data);
-      },
-      onError: (err) => {
-        console.error(err);
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (previewedQrCode) {
-      setPreviewOpen(true);
+  const handleOverlayClick = () => {
+    if (readOnly && latitude && longitude) {
+      window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, "_blank");
     }
-  }, [previewedQrCode]);
+  };
 
   return (
     <div className="relative z-0 w-full h-full bg-slate-100 dark:bg-slate-900">
-      {isGetBarsPending && (
+      {isGetBarsPending && !readOnly && (
         <div className="absolute inset-0 flex items-center justify-center z-1000 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
           <div className="w-8 h-8 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
         </div>
       )}
 
+      {readOnly && (
+        <div
+          className="absolute inset-0 z-[1001] cursor-pointer"
+          onClick={handleOverlayClick}
+          title="Ouvrir dans Google Maps"
+        />
+      )}
+
       <MapContainer
-        center={DEFAULT_PARIS_CENTER}
-        zoom={DEFAULT_ZOOM}
+        center={latitude && longitude ? [latitude, longitude] : DEFAULT_PARIS_CENTER}
+        zoom={readOnly && latitude && longitude ? 15 : DEFAULT_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
-        dragging={true}
+        dragging={!readOnly}
+        scrollWheelZoom={!readOnly}
+        doubleClickZoom={!readOnly}
+        touchZoom={!readOnly}
+        boxZoom={!readOnly}
+        keyboard={!readOnly}
         className="outline-none"
         minZoom={7}
         maxZoom={18}
@@ -102,73 +91,39 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
         />
 
         <MapController latitude={latitude} longitude={longitude} />
-        <ZoomControlWithSlider />
+        {!readOnly && <ZoomControlWithSlider />}
 
         {latitude && longitude && (
-          <Marker position={[latitude, longitude]} icon={userIcon} interactive={false} />
+          <Marker
+            position={[latitude, longitude]}
+            icon={readOnly ? createBarIcon("Bar") : userIcon}
+            interactive={false}
+          />
         )}
 
-        {(bars ?? []).map((bar) => (
-          <Marker
-            key={bar.id}
-            position={[bar.latitude, bar.longitude]}
-            icon={createBarIcon("Bar")}
-            eventHandlers={{
-              click: () => {
-                setSelectedBar(bar);
-                setOfferOpen(true);
-              },
-            }}
-          />
-        ))}
+        {!readOnly &&
+          (bars ?? []).map((bar: Bar) => (
+            <Marker
+              key={bar.id}
+              position={[bar.latitude, bar.longitude]}
+              icon={createBarIcon("Bar")}
+              eventHandlers={{
+                click: () => {
+                  setSelectedBar(bar);
+                  setOfferOpen(true);
+                },
+              }}
+            />
+          ))}
       </MapContainer>
 
-      <OfferCard
-        offerOpen={offerOpen}
-        setOfferOpen={setOfferOpen}
-        selectedBar={selectedBar}
-        qrcodes={qrcodes ?? null}
-        onSelectOffer={(offer) => {
-          if (offer.squirPrice > 0) {
-            setSelectedOffer(offer);
-            setPaymentOpen(true);
-            setOfferOpen(false);
-          } else {
-            if (!selectedBar) return;
-            onCreateQrCode({
-              offerId: offer.id,
-              label: `${selectedBar.name} • ${offer.name}`,
-            });
-            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
-          }
-        }}
-        isCreateQrCodePending={isCreateQrCodePending}
-        isGetMyQrCodesPending={isGetMyQrCodesPending}
-      />
-
-      {selectedBar && selectedOffer && (
-        <PaymentModal
-          open={paymentOpen}
-          onClose={() => setPaymentOpen(false)}
-          barId={selectedBar.id}
-          offerId={selectedOffer.id}
-          amount={selectedOffer.squirPrice}
-          onSuccess={() => {
-            setPaymentOpen(false);
-            onCreateQrCode({
-              offerId: selectedOffer.id,
-              label: `${selectedBar.name} • ${selectedOffer.name}`,
-            });
-            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
-          }}
+      {!readOnly && (
+        <OfferCard
+          offerOpen={offerOpen}
+          setOfferOpen={setOfferOpen}
+          selectedBar={selectedBar}
         />
       )}
-
-      <ModalQrPreview
-        visible={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        qrcode={previewedQrCode}
-      />
     </div>
   );
 }
