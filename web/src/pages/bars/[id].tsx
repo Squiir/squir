@@ -22,7 +22,7 @@ export default function BarDetailPage() {
   const handleBack = () => {
     navigate(-1);
   };
-
+// TODO: ajouter le tag & les horaires aux établissements et remplacer les mock data
   const isBarFavorite = id ? isVenueFavorite(id) : false;
 
   const handleFavoriteBar = () => {
