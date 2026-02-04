@@ -3,6 +3,7 @@ import { PaymentModal } from "@/components/payment/PaymentModal";
 import { OfferDetailSkeleton } from "@/components/skeleton/OfferDetailSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ShareButton } from "@/components/ui/ShareButton";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useOffer } from "@/hooks/offers/use-offer";
 import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
@@ -51,18 +52,18 @@ export default function OfferDetailPage() {
   };
 
   const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
-      if (!offer.bar.id) return;
-      createQrCode(qrCodeDto, {
-        onError: (err) => {
-          console.error(err);
-          toast.error("Erreur lors de la génération de votre Qr code");
-        },
-        onSuccess: () => {
-          toast.success("Paiement réussi !");
-          navigate("/wallet");
-        }
-      });
-    };
+    if (!offer || !offer.bar?.id) return;
+    createQrCode(qrCodeDto, {
+      onError: (err) => {
+        console.error(err);
+        toast.error("Erreur lors de la génération de votre Qr code");
+      },
+      onSuccess: () => {
+        toast.success("Paiement réussi !");
+        navigate("/wallet");
+      }
+    });
+  };
 
   if (isLoading) {
     return <OfferDetailSkeleton />;
@@ -224,6 +225,7 @@ export default function OfferDetailPage() {
           }}
         />
       )}
+      <ShareButton path={window.location.pathname} className="bottom-24" />
     </div>
   );
 }
