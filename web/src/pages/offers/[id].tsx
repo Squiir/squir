@@ -1,5 +1,6 @@
 import { OfferHostedByCard } from "@/components/offers/OfferHostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
+import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";
 import { OfferDetailSkeleton } from "@/components/skeleton/OfferDetailSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export default function OfferDetailPage() {
   const { isLoggedIn } = useAuth();
   const queryClient = useQueryClient();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const isExpired = offer?.validUntil ? new Date(offer.validUntil) < new Date() : false;
@@ -60,7 +62,6 @@ export default function OfferDetailPage() {
       },
       onSuccess: () => {
         toast.success("Paiement réussi !");
-        navigate("/wallet");
       }
     });
   };
@@ -221,10 +222,17 @@ export default function OfferDetailPage() {
               offerId: offer.id,
               label: `${offer.bar.name} • ${offer.name}`,
             });
+            setIsSuccessModalOpen(true);
             queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
           }}
         />
       )}
+
+      <PurchaseSuccessModal
+        open={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
+
       <ShareButton path={window.location.pathname} className="bottom-24" />
     </div>
   );
