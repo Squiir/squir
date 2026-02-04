@@ -8,27 +8,20 @@ import {
 } from "@/components/ui/dialog";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import type { Bar } from "@/types/bar";
-import type { QrCode } from "@/types/qrcode";
 import clsx from "clsx";
-import { Loader2, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface OfferCardProps {
   offerOpen: boolean;
   setOfferOpen: (open: boolean) => void;
   selectedBar: Bar | null | undefined;
-  qrcodes: QrCode[] | null;
-  isCreateQrCodePending: boolean;
-  isGetMyQrCodesPending: boolean;
 }
 
 export function OfferCard({
   offerOpen,
   setOfferOpen,
   selectedBar,
-  qrcodes,
-  isCreateQrCodePending,
-  isGetMyQrCodesPending,
 }: OfferCardProps) {
   const navigate = useNavigate();
   const offers = selectedBar?.offers ?? [];
@@ -63,10 +56,6 @@ export function OfferCard({
 
         <div className="grid gap-4 py-4">
           {offers.map((offer) => {
-            const alreadyHas =
-              qrcodes?.some((qr) => qr.bar?.id === selectedBar?.id && qr.offerId === offer.id) ??
-              false;
-
             return (
               <div
                 key={offer.id}
@@ -103,9 +92,6 @@ export function OfferCard({
                     <p className="text-sm text-muted-foreground">{offer.squirPrice} €</p>
                   )}
                 </div>
-                {alreadyHas && (
-                  <span className="text-xs font-medium text-muted-foreground">Déjà en stock</span>
-                )}
               </div>
             );
           })}
@@ -115,12 +101,6 @@ export function OfferCard({
         </div>
 
         <div className="flex items-center justify-between">
-          {(isCreateQrCodePending || isGetMyQrCodesPending) && (
-            <div className="flex items-center text-sm text-gray-500">
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              {isCreateQrCodePending ? "Génération..." : "Chargement..."}
-            </div>
-          )}
           <Button variant="secondary" onClick={() => setOfferOpen(false)} className="ml-auto">
             Fermer
           </Button>
