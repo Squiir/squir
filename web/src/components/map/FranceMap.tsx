@@ -16,7 +16,11 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
-export default function FranceMap({ latitude, longitude }: Coordinate) {
+export default function FranceMap({
+  latitude,
+  longitude,
+  readOnly = false,
+}: Coordinate & { readOnly?: boolean }) {
   const { data: bars, isPending: isGetBarsPending } = useBars();
   const { theme } = useTheme();
 
@@ -36,20 +40,39 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
 
   const isDark = theme === "dark" || (theme === "system" && isSystemDark);
 
+  const handleOverlayClick = () => {
+    if (readOnly && latitude && longitude) {
+      window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, "_blank");
+    }
+  };
+
   return (
     <div className="relative z-0 w-full h-full bg-slate-100 dark:bg-slate-900">
-      {isGetBarsPending && (
+      {isGetBarsPending && !readOnly && (
         <div className="absolute inset-0 flex items-center justify-center z-1000 bg-white/50 dark:bg-black/50 backdrop-blur-sm">
           <div className="w-8 h-8 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"></div>
         </div>
       )}
 
+      {readOnly && (
+        <div
+          className="absolute inset-0 z-[1001] cursor-pointer"
+          onClick={handleOverlayClick}
+          title="Ouvrir dans Google Maps"
+        />
+      )}
+
       <MapContainer
-        center={DEFAULT_PARIS_CENTER}
-        zoom={DEFAULT_ZOOM}
+        center={latitude && longitude ? [latitude, longitude] : DEFAULT_PARIS_CENTER}
+        zoom={readOnly && latitude && longitude ? 15 : DEFAULT_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
-        dragging={true}
+        dragging={!readOnly}
+        scrollWheelZoom={!readOnly}
+        doubleClickZoom={!readOnly}
+        touchZoom={!readOnly}
+        boxZoom={!readOnly}
+        keyboard={!readOnly}
         className="outline-none"
         minZoom={7}
         maxZoom={18}
@@ -68,32 +91,39 @@ export default function FranceMap({ latitude, longitude }: Coordinate) {
         />
 
         <MapController latitude={latitude} longitude={longitude} />
-        <ZoomControlWithSlider />
+        {!readOnly && <ZoomControlWithSlider />}
 
         {latitude && longitude && (
-          <Marker position={[latitude, longitude]} icon={userIcon} interactive={false} />
+          <Marker
+            position={[latitude, longitude]}
+            icon={readOnly ? createBarIcon("Bar") : userIcon}
+            interactive={false}
+          />
         )}
 
-        {(bars ?? []).map((bar: Bar) => (
-          <Marker
-            key={bar.id}
-            position={[bar.latitude, bar.longitude]}
-            icon={createBarIcon("Bar")}
-            eventHandlers={{
-              click: () => {
-                setSelectedBar(bar);
-                setOfferOpen(true);
-              },
-            }}
-          />
-        ))}
+        {!readOnly &&
+          (bars ?? []).map((bar: Bar) => (
+            <Marker
+              key={bar.id}
+              position={[bar.latitude, bar.longitude]}
+              icon={createBarIcon("Bar")}
+              eventHandlers={{
+                click: () => {
+                  setSelectedBar(bar);
+                  setOfferOpen(true);
+                },
+              }}
+            />
+          ))}
       </MapContainer>
 
-      <OfferCard
-        offerOpen={offerOpen}
-        setOfferOpen={setOfferOpen}
-        selectedBar={selectedBar}
-      />
+      {!readOnly && (
+        <OfferCard
+          offerOpen={offerOpen}
+          setOfferOpen={setOfferOpen}
+          selectedBar={selectedBar}
+        />
+      )}
     </div>
   );
 }
