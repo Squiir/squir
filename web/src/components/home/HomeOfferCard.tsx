@@ -4,12 +4,14 @@ import type { Offer } from "@/types/offer";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Bookmark, Wine } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface HomeOfferCardProps {
   offer: Offer;
 }
 
 export function HomeOfferCard({ offer }: HomeOfferCardProps) {
+  const navigate = useNavigate();
   const { toggleOffer, isOfferSaved } = useFavorites();
   const dateLabel = offer.validUntil
     ? format(new Date(offer.validUntil), "EEE d MMM", { locale: fr })
@@ -18,7 +20,10 @@ export function HomeOfferCard({ offer }: HomeOfferCardProps) {
   const isSaved = isOfferSaved(offer.id);
 
   return (
-    <div className="group cursor-pointer space-y-3 w-[240px] md:w-[280px]">
+    <div
+      className="group cursor-pointer space-y-3 w-[240px] md:w-[280px]"
+      onClick={() => navigate(`/offers/${offer.id}`)}
+    >
       <div className="relative aspect-[4/5] md:aspect-square w-full overflow-hidden rounded-xl bg-muted">
         {offer.imageUrl ? (
           <img
