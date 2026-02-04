@@ -1,17 +1,19 @@
-import { HostedByCard } from "@/components/offer/HostedByCard";
+import { OfferHostedByCard } from "@/components/offers/OfferHostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
-import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";
+import { OfferDetailSkeleton } from "@/components/skeleton/OfferDetailSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShareButton } from "@/components/ui/ShareButton";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/auth/use-auth";
 import { useOffer } from "@/hooks/offers/use-offer";
+import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useFavorites } from "@/hooks/user/use-favorites";
-import { useMyId } from "@/hooks/user/use-my-id";
 import { cn } from "@/lib/utils";
+import type { QrCodeDto } from "@/services/qrcode.service";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { ArrowLeft, Bookmark, MapPin } from "lucide-react";
+import { ArrowLeft, Bookmark, MapPin, Wine } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,19 +23,19 @@ export default function OfferDetailPage() {
   const navigate = useNavigate();
   const { data: offer, isLoading, error } = useOffer(id);
   const { toggleOffer, isOfferSaved } = useFavorites();
-  const { data: userData } = useMyId();
+  const { mutate: createQrCode } = useCreateQrCode();
+  const { isLoggedIn } = useAuth();
+  const queryClient = useQueryClient();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const isExpired = offer?.validUntil ? new Date(offer.validUntil) < new Date() : false;
   const isOutOfStock = (offer?.stock ?? 0) <= 0;
   const isAvailable = !isExpired && !isOutOfStock;
-  const isAuthenticated = !!userData;
 
   const handleFavoriteClick = () => {
-    if (!isAuthenticated) {
-      toast.error("Veuillez vous connecter pour ajouter aux favoris");
+    if (!isLoggedIn) {
+      toast.info("Veuillez vous connecter pour ajouter aux favoris");
       return;
     }
     if (offer) {
@@ -42,11 +44,25 @@ export default function OfferDetailPage() {
   };
 
   const handleBuyClick = () => {
-    if (!isAuthenticated) {
-      toast.error("Veuillez vous connecter pour acheter cette offre");
+    if (!isLoggedIn) {
+      toast.info("Veuillez vous connecter pour acheter cette offre");
       return;
     }
     setIsPaymentModalOpen(true);
+  };
+
+  const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
+    if (!offer || !offer.bar?.id) return;
+    createQrCode(qrCodeDto, {
+      onError: (err) => {
+        console.error(err);
+        toast.error("Erreur lors de la génération de votre Qr code");
+      },
+      onSuccess: () => {
+        toast.success("Paiement réussi !");
+        navigate("/wallet");
+      }
+    });
   };
 
   if (isLoading) {
@@ -62,19 +78,18 @@ export default function OfferDetailPage() {
     );
   }
 
-  const discountPercentage = Math.round(
-    ((offer.originalPrice - offer.squirPrice) / offer.originalPrice) * 100,
-  );
+  const discountPercentage = offer.originalPrice > 0
+  ? Math.round(((offer.originalPrice - offer.squirPrice) / offer.originalPrice) * 100)
+  : 0;
 
   return (
     <div className="bg-background min-h-screen pb-24">
-      {/* Header */}
       <div className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b sm:hidden">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="-ml-2">
           <ArrowLeft className="w-6 h-6" />
         </Button>
         <span className="font-semibold truncate max-w-[200px]">{offer.name}</span>
-        <div className="w-10" /> {/* Spacer for balance */}
+        <div className="w-10" />
       </div>
 
       <div className="max-w-3xl mx-auto sm:pt-8 w-full">
@@ -85,9 +100,12 @@ export default function OfferDetailPage() {
           <h1 className="text-2xl font-bold">Détails de l'offre</h1>
         </div>
 
-        {/* Hero Image */}
         <div className="relative aspect-video w-full overflow-hidden sm:rounded-xl bg-muted">
-          {!imageLoaded && <Skeleton className="absolute inset-0 w-full h-full" />}
+          {!imageLoaded && (
+            <div className="w-full h-full flex items-center justify-center">
+              <Wine className="w-16 h-16 text-muted-foreground/50" />
+            </div>
+          )}
           {offer.imageUrl && (
             <img
               src={offer.imageUrl}
@@ -109,7 +127,6 @@ export default function OfferDetailPage() {
         </div>
 
         <div className="p-4 space-y-6">
-          {/* Info Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-start gap-4">
               <h1 className="text-2xl font-bold leading-tight">{offer.name}</h1>
@@ -129,13 +146,13 @@ export default function OfferDetailPage() {
               {discountPercentage > 0 && (
                 <Badge
                   variant="secondary"
-                  className="bg-green-100 text-green-800 hover:bg-green-200"
+                  className="bg-green-100 text-green-800 hover:bg-green-200 text-md"
                 >
                   -{discountPercentage}%
                 </Badge>
               )}
               {offer.validUntil && (
-                <Badge variant="outline" className="text-muted-foreground">
+                <Badge variant="outline" className="text-muted-foreground text-md">
                   Valide jusqu'au{" "}
                   {format(new Date(offer.validUntil), "d MMMM yyyy", { locale: fr })}
                 </Badge>
@@ -143,36 +160,32 @@ export default function OfferDetailPage() {
             </div>
           </div>
 
-          {/* Description */}
           {offer.description && (
             <div className="space-y-2">
-              <h3 className="font-semibold text-lg">Description</h3>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+              <h3 className="font-semibold text-xl">Description</h3>
+              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap text-md">
                 {offer.description}
               </p>
             </div>
           )}
 
-          {/* Hosted By */}
           <div className="space-y-2">
-            <h3 className="font-semibold text-lg">Proposé par</h3>
-            <HostedByCard bar={offer.bar} />
+            <h3 className="font-semibold text-xl">Proposé par</h3>
+            <OfferHostedByCard bar={offer.bar} />
           </div>
 
-          {/* Map Placeholder */}
           <div className="space-y-2">
-            <h3 className="font-semibold text-lg">Localisation</h3>
+            <h3 className="font-semibold text-xl">Localisation</h3>
             <div className="bg-muted h-48 rounded-xl flex items-center justify-center text-muted-foreground border">
               <div className="flex flex-col items-center gap-2">
                 <MapPin className="h-8 w-8 opacity-50" />
-                <span className="text-sm">Carte indisponible pour le moment</span>
+                <span className="text-md">Carte indisponible pour le moment</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sticky Actions Footer */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t z-50 safe-area-bottom">
         <div className="max-w-3xl mx-auto flex gap-3">
           <Button
@@ -204,42 +217,15 @@ export default function OfferDetailPage() {
           amount={offer.squirPrice}
           onSuccess={() => {
             setIsPaymentModalOpen(false);
-            setIsSuccessModalOpen(true);
+            onCreateQrCode({
+              offerId: offer.id,
+              label: `${offer.bar.name} • ${offer.name}`,
+            });
+            queryClient.invalidateQueries({ queryKey: ["qrcodes"] });
           }}
         />
       )}
-
-      <PurchaseSuccessModal
-        open={isSuccessModalOpen}
-        onClose={() => setIsSuccessModalOpen(false)}
-      />
-
       <ShareButton path={window.location.pathname} className="bottom-24" />
-    </div>
-  );
-}
-
-function OfferDetailSkeleton() {
-  return (
-    <div className="bg-background min-h-screen pb-24">
-      <div className="sticky top-0 z-50 flex items-center p-4 bg-background border-b sm:hidden">
-        <Skeleton className="h-10 w-10 rounded-md" />
-      </div>
-      <div className="max-w-3xl mx-auto sm:pt-8 w-full">
-        <div className="aspect-video w-full bg-muted sm:rounded-xl animate-pulse" />
-        <div className="p-4 space-y-6">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-6 w-1/4" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-2/3" />
-          </div>
-          <Skeleton className="h-20 w-full rounded-xl" />
-        </div>
-      </div>
     </div>
   );
 }
