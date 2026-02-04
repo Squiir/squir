@@ -37,3 +37,4 @@ export const FRANCE_BOUNDS: LatLngBoundsExpression = [
 
 export const DEFAULT_PARIS_CENTER: [number, number] = [48.8566, 2.3522];
 export const DEFAULT_ZOOM = 13;
+export const DEFAULT_READONLY_ZOOM = 15;

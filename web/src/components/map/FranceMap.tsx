@@ -3,6 +3,7 @@ import { OfferCard } from "@/components/map/OfferCard";
 import { ZoomControlWithSlider } from "@/components/map/ZoomControlWithSlider";
 import {
   DEFAULT_PARIS_CENTER,
+  DEFAULT_READONLY_ZOOM,
   DEFAULT_ZOOM,
   FRANCE_BOUNDS,
   createBarIcon,
@@ -64,7 +65,7 @@ export default function FranceMap({
 
       <MapContainer
         center={latitude && longitude ? [latitude, longitude] : DEFAULT_PARIS_CENTER}
-        zoom={readOnly && latitude && longitude ? 15 : DEFAULT_ZOOM}
+        zoom={readOnly && latitude && longitude ? DEFAULT_READONLY_ZOOM : DEFAULT_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
         dragging={!readOnly}
@@ -90,7 +91,7 @@ export default function FranceMap({
           maxZoom={20}
         />
 
-        <MapController latitude={latitude} longitude={longitude} />
+        {!readOnly && <MapController latitude={latitude} longitude={longitude} />}
         {!readOnly && <ZoomControlWithSlider />}
 
         {latitude && longitude && (

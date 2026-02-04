@@ -1,3 +1,4 @@
+import FranceMap from "@/components/map/FranceMap";
 import { OfferHostedByCard } from "@/components/offers/OfferHostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
 import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";
@@ -10,11 +11,13 @@ import { useOffer } from "@/hooks/offers/use-offer";
 import { useCreateQrCode } from "@/hooks/qrcode/use-create-qr-code";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import { cn } from "@/lib/utils";
+import NotFoundPage from "@/pages/error/404";
+import ApiErrorPage from "@/pages/error/api-error";
 import type { QrCodeDto } from "@/services/qrcode.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { ArrowLeft, Bookmark, MapPin, Wine } from "lucide-react";
+import { ArrowLeft, Bookmark, Wine } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -30,7 +33,6 @@ export default function OfferDetailPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-
   const isExpired = offer?.validUntil ? new Date(offer.validUntil) < new Date() : false;
   const isOutOfStock = (offer?.stock ?? 0) <= 0;
   const isAvailable = !isExpired && !isOutOfStock;
@@ -70,13 +72,16 @@ export default function OfferDetailPage() {
     return <OfferDetailSkeleton />;
   }
 
-  if (error || !offer) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 p-4">
-        <h2 className="text-xl font-semibold">Offre introuvable</h2>
-        <Button onClick={() => navigate(-1)}>Retour</Button>
-      </div>
-    );
+  if (error) {
+    // @ts-ignore - API Error handling
+    if (error.response?.status === 404) {
+      return <NotFoundPage type="offer" />;
+    }
+    return <ApiErrorPage />;
+  }
+
+  if (!offer) {
+    return <NotFoundPage type="offer" />;
   }
 
   const discountPercentage = offer.originalPrice > 0
@@ -177,11 +182,10 @@ export default function OfferDetailPage() {
 
           <div className="space-y-2">
             <h3 className="font-semibold text-xl">Localisation</h3>
-            <div className="bg-muted h-48 rounded-xl flex items-center justify-center text-muted-foreground border">
-              <div className="flex flex-col items-center gap-2">
-                <MapPin className="h-8 w-8 opacity-50" />
-                <span className="text-md">Carte indisponible pour le moment</span>
-              </div>
+            <div className="bg-muted h-48 rounded-xl overflow-hidden border relative z-0">
+              {offer.bar && (
+                <FranceMap readOnly latitude={offer.bar.latitude} longitude={offer.bar.longitude} />
+              )}
             </div>
           </div>
         </div>

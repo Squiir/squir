@@ -1,3 +1,4 @@
+import FranceMap from "@/components/map/FranceMap";
 import { CustomerOfferCard } from "@/components/offers/CustomerOfferCard";
 import { BarDetailSkeleton } from "@/components/skeleton/BarDetailSkeleton";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,8 @@ import {
 import { ShareButton } from "@/components/ui/ShareButton";
 import { useBar } from "@/hooks/bars/use-bar";
 import { useFavorites } from "@/hooks/user/use-favorites";
+import NotFoundPage from "@/pages/error/404";
+import ApiErrorPage from "@/pages/error/api-error";
 import type { Offer } from "@/types/offer";
 import { ArrowLeft, Clock, MapPin, Store } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -37,18 +40,19 @@ export default function BarDetailPage() {
     return <BarDetailSkeleton />;
   }
 
-  if (error || !bar) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
-        <h2 className="text-xl font-semibold mb-2">Une erreur est survenue</h2>
-        <p className="text-muted-foreground mb-4">Impossible de charger les informations du bar.</p>
-        <Button onClick={handleBack}>Retour</Button>
-      </div>
-    );
+  if (error) {
+    // @ts-ignore - API Error handling
+    if (error.response?.status === 404) {
+      return <NotFoundPage type="bar" />;
+    }
+    return <ApiErrorPage />;
   }
 
-  // TODO: ajouter le tag & les horaires aux établissements et remplacer les mock data
+  if (!bar) {
+    return <NotFoundPage type="bar" />;
+  }
 
+  // TODO: ajouter le tag & les horaires et image[] aux établissements et remplacer les mock data
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <div className="relative">
@@ -108,12 +112,8 @@ export default function BarDetailPage() {
           <h2 className="text-lg font-semibold mb-4 opacity-0 h-0 w-0 overflow-hidden">
             Localisation
           </h2>{" "}
-          <div className="relative w-full h-48 md:h-64 rounded-xl overflow-hidden bg-muted flex items-center justify-center border">
-            <div className="absolute inset-0 opacity-50 bg-[url('https://cartodb-basemaps-a.global.ssl.fastly.net/light_all/13/4151/2819.png')] bg-cover bg-center" />
-            <div className="z-10 bg-background/90 backdrop-blur px-4 py-2 rounded-lg shadow-sm flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" />
-              <span className="font-medium">Plan indisponible</span>
-            </div>
+          <div className="relative w-full h-48 md:h-64 rounded-xl overflow-hidden border z-0">
+            <FranceMap readOnly latitude={bar.latitude} longitude={bar.longitude} />
           </div>
         </section>
 
