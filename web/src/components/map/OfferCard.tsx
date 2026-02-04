@@ -8,17 +8,16 @@ import {
 } from "@/components/ui/dialog";
 import { useFavorites } from "@/hooks/user/use-favorites";
 import type { Bar } from "@/types/bar";
-import type { Offer } from "@/types/offer";
 import type { QrCode } from "@/types/qrcode";
 import clsx from "clsx";
 import { Loader2, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface OfferCardProps {
   offerOpen: boolean;
   setOfferOpen: (open: boolean) => void;
   selectedBar: Bar | null | undefined;
   qrcodes: QrCode[] | null;
-  onSelectOffer: (offer: Offer) => void;
   isCreateQrCodePending: boolean;
   isGetMyQrCodesPending: boolean;
 }
@@ -28,10 +27,10 @@ export function OfferCard({
   setOfferOpen,
   selectedBar,
   qrcodes,
-  onSelectOffer,
   isCreateQrCodePending,
   isGetMyQrCodesPending,
 }: OfferCardProps) {
+  const navigate = useNavigate();
   const offers = selectedBar?.offers ?? [];
   const { isOfferSaved, toggleOffer, isVenueFavorite, toggleVenue } = useFavorites();
 
@@ -59,7 +58,7 @@ export function OfferCard({
               </Button>
             )}
           </div>
-          <DialogDescription>Choisis une offre pour générer le QR code</DialogDescription>
+          <DialogDescription>Choisis une offre pour voir les détails</DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
@@ -73,16 +72,11 @@ export function OfferCard({
                 key={offer.id}
                 className={clsx(
                   "p-4 rounded-xl border flex justify-between items-center cursor-pointer transition-colors",
-                  alreadyHas
-                    ? "bg-muted border-border cursor-not-allowed opacity-60"
-                    : "bg-card border-border hover:bg-accent/50",
+                  "bg-card border-border hover:bg-accent/50",
                   "text-card-foreground",
-                  isCreateQrCodePending && "opacity-50 pointer-events-none",
                 )}
                 onClick={() => {
-                  if (alreadyHas || isCreateQrCodePending) return;
-                  if (!selectedBar) return;
-                  onSelectOffer(offer);
+                  navigate(`/offers/${offer.id}`);
                 }}
               >
                 <div className="flex-1">
