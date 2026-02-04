@@ -8,8 +8,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { offerService } from "@/services/offer.service";
-import { useQuery } from "@tanstack/react-query";
+import { useCollections } from "@/hooks/offers/use-collections";
+import type { Offer } from "@/types/offer";
 import { Home, SearchX } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +20,7 @@ interface NotFoundPageProps {
 export default function NotFoundPage({ type = "resource" }: NotFoundPageProps) {
   const navigate = useNavigate();
 
-  const { data: suggestions } = useQuery({
-    queryKey: ["offers", "best-selling"],
-    queryFn: offerService.getBestSelling,
-  });
+  const { bestSelling } = useCollections();
 
   const title =
     type === "offer"
@@ -54,7 +51,7 @@ export default function NotFoundPage({ type = "resource" }: NotFoundPageProps) {
           </Button>
         </ErrorLayout>
 
-        {suggestions && suggestions.length > 0 && (
+        {bestSelling && bestSelling.length > 0 && (
           <div className="mt-8 max-w-6xl mx-auto space-y-6 opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards delay-300">
             <div className="flex flex-col items-center md:items-start space-y-1">
               <h2 className="text-xl font-bold">Découvrez d'autres offres</h2>
@@ -71,7 +68,7 @@ export default function NotFoundPage({ type = "resource" }: NotFoundPageProps) {
               className="w-full select-none"
             >
               <CarouselContent className="-ml-2 md:-ml-4">
-                {suggestions.slice(0, 6).map((offer) => (
+                {bestSelling.slice(0, 6).map((offer: Offer) => (
                   <CarouselItem
                     key={offer.id}
                     className="pl-2 md:pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
