@@ -52,18 +52,18 @@ export default function OfferDetailPage() {
   };
 
   const onCreateQrCode = (qrCodeDto: QrCodeDto) => {
-      if (!offer.bar.id) return;
-      createQrCode(qrCodeDto, {
-        onError: (err) => {
-          console.error(err);
-          toast.error("Erreur lors de la génération de votre Qr code");
-        },
-        onSuccess: () => {
-          toast.success("Paiement réussi !");
-          navigate("/wallet");
-        }
-      });
-    };
+    if (!offer || !offer.bar?.id) return;
+    createQrCode(qrCodeDto, {
+      onError: (err) => {
+        console.error(err);
+        toast.error("Erreur lors de la génération de votre Qr code");
+      },
+      onSuccess: () => {
+        toast.success("Paiement réussi !");
+        navigate("/wallet");
+      }
+    });
+  };
 
   if (isLoading) {
     return <OfferDetailSkeleton />;
