@@ -52,6 +52,7 @@ export default function BarDetailPage() {
     return <NotFoundPage type="bar" />;
   }
 
+  // TODO: ajouter le tag & les horaires et image[] aux établissements et remplacer les mock data
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <div className="relative">
