@@ -1,3 +1,4 @@
+import FranceMap from "@/components/map/FranceMap";
 import { OfferHostedByCard } from "@/components/offers/OfferHostedByCard";
 import { PaymentModal } from "@/components/payment/PaymentModal";
 import { PurchaseSuccessModal } from "@/components/payment/PurchaseSuccessModal";

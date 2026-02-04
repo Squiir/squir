@@ -3,6 +3,7 @@ import { OfferCard } from "@/components/map/OfferCard";
 import { ZoomControlWithSlider } from "@/components/map/ZoomControlWithSlider";
 import {
   DEFAULT_PARIS_CENTER,
+  DEFAULT_READONLY_ZOOM,
   DEFAULT_ZOOM,
   FRANCE_BOUNDS,
   createBarIcon,
@@ -46,12 +47,6 @@ export default function FranceMap({
     }
   };
 
-  const handleOverlayClick = () => {
-    if (readOnly && latitude && longitude) {
-      window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, "_blank");
-    }
-  };
-
   return (
     <div className="relative z-0 w-full h-full bg-slate-100 dark:bg-slate-900">
       {isGetBarsPending && !readOnly && (
@@ -70,7 +65,7 @@ export default function FranceMap({
 
       <MapContainer
         center={latitude && longitude ? [latitude, longitude] : DEFAULT_PARIS_CENTER}
-        zoom={readOnly && latitude && longitude ? 15 : DEFAULT_ZOOM}
+        zoom={readOnly && latitude && longitude ? DEFAULT_READONLY_ZOOM : DEFAULT_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
         dragging={!readOnly}
@@ -96,7 +91,7 @@ export default function FranceMap({
           maxZoom={20}
         />
 
-        <MapController latitude={latitude} longitude={longitude} />
+        {!readOnly && <MapController latitude={latitude} longitude={longitude} />}
         {!readOnly && <ZoomControlWithSlider />}
 
         {latitude && longitude && (
