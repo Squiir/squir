@@ -90,7 +90,7 @@ export function PaymentModal({
 
   useEffect(() => {
     if (open && barId && userId && offerId) {
-      fetch("http://localhost:3000/stripe/payment-intent", {
+      fetch(`${import.meta.env.VITE_API_URL}/stripe/payment-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: Math.round(amount * 100), barId, userId, offerId }),
