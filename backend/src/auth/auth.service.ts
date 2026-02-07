@@ -79,12 +79,6 @@ export class AuthService {
     console.log("DEBUG: FRONTEND_URL env var:", process.env.FRONTEND_URL);
     console.log("DEBUG: resolved frontendUrl:", frontendUrl);
 
-    const baseUrl = frontendUrl.startsWith("http")
-      ? frontendUrl
-      : `https://${frontendUrl}`;
-
-    console.log("DEBUG: computed baseUrl:", baseUrl);
-
     return await this.prisma.$transaction(async (tx) => {
       const bar = await this.barsService.create(
         {
@@ -113,8 +107,8 @@ export class AuthService {
       const tokens = await this.generateTokens(user.id);
       await this.updateRefreshToken(user.id, tokens.refreshToken, tx);
 
-      const refreshUrl = `${baseUrl}/register/professional?error=stripe`;
-      const returnUrl = `${baseUrl}/dashboard`;
+      const refreshUrl = `${frontendUrl}/register/professional?error=stripe`;
+      const returnUrl = `${frontendUrl}/dashboard`;
       console.log("DEBUG: Calling Stripe createOnboardingLink with:", {
         refreshUrl,
         returnUrl,
