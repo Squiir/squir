@@ -5,6 +5,7 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import { StripeService } from "@stripe/stripe.service";
 import { iso8601ToDateTime } from "@utils/date";
@@ -74,41 +75,52 @@ export class AuthService {
 
     const hashed = await bcrypt.hash(dto.password, 10);
 
-    const bar = await this.barsService.create({
-      name: dto.barName,
-      address: dto.barAddress,
-      arrondissement: dto.arrondissement,
-      latitude: dto.latitude,
-      longitude: dto.longitude,
-    });
+    const frontendUrl = process.env.FRONTEND_URL || "";
+    const baseUrl = frontendUrl.startsWith("http")
+      ? frontendUrl
+      : `https://${frontendUrl}`;
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        username: dto.username,
-        password: hashed,
-        role: "PROFESSIONAL",
+    return await this.prisma.$transaction(async (tx) => {
+      const bar = await this.barsService.create(
+        {
+          name: dto.barName,
+          address: dto.barAddress,
+          arrondissement: dto.arrondissement,
+          latitude: dto.latitude,
+          longitude: dto.longitude,
+        },
+        tx,
+      );
+
+      const user = await tx.user.create({
+        data: {
+          email: dto.email,
+          username: dto.username,
+          password: hashed,
+          role: "PROFESSIONAL",
+          barId: bar.id,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const tokens = await this.generateTokens(user.id);
+      await this.updateRefreshToken(user.id, tokens.refreshToken, tx);
+
+      const stripeOnboardingUrl = await this.stripeService.createOnboardingLink(
+        bar.id,
+        `${baseUrl}/register/professional?error=stripe`,
+        `${baseUrl}/dashboard`,
+        tx,
+      );
+
+      return {
+        ...tokens,
+        stripeOnboardingUrl,
         barId: bar.id,
-      },
-      select: {
-        id: true,
-      },
+      };
     });
-
-    const tokens = await this.generateTokens(user.id);
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
-
-    const stripeOnboardingUrl = await this.stripeService.createOnboardingLink(
-      bar.id,
-      `${process.env.FRONTEND_URL}/register/professional?error=stripe`,
-      `${process.env.FRONTEND_URL}/dashboard`,
-    );
-
-    return {
-      ...tokens,
-      stripeOnboardingUrl,
-      barId: bar.id,
-    };
   }
 
   /**
@@ -196,10 +208,15 @@ export class AuthService {
    * @param refreshToken - Refresh token to hash and store
    * @private
    */
-  private async updateRefreshToken(userId: string, refreshToken: string) {
+  private async updateRefreshToken(
+    userId: string,
+    refreshToken: string,
+    tx?: Prisma.TransactionClient,
+  ) {
+    const prisma = tx || this.prisma;
     const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
 
-    await this.prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: { refreshToken: refreshTokenHash },
     });

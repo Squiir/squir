@@ -10,7 +10,8 @@ export const registerProfessionalSchema = z.object({
     .number()
     .int()
     .min(1, "Doit être entre 1 et 20")
-    .max(20, "Doit être entre 1 et 20"),
+    .max(20, "Doit être entre 1 et 20")
+    .optional(),
   latitude: z.number().min(-90).max(90, "Latitude doit être entre -90 et 90"),
   longitude: z.number().min(-180).max(180, "Longitude doit être entre -180 et 180"),
 });

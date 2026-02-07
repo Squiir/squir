@@ -2,6 +2,7 @@ import {
   IsInt,
   IsLatitude,
   IsLongitude,
+  IsOptional,
   IsString,
   Max,
   MaxLength,
@@ -20,10 +21,11 @@ export class CreateEstablishmentDto {
   @MaxLength(200)
   address!: string;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(20)
-  arrondissement!: number;
+  arrondissement?: number;
 
   @IsLatitude()
   latitude!: number;

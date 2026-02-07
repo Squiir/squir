@@ -3,6 +3,7 @@ import {
   IsInt,
   IsLatitude,
   IsLongitude,
+  IsOptional,
   IsString,
   Max,
   MaxLength,
@@ -34,10 +35,11 @@ export class RegisterProfessionalDto {
   @MaxLength(200)
   barAddress!: string;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(20)
-  arrondissement!: number;
+  arrondissement?: number;
 
   @IsLatitude()
   latitude!: number;

@@ -48,7 +48,7 @@ export function RegisterEstablishmentInfo({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="arrondissement">Arrondissement *</Label>
+        <Label htmlFor="arrondissement">Arrondissement</Label>
         <Select onValueChange={(value) => setValue("arrondissement", parseInt(value))}>
           <SelectTrigger>
             <SelectValue placeholder="Sélectionnez un arrondissement" />
@@ -73,7 +73,7 @@ export function RegisterEstablishmentInfo({
           <Input
             id="latitude"
             type="number"
-            step="0.000001"
+            step="any"
             {...register("latitude", { valueAsNumber: true })}
             placeholder="48.8566"
           />
@@ -86,7 +86,7 @@ export function RegisterEstablishmentInfo({
           <Input
             id="longitude"
             type="number"
-            step="0.000001"
+            step="any"
             {...register("longitude", { valueAsNumber: true })}
             placeholder="2.3522"
           />

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import Stripe from "stripe";
 
@@ -20,7 +21,8 @@ export class StripeService {
     });
   }
 
-  async createExpressAccount(barId: string) {
+  async createExpressAccount(barId: string, tx?: Prisma.TransactionClient) {
+    const prisma = tx || this.prisma;
     const account = await this.stripe.accounts.create({
       type: "express",
       country: "FR",
@@ -30,7 +32,7 @@ export class StripeService {
       },
     });
 
-    await this.prisma.bar.update({
+    await prisma.bar.update({
       where: { id: barId },
       data: { stripeAccountId: account.id },
     });
@@ -42,12 +44,14 @@ export class StripeService {
     barId: string,
     refreshUrl: string,
     returnUrl: string,
+    tx?: Prisma.TransactionClient,
   ) {
-    const bar = await this.prisma.bar.findUnique({ where: { id: barId } });
+    const prisma = tx || this.prisma;
+    const bar = await prisma.bar.findUnique({ where: { id: barId } });
     let accountId = bar?.stripeAccountId;
 
     if (!accountId) {
-      const account = await this.createExpressAccount(barId);
+      const account = await this.createExpressAccount(barId, tx);
       accountId = account.id;
     }
 

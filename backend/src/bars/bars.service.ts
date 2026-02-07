@@ -1,5 +1,6 @@
 import { CreateEstablishmentDto } from "@bars/dto/create-establishment.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "@prisma/prisma.service";
 import { StripeService } from "@stripe/stripe.service";
 
@@ -15,8 +16,9 @@ export class BarsService {
    * @param dto - Bar creation data including manual coordinates
    * @returns Created bar
    */
-  async create(dto: CreateEstablishmentDto) {
-    return this.prisma.bar.create({
+  async create(dto: CreateEstablishmentDto, tx?: Prisma.TransactionClient) {
+    const prisma = tx || this.prisma;
+    return prisma.bar.create({
       data: {
         name: dto.name,
         address: dto.address,

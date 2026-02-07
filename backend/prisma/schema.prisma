@@ -131,7 +131,7 @@ model Bar {
   id                 String              @id @default(uuid())
   name               String
   address            String
-  arrondissement     Int
+  arrondissement     Int?
   latitude           Float
   longitude          Float
   color              String
