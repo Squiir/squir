@@ -41,3 +41,4 @@ jobs:
           resourceGroup: rg-squir-prod
           environmentVariables: |
             FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
