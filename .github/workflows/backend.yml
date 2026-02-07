@@ -39,3 +39,5 @@ jobs:
           imageToDeploy: ${{ env.IMAGE_NAME }}:${{ github.sha }}
           containerAppName: squir-backend
           resourceGroup: rg-squir-prod
+          environmentVariables: |
+            FRONTEND_URL=${{ secrets.FRONTEND_URL }}

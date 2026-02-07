@@ -2,8 +2,8 @@ name: Frontend Deploy
 
 on:
   push:
-    branches: [ main ]
-    paths: ['web/**']
+    branches: [main]
+    paths: ["web/**"]
 
 jobs:
   build_and_deploy_job:
@@ -22,7 +22,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/web"
-          output_location: "dist" 
+          output_location: "dist"
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+          VITE_APP_URL: ${{ secrets.FRONTEND_URL }}
